@@ -1,0 +1,109 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block title %}Articles & Inventory Management — O-SHOP Admin Portal{% endblock %}
+
+{% block workspace_header %}
+  <span>Catalog</span>
+  <span>/</span>
+  <span class="active-crumb">Articles & Stock Inventory</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header & Add CTA -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1.25rem;">
+  <div>
+    <h1 style="font-size:1.9rem; font-weight:800;">Articles & Stock Catalog</h1>
+    <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">Manage catalog items, pricing, sizes, stock levels, and storefront visibility.</p>
+  </div>
+  <a href="{% url 'store:admin_article_create' %}" class="btn btn-gold" style="font-size:0.8rem; font-weight:900; padding:0.65rem 1.35rem;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add New Article
+  </a>
+</div>
+
+<!-- SaaS Data Table -->
+<div class="admin-table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Primary Image</th>
+        <th>Product Title & Category</th>
+        <th>Price (MAD)</th>
+        <th>Stock Per Variant Size</th>
+        <th>Total Stock</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for art in articles %}
+        <tr>
+          <td style="width:75px;">
+            {% if art.primary_image %}
+              <img src="{{ art.primary_image }}" style="width:52px; height:62px; object-fit:cover; border-radius:var(--radius-xs); border:1px solid var(--admin-border-gold);">
+            {% else %}
+              <div style="width:52px; height:62px; background:var(--admin-bg-elevated); border-radius:var(--radius-xs); border:1px dashed var(--admin-border-subtle); display:flex; align-items:center; justify-content:center; font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">No Img</div>
+            {% endif %}
+          </td>
+          <td>
+            <strong style="font-size:0.95rem; color:var(--text-main); display:block;">{{ art.title }}</strong>
+            <span style="font-size:0.75rem; color:var(--gold-bright); font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">{{ art.category.name }}</span>
+          </td>
+          <td style="font-weight:900; color:var(--gold-bright); font-size:1.05rem;">
+            {{ art.price }} MAD
+          </td>
+          <td>
+            <div style="display:flex; flex-wrap:wrap; gap:0.35rem;">
+              {% for sz in art.sizes.all %}
+                <span style="font-size:0.72rem; font-weight:700; background:var(--admin-bg-elevated); border:1px solid {% if sz.stock_quantity > 0 %}var(--admin-border-subtle){% else %}rgba(239, 68, 68, 0.4){% endif %}; padding:0.2rem 0.5rem; border-radius:6px; color:{% if sz.stock_quantity > 0 %}var(--text-main){% else %}var(--danger-accent){% endif %};">
+                  {{ sz.size }}: <strong class="gold-text">{{ sz.stock_quantity }}</strong>
+                </span>
+              {% empty %}
+                <span style="font-size:0.75rem; color:var(--text-muted);">No size variants</span>
+              {% endfor %}
+            </div>
+          </td>
+          <td>
+            {% if art.total_stock > 3 %}
+              <span class="admin-pill-badge status-DELIVERED">{{ art.total_stock }} ITEMS</span>
+            {% elif art.total_stock > 0 %}
+              <span class="admin-pill-badge status-PENDING">{{ art.total_stock }} LEFT</span>
+            {% else %}
+              <span class="admin-pill-badge status-CANCELLED">OUT OF STOCK</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if art.is_active %}
+              <span class="admin-pill-badge status-DELIVERED">Active</span>
+            {% else %}
+              <span class="admin-pill-badge status-CANCELLED">Inactive</span>
+            {% endif %}
+            {% if art.is_featured %}
+              <span style="font-size:0.65rem; font-weight:800; background:var(--gold-gradient); color:#09090B; padding:0.15rem 0.45rem; border-radius:4px; margin-left:0.25rem; letter-spacing:0.05em; text-transform:uppercase;">Featured</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display:flex; gap:0.4rem;">
+              <a href="{% url 'store:admin_article_edit' art.id %}" class="btn btn-dark" style="padding:0.35rem 0.75rem; font-size:0.75rem;">
+                Edit
+              </a>
+              <a href="{% url 'store:admin_article_delete' art.id %}" class="btn btn-dark" style="padding:0.35rem 0.75rem; font-size:0.75rem; color:var(--danger-accent);">
+                Delete
+              </a>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" style="text-align:center; color:var(--text-muted); padding:3.5rem;">
+            No articles found in inventory catalog.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

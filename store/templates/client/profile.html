@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile & Order History — O-SHOP Safi{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:1100px;">
+
+  <div style="margin-bottom:2.5rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
+    <h1 style="font-size:2.2rem; font-weight:800; letter-spacing:-0.02em;">Client Account Dashboard</h1>
+    <p style="color:var(--text-muted); font-size:0.9rem;">Manage your shipping details and track your nationwide order history</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:3rem;">
+    
+    <!-- Profile Edit Column -->
+    <div>
+      <div style="background:var(--bg-secondary); padding:2rem; border-radius:var(--radius-md); border:1px solid var(--border-gold);">
+        <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">
+          Personal Information
+        </h3>
+
+        <form action="{% url 'store:profile' %}" method="POST">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">Full Name</label>
+            <input type="text" name="full_name" value="{{ profile.full_name }}" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">Phone Number (WhatsApp)</label>
+            <input type="tel" name="phone" value="{{ profile.phone }}" class="form-control" placeholder="0600000000" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">City</label>
+            <input type="text" name="city" value="{{ profile.city }}" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">Shipping Address</label>
+            <textarea name="address" class="form-control" rows="3" required>{{ profile.address }}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn-gold" style="width:100%; padding:0.85rem; font-weight:800; font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase;">Save Changes</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Order History Column -->
+    <div style="grid-column: span 2;">
+      <div style="background:var(--bg-secondary); padding:2rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+        <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">
+          Order History ({{ orders.count }})
+        </h3>
+
+        {% if orders %}
+          <div style="display:flex; flex-direction:column; gap:1.25rem;">
+            {% for ord in orders %}
+              <div style="background:var(--bg-elevated); padding:1.25rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
+                  <div>
+                    <span style="font-weight:800; font-size:1.05rem;" class="gold-text">#{{ ord.order_number }}</span>
+                    <span style="font-size:0.75rem; color:var(--text-muted); margin-left:0.5rem;">{{ ord.created_at|date:"M d, Y - H:i" }}</span>
+                  </div>
+                  <div>
+                    <span class="status-badge status-{{ ord.status }}" style="font-size:0.7rem; font-weight:800; letter-spacing:0.05em; text-transform:uppercase;">{{ ord.get_status_display }}</span>
+                  </div>
+                </div>
+
+                <!-- Items list -->
+                <div style="display:flex; flex-direction:column; gap:0.4rem; margin-bottom:0.75rem; padding:0.5rem 0; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); font-size:0.85rem;">
+                  {% for item in ord.items.all %}
+                    <div style="display:flex; justify-content:space-between;">
+                      <span>{{ item.quantity }}x {{ item.article_title }} (Size {{ item.size }})</span>
+                      <span style="color:var(--text-muted);">{{ item.subtotal }} MAD</span>
+                    </div>
+                  {% endfor %}
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div style="font-size:0.8rem; color:var(--text-muted); letter-spacing:0.02em;">
+                    Source: <strong>{{ ord.get_source_display }}</strong>
+                  </div>
+                  <div style="font-weight:900; color:var(--gold-bright); font-size:1.1rem;">
+                    Total: {{ ord.total_amount }} MAD
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div style="text-align:center; padding:4rem 1rem; color:var(--text-muted);">
+            <p style="font-size:0.9rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:1.5rem;">You haven't placed any orders yet.</p>
+            <a href="{% url 'store:home' %}" class="btn btn-gold" style="font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase;">Start Shopping</a>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}O-SHOP — {{ t.tagline }} | Safi, Morocco{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Hero Banner — Split Layout -->
+  <section style="
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    min-height: 600px;
+    border: 1px solid var(--border-gold);
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 60%);
+    overflow: hidden;
+    margin-bottom: 3rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  ">
+
+    <!-- Background Glow Orbs -->
+    <div style="position:absolute; width:380px; height:380px; background:radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 70%); top:-80px; left:-80px; pointer-events:none;"></div>
+    <div style="position:absolute; width:280px; height:280px; background:radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%); bottom:-60px; left:200px; pointer-events:none;"></div>
+
+    <!-- LEFT: Content Column -->
+    <div style="padding: 4rem 3rem; position:relative; z-index:2;">
+
+      <!-- Official Store Tag Pill -->
+      <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,175,55,0.12); border:1px solid var(--border-gold); padding:0.35rem 1rem; border-radius:20px; margin-bottom:1.75rem;">
+        <span style="width:6px; height:6px; background:var(--gold-bright); border-radius:50%; box-shadow:0 0 8px var(--gold-bright); display:inline-block;"></span>
+        <span style="letter-spacing:0.12em; text-transform:uppercase; font-size:0.72rem; font-weight:800; color:var(--gold-bright);">{{ t.official_store }}</span>
+      </div>
+
+      <!-- Hero Headline -->
+      <h1 style="font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight:900; letter-spacing:-0.03em; line-height:1.05; margin-bottom:1.25rem;">
+        {{ t.wear_better }}<br>
+        <span style="background:linear-gradient(135deg, #FFE259 0%, #D4AF37 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">{{ t.look_better }}</span>
+      </h1>
+
+      <!-- Hero Subtitle -->
+      <p style="font-size:1rem; color:var(--text-secondary); max-width:420px; line-height:1.7; margin-bottom:2rem;">
+        {{ t.hero_desc }}
+      </p>
+
+      <!-- CTA Buttons -->
+      <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <a href="#catalog" class="btn btn-gold" style="font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:800; padding:0.9rem 1.85rem; box-shadow:0 6px 20px rgba(212,175,55,0.3);">
+          {{ t.explore_shop }}
+        </a>
+        <a href="https://instagram.com/oth_oshop07" target="_blank" class="btn btn-outline-gold" style="font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:700; padding:0.9rem 1.85rem;">
+          {{ t.instagram_btn }}
+        </a>
+      </div>
+
+      <!-- Stats Row -->
+      <div style="display:flex; gap:2.5rem; margin-top:2.5rem; padding-top:2rem; border-top:1px solid rgba(255,255,255,0.07);">
+        <div>
+          <div style="font-size:1.5rem; font-weight:900; background:linear-gradient(135deg,#FFE259,#D4AF37); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">{{ articles.count }}+</div>
+          <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-top:0.15rem;">{{ t.items_in_store }}</div>
+        </div>
+        <div style="width:1px; background:rgba(255,255,255,0.07);"></div>
+        <div>
+          <div style="font-size:1.5rem; font-weight:900; background:linear-gradient(135deg,#FFE259,#D4AF37); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">COD</div>
+          <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-top:0.15rem;">Payment on Delivery</div>
+        </div>
+        <div style="width:1px; background:rgba(255,255,255,0.07);"></div>
+        <div>
+          <div style="font-size:1.5rem; font-weight:900; background:linear-gradient(135deg,#FFE259,#D4AF37); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">🇲🇦</div>
+          <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700; margin-top:0.15rem;">All Morocco</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Shuffling Image Collage -->
+    <div style="position:relative; height:100%; min-height:600px; overflow:hidden; background:rgba(0,0,0,0.15);">
+
+      {% if hero_images %}
+        <!-- Main large slideshow image -->
+        <div id="heroSlideshow" style="position:relative; width:100%; height:100%; min-height:600px;">
+          {% for img in hero_images %}
+            <div class="hero-slide" style="
+              position:absolute; top:0; left:0; width:100%; height:100%;
+              opacity:{% if forloop.first %}1{% else %}0{% endif %};
+              transition: opacity 0.9s ease-in-out;
+            ">
+              <img
+                src="/media/{{ img }}"
+                alt="O-SHOP Collection"
+                style="width:100%; height:100%; object-fit:cover; object-position:center top;"
+                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              >
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Gold gradient overlay on the left edge (blends with content side) -->
+        <div style="position:absolute; top:0; left:0; width:120px; height:100%; background:linear-gradient(to right, var(--bg-primary), transparent); z-index:1; pointer-events:none;"></div>
+
+        <!-- Bottom overlay with product label -->
+        <div style="position:absolute; bottom:0; left:0; right:0; padding:1.5rem; background:linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%); z-index:2; display:flex; align-items:center; justify-content:space-between;">
+          <span style="font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:800; color:var(--gold-bright);">Latest Collection</span>
+          <span id="slideCounter" style="font-size:0.7rem; color:rgba(255,255,255,0.5); font-weight:700; letter-spacing:0.08em;">1 / {{ hero_images|length }}</span>
+        </div>
+
+        <!-- Navigation dots -->
+        <div style="position:absolute; bottom:3.5rem; right:1.25rem; z-index:3; display:flex; flex-direction:column; gap:0.4rem;">
+          {% for img in hero_images %}
+            <div class="hero-dot" data-index="{{ forloop.counter0 }}" style="
+              width:4px; height:{% if forloop.first %}20px{% else %}4px{% endif %};
+              background:{% if forloop.first %}var(--gold-bright){% else %}rgba(255,255,255,0.25){% endif %};
+              border-radius:4px;
+              transition:all 0.3s ease;
+              cursor:pointer;
+            "></div>
+          {% endfor %}
+        </div>
+
+      {% else %}
+        <!-- Fallback when no images -->
+        <div style="width:100%; height:100%; min-height:600px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, rgba(212,175,55,0.05) 0%, transparent 100%);">
+          <div style="text-align:center; color:var(--text-muted);">
+            <div style="font-size:4rem; margin-bottom:1rem;">👕</div>
+            <p style="font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:700;">New Collection<br>Coming Soon</p>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+  <style>
+    /* Mobile: stack hero vertically */
+    @media (max-width: 768px) {
+      section[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+      }
+      #heroSlideshow, section[style*="grid-template-columns"] > div:last-child {
+        min-height: 320px !important;
+      }
+    }
+  </style>
+
+  <script>
+    (function() {
+      const slides = document.querySelectorAll('.hero-slide');
+      const dots = document.querySelectorAll('.hero-dot');
+      const counter = document.getElementById('slideCounter');
+      if (!slides.length) return;
+
+      // Shuffle the slides array order
+      const indices = Array.from({length: slides.length}, (_, i) => i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+
+      // Reorder slides in DOM based on shuffle
+      const parent = slides[0].parentElement;
+      indices.forEach(idx => parent.appendChild(slides[idx]));
+
+      const reordered = parent.querySelectorAll('.hero-slide');
+      let current = 0;
+
+      function goTo(n) {
+        reordered[current].style.opacity = '0';
+        if (dots[current]) {
+          dots[current].style.height = '4px';
+          dots[current].style.background = 'rgba(255,255,255,0.25)';
+        }
+        current = (n + reordered.length) % reordered.length;
+        reordered[current].style.opacity = '1';
+        if (dots[current]) {
+          dots[current].style.height = '20px';
+          dots[current].style.background = 'var(--gold-bright)';
+        }
+        if (counter) counter.textContent = `${current + 1} / ${reordered.length}`;
+      }
+
+      // Dot click navigation
+      dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+
+      // Auto-play every 3.5 seconds
+      setInterval(() => goTo(current + 1), 3500);
+    })();
+  </script>
+
+
+
+  <!-- Featured Items Grid -->
+  {% if featured_articles %}
+    <section style="margin-bottom: 4rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+        <div>
+          <span style="font-size:0.75rem; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.15em; font-weight:800;">{{ t.featured_collection }}</span>
+          <h2 style="font-size:1.75rem; font-weight:800; letter-spacing: -0.01em;">{{ t.selected_highlights }}</h2>
+        </div>
+      </div>
+
+      <div class="grid-products">
+        {% for article in featured_articles %}
+          <div class="product-card">
+            <span class="badge-featured" style="letter-spacing: 0.1em; font-size: 0.65rem; font-weight: 800;">FEATURED</span>
+            <a href="{% url 'store:product_detail' article.slug %}" class="product-thumb">
+              {% if article.primary_image %}
+                <img src="{{ article.primary_image }}" alt="{{ article.title }}" loading="lazy">
+              {% else %}
+                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase;">No Image Available</div>
+              {% endif %}
+            </a>
+            <div class="product-info">
+              <span class="product-category" style="font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold-bright);">{{ article.category.name }}</span>
+              <a href="{% url 'store:product_detail' article.slug %}" class="product-title" style="font-size:1rem; font-weight:700;">{{ article.title }}</a>
+              
+              <!-- Available sizes list -->
+              <div class="size-pills">
+                {% for sz in article.sizes.all %}
+                  <span class="size-pill {% if sz.stock_quantity > 0 %}available{% endif %}">
+                    {{ sz.size }} {% if sz.stock_quantity == 0 %}(Sold Out){% endif %}
+                  </span>
+                {% empty %}
+                  <span class="size-pill">One Size</span>
+                {% endfor %}
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1rem;">
+                <div class="product-price" style="font-size:1.15rem; font-weight:800;">{{ article.price }} MAD</div>
+                <a href="{% url 'store:product_detail' article.slug %}" class="btn btn-outline-gold" style="font-size:0.75rem; padding:0.45rem 0.9rem; letter-spacing:0.08em; text-transform:uppercase;">{{ t.view_item }}</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- Main Shop Catalog -->
+  <section id="catalog" style="margin-bottom: 5rem;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; flex-wrap:wrap; gap:1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+      <div>
+        <h2 style="font-size:1.75rem; font-weight:800;">
+          {% if selected_category_slug %}
+            Category: <span class="gold-text">{{ articles.0.category.name|default:selected_category_slug }}</span>
+          {% elif search_query %}
+            Results for: "<span class="gold-text">{{ search_query }}</span>"
+          {% else %}
+            {{ t.all_collection }}
+          {% endif %}
+        </h2>
+        <p style="color:var(--text-muted); font-size:0.85rem; letter-spacing:0.02em;">Showing {{ articles.count }} {{ t.items_in_store }}</p>
+      </div>
+
+      <!-- Quick category filter pills -->
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <a href="{% url 'store:home' %}#catalog" class="btn {% if not selected_category_slug %}btn-gold{% else %}btn-dark{% endif %}" style="font-size:0.75rem; padding:0.45rem 0.9rem; letter-spacing:0.08em; text-transform:uppercase;">{{ t.all_collection }}</a>
+        {% for cat in categories %}
+          <a href="{% url 'store:home' %}?category={{ cat.slug }}#catalog" class="btn {% if selected_category_slug == cat.slug %}btn-gold{% else %}btn-dark{% endif %}" style="font-size:0.75rem; padding:0.45rem 0.9rem; letter-spacing:0.08em; text-transform:uppercase;">
+            {{ cat.name }}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if articles %}
+      <div class="grid-products">
+        {% for article in articles %}
+          <div class="product-card">
+            <a href="{% url 'store:product_detail' article.slug %}" class="product-thumb">
+              {% if article.primary_image %}
+                <img src="{{ article.primary_image }}" alt="{{ article.title }}" loading="lazy">
+              {% else %}
+                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase;">No Image Available</div>
+              {% endif %}
+            </a>
+            <div class="product-info">
+              <span class="product-category" style="font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold-bright);">{{ article.category.name }}</span>
+              <a href="{% url 'store:product_detail' article.slug %}" class="product-title" style="font-size:1rem; font-weight:700;">{{ article.title }}</a>
+              
+              <div class="size-pills">
+                {% for sz in article.sizes.all %}
+                  <span class="size-pill {% if sz.stock_quantity > 0 %}available{% endif %}">
+                    {{ sz.size }}
+                  </span>
+                {% empty %}
+                  <span class="size-pill">Standard</span>
+                {% endfor %}
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1rem;">
+                <div class="product-price" style="font-size:1.15rem; font-weight:800;">{{ article.price }} MAD</div>
+                <a href="{% url 'store:product_detail' article.slug %}" class="btn btn-gold" style="font-size:0.75rem; padding:0.45rem 0.9rem; letter-spacing:0.08em; text-transform:uppercase;">{{ t.order_now }}</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align:center; padding:5rem 1rem; background:var(--bg-secondary); border-radius:var(--radius-md); border:1px solid var(--border-color);">
+        <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:0.5rem;">No Articles Found</h3>
+        <p style="color:var(--text-muted); margin-bottom:1.5rem; font-size:0.9rem;">Try selecting another category or clearing your search term.</p>
+        <a href="{% url 'store:home' %}" class="btn btn-gold" style="font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase;">{{ t.all_collection }}</a>
+      </div>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}

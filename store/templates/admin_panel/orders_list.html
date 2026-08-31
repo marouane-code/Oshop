@@ -1,0 +1,153 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block title %}Orders & Sales Telemetry — O-SHOP Admin Portal{% endblock %}
+
+{% block workspace_header %}
+  <span>Sales</span>
+  <span>/</span>
+  <span class="active-crumb">Orders & Shipments</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header & Filter Toolbar -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1.25rem;">
+  <div>
+    <h1 style="font-size:1.9rem; font-weight:800;">Orders & Sales Telemetry</h1>
+    <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">Track online dispatch deliveries, boutique in-store sales, and client line items.</p>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+    
+    <!-- Channel Filter Tabs -->
+    <div style="display:flex; gap:0.35rem; background:var(--admin-bg-surface); padding:0.3rem; border-radius:var(--radius-xs); border:1px solid var(--admin-border-subtle);">
+      <a href="{% url 'store:admin_orders' %}" class="btn {% if not source_filter and not status_filter %}btn-gold{% else %}btn-dark{% endif %}" style="font-size:0.72rem; padding:0.4rem 0.85rem; font-weight:800;">All Sales</a>
+      <a href="?source=ONLINE" class="btn {% if source_filter == 'ONLINE' %}btn-gold{% else %}btn-dark{% endif %}" style="font-size:0.72rem; padding:0.4rem 0.85rem; font-weight:800;">Online</a>
+      <a href="?source=IN_STORE" class="btn {% if source_filter == 'IN_STORE' %}btn-gold{% else %}btn-dark{% endif %}" style="font-size:0.72rem; padding:0.4rem 0.85rem; font-weight:800;">Walk-Ins</a>
+    </div>
+
+    <!-- Search Form -->
+    <form method="GET" action="{% url 'store:admin_orders' %}" style="display:flex; gap:0.4rem;">
+      <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="Order # or Phone..." class="form-control" style="width:200px; padding:0.45rem 0.85rem; font-size:0.82rem;">
+      <button type="submit" class="btn btn-gold" style="padding:0.45rem 0.85rem; font-size:0.75rem;">Search</button>
+    </form>
+
+  </div>
+</div>
+
+<!-- SaaS Orders Table -->
+<div class="admin-table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Order Ref</th>
+        <th>Channel</th>
+        <th>Customer Info</th>
+        <th>Ordered Items & Sizes</th>
+        <th>Total MAD</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Update Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ord in orders %}
+        <tr>
+          <td>
+            <strong class="gold-text" style="font-size:0.95rem; font-weight:900;">#{{ ord.order_number }}</strong>
+          </td>
+          <td>
+            {% if ord.source == 'IN_STORE' %}
+              <span class="admin-pill-badge status-POS">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                POS Walk-In
+              </span>
+            {% else %}
+              <span class="admin-pill-badge status-CONFIRMED">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+                Online Web
+              </span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="font-weight:700; color:var(--text-main); font-size:0.9rem;">{{ ord.client_name }}</div>
+            <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.2rem; display:flex; flex-direction:column; gap:0.15rem;">
+              <span>📞 <a href="https://wa.me/212{{ ord.client_phone|slice:'1:' }}" target="_blank" style="color:var(--emerald-accent); font-weight:700;">{{ ord.client_phone }} ↗</a></span>
+              <span>📍 {{ ord.client_city }}{% if ord.client_address %}, {{ ord.client_address }}{% endif %}</span>
+            </div>
+          </td>
+          <td>
+            <div style="display:flex; flex-direction:column; gap:0.35rem; font-size:0.83rem;">
+              {% for item in ord.items.all %}
+                <div style="display:flex; align-items:center; gap:0.4rem;">
+                  <span style="color:var(--text-muted);">•</span>
+                  <strong>{{ item.quantity }}x</strong>
+                  <span style="color:var(--text-main);">{{ item.article_title }}</span>
+                  <span style="font-size:0.7rem; font-weight:800; background:var(--admin-bg-elevated); border:1px solid var(--admin-border-gold); color:var(--gold-bright); padding:0.1rem 0.45rem; border-radius:4px;">{{ item.size }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </td>
+          <td style="font-weight:900; color:var(--gold-bright); font-size:1.05rem;">
+            {{ ord.total_amount }} MAD
+          </td>
+          <td>
+            <span class="admin-pill-badge status-{{ ord.status }}" id="statusBadge-{{ ord.id }}">
+              {{ ord.get_status_display }}
+            </span>
+          </td>
+          <td style="font-size:0.78rem; color:var(--text-secondary);">
+            {{ ord.created_at|date:"M d, Y" }} <br>
+            <span style="font-size:0.72rem; color:var(--gold-primary);">{{ ord.created_at|date:"H:i" }}</span>
+          </td>
+          <td>
+            <select onchange="updateOrderStatus({{ ord.id }}, this.value)" class="form-control" style="padding:0.35rem 0.6rem; font-size:0.78rem; width:135px; background:var(--admin-bg-elevated); font-weight:700;">
+              {% for val, label in status_choices %}
+                <option value="{{ val }}" {% if ord.status == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="8" style="text-align:center; color:var(--text-muted); padding:3.5rem;">
+            No sales or orders found matching your search criteria.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  async function updateOrderStatus(orderId, newStatus) {
+    try {
+      const response = await fetch(`/admin-dashboard/orders/${orderId}/status/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const data = await response.json();
+      if (data.success) {
+        const badge = document.getElementById(`statusBadge-${orderId}`);
+        if (badge) {
+          badge.className = `admin-pill-badge status-${newStatus}`;
+          badge.textContent = newStatus;
+        }
+      } else {
+        alert(data.message || "Could not update status.");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+</script>
+{% endblock %}

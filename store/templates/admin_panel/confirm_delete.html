@@ -1,0 +1,38 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block title %}Confirm Deletion — O-SHOP Admin Portal{% endblock %}
+
+{% block workspace_header %}
+  <span>Admin Console</span>
+  <span>/</span>
+  <span class="active-crumb" style="color:var(--danger-accent);">Confirm Deletion</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-card" style="border-color:var(--danger-accent); max-width:540px; margin:4rem auto; text-align:center; box-shadow:0 12px 40px rgba(239, 68, 68, 0.2);">
+  
+  <div style="width:56px; height:56px; background:rgba(239, 68, 68, 0.12); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger-accent); margin:0 auto 1.25rem;">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  </div>
+
+  <h2 style="font-size:1.45rem; font-weight:900; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:0.75rem; color:var(--danger-accent);">
+    Confirm Permanent Deletion
+  </h2>
+  
+  <p style="color:var(--text-secondary); margin-bottom:2rem; font-size:0.92rem; line-height:1.6;">
+    Are you sure you want to permanently delete {{ item_type }}: <strong class="gold-text">"{{ item_name }}"</strong>?<br>
+    This operation cannot be reversed.
+  </p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div style="display:flex; justify-content:center; gap:1rem;">
+      <a href="javascript:history.back()" class="btn btn-dark" style="font-size:0.8rem; padding:0.65rem 1.5rem;">Cancel</a>
+      <button type="submit" class="btn" style="background:var(--danger-accent); color:white; font-size:0.8rem; font-weight:900; padding:0.65rem 1.75rem;">Delete Record</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

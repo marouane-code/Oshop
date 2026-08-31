@@ -1,0 +1,167 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} — O-SHOP Admin Portal{% endblock %}
+
+{% block workspace_header %}
+  <span>Catalog</span>
+  <span>/</span>
+  <a href="{% url 'store:admin_articles' %}" style="color:var(--text-secondary);">Articles</a>
+  <span>/</span>
+  <span class="active-crumb">{{ title }}</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header & Back Button -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1.25rem;">
+  <div>
+    <h1 style="font-size:1.9rem; font-weight:800;">{{ title }}</h1>
+    <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">Configure product attributes, pricing, variant sizes, and uploaded photography.</p>
+  </div>
+  <a href="{% url 'store:admin_articles' %}" class="btn btn-dark" style="font-size:0.75rem; padding:0.5rem 1rem;">
+    &larr; Back to Catalog
+  </a>
+</div>
+
+<div class="admin-card gold-glow" style="max-width:900px; margin:0 auto;">
+  <form method="POST" enctype="multipart/form-data" id="articleForm">
+    {% csrf_token %}
+
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem;">
+      <div class="form-group">
+        <label class="form-label">Article Title *</label>
+        <input type="text" name="title" value="{{ article.title|default:'' }}" class="form-control" placeholder="e.g. Oversized Heavyweight Hoodie - Gold Edition" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select name="category" class="form-control" required>
+          {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if article.category.id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1.5rem;">
+      <div class="form-group">
+        <label class="form-label">Price (MAD) *</label>
+        <input type="number" step="0.01" name="price" value="{{ article.price|default:'' }}" class="form-control" placeholder="299.00" required>
+      </div>
+
+      <div class="form-group" style="justify-content:center;">
+        <label class="form-label">Storefront Visibility</label>
+        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; background:var(--admin-bg-elevated); padding:0.65rem 0.85rem; border-radius:var(--radius-xs); border:1px solid var(--admin-border-medium);">
+          <input type="checkbox" name="is_active" {% if article.is_active or not article %}checked{% endif %}>
+          <span style="font-size:0.83rem; font-weight:700;">Visible online</span>
+        </label>
+      </div>
+
+      <div class="form-group" style="justify-content:center;">
+        <label class="form-label">Featured Badge</label>
+        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; background:var(--admin-bg-elevated); padding:0.65rem 0.85rem; border-radius:var(--radius-xs); border:1px solid var(--admin-border-medium);">
+          <input type="checkbox" name="is_featured" {% if article.is_featured %}checked{% endif %}>
+          <span class="gold-text" style="font-size:0.83rem; font-weight:800;">Featured Showcase</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Product Description (Optional)</label>
+      <textarea name="description" class="form-control" rows="3" placeholder="Fabric composition, fit style, details...">{{ article.description|default:'' }}</textarea>
+    </div>
+
+    <!-- Image Upload Section -->
+    <div style="background:var(--admin-bg-elevated); padding:1.25rem; border-radius:var(--radius-sm); border:1px solid var(--admin-border-subtle); margin-bottom:1.5rem;">
+      <label class="form-label" style="color:var(--gold-bright); margin-bottom:0.5rem; display:block;">Article Imagery (Multi-upload supported)</label>
+      
+      {% if article.images.all %}
+        <div style="display:flex; gap:0.75rem; margin-bottom:1rem; flex-wrap:wrap;">
+          {% for img in article.images.all %}
+            <div style="position:relative;">
+              <img src="{{ img.image.url }}" style="width:70px; height:85px; object-fit:cover; border-radius:6px; border:1px solid var(--admin-border-gold);">
+              {% if img.is_primary %}
+                <span style="position:absolute; bottom:4px; left:4px; font-size:0.6rem; background:var(--gold-gradient); color:#000; font-weight:800; padding:0.1rem 0.3rem; border-radius:3px;">Primary</span>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <input type="file" name="images" class="form-control" accept="image/*" multiple style="background:var(--admin-bg-surface);">
+      <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.35rem;">First uploaded image will serve as primary product thumbnail.</div>
+    </div>
+
+    <!-- Size Stock Matrix Section -->
+    <div style="background:var(--admin-bg-elevated); padding:1.25rem; border-radius:var(--radius-sm); border:1px solid var(--admin-border-gold); margin-bottom:2rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <label class="form-label" style="color:var(--gold-bright); margin:0;">Stock Quantity Per Size Variant</label>
+        <button type="button" class="btn btn-outline-gold" style="font-size:0.72rem; padding:0.35rem 0.75rem; font-weight:800;" onclick="addSizeRow()">
+          + Add Custom Size
+        </button>
+      </div>
+
+      <div id="sizesContainer" style="display:flex; flex-direction:column; gap:0.75rem;">
+        {% if article.sizes.all %}
+          {% for sz in article.sizes.all %}
+            <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+              <input type="text" name="size_name" value="{{ sz.size }}" class="form-control" placeholder="Size (e.g. S, M, L, 42)" style="flex:1; background:var(--admin-bg-surface);" required>
+              <input type="number" name="size_stock" value="{{ sz.stock_quantity }}" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
+              <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+            </div>
+          {% endfor %}
+        {% else %}
+          <!-- Default Size Rows -->
+          <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+            <input type="text" name="size_name" value="S" class="form-control" placeholder="Size" style="flex:1; background:var(--admin-bg-surface);" required>
+            <input type="number" name="size_stock" value="5" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
+            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+          </div>
+          <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+            <input type="text" name="size_name" value="M" class="form-control" placeholder="Size" style="flex:1; background:var(--admin-bg-surface);" required>
+            <input type="number" name="size_stock" value="10" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
+            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+          </div>
+          <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+            <input type="text" name="size_name" value="L" class="form-control" placeholder="Size" style="flex:1; background:var(--admin-bg-surface);" required>
+            <input type="number" name="size_stock" value="8" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
+            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+          </div>
+          <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+            <input type="text" name="size_name" value="XL" class="form-control" placeholder="Size" style="flex:1; background:var(--admin-bg-surface);" required>
+            <input type="number" name="size_stock" value="4" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
+            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <a href="{% url 'store:admin_articles' %}" class="btn btn-dark" style="font-size:0.8rem;">Cancel</a>
+      <button type="submit" class="btn btn-gold" style="font-size:0.85rem; font-weight:900; padding:0.75rem 2rem;">
+        Save Article & Stock Inventory
+      </button>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function addSizeRow() {
+    const container = document.getElementById('sizesContainer');
+    const row = document.createElement('div');
+    row.className = 'size-row';
+    row.style.cssText = 'display:flex; gap:1rem; align-items:center;';
+    row.innerHTML = `
+      <input type="text" name="size_name" class="form-control" placeholder="Size (e.g. XXL or 42)" style="flex:1; background:var(--admin-bg-surface);" required>
+      <input type="number" name="size_stock" value="0" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
+      <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+    `;
+    container.appendChild(row);
+  }
+</script>
+{% endblock %}

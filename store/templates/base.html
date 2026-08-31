@@ -1,0 +1,753 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ current_lang|default:'en' }}" dir="{{ dir_attr|default:'ltr' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#080810">
+  <title>{% block title %}O-SHOP — Wear Better, Look Better | Safi, Morocco{% endblock %}</title>
+  <meta name="description" content="O-Shop luxury streetwear & fashion in Safi, Morocco. Nationwide delivery. Cash on delivery.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=3.2">
+
+  <style>
+    /* =========================================================
+       CRITICAL EMBEDDED HEADER STYLES (Guaranteed Perfect Render)
+       ========================================================= */
+    :root {
+      --bg-primary: #080810;
+      --bg-secondary: #0E0E1A;
+      --bg-elevated: #151524;
+      --bg-glass: rgba(10, 10, 18, 0.94);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-gold: rgba(212, 175, 55, 0.35);
+      --gold-bright: #FFD700;
+      --gold-primary: #D4AF37;
+      --gold-gradient: linear-gradient(135deg, #FFE259 0%, #FFA751 100%);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --ig-gradient: linear-gradient(45deg, #F09433 0%, #E6683C 25%, #DC2743 50%, #CC2366 75%, #BC1888 100%);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ---- 1. Top Mini Bar ---- */
+    .top-announcement {
+      background: #05050A;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      padding: 6px 20px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      z-index: 600;
+      position: relative;
+    }
+    .top-announcement-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #E2E8F0;
+      font-weight: 600;
+      text-transform: uppercase;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .top-announcement-pulse {
+      width: 6px;
+      height: 6px;
+      background: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10B981;
+      flex-shrink: 0;
+    }
+    .top-lang-switch {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .top-lang-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+    .top-lang-btn:hover, .top-lang-btn.active {
+      color: var(--gold-bright);
+      background: rgba(212, 175, 55, 0.15);
+    }
+    .top-lang-divider {
+      color: var(--border-subtle);
+      font-size: 10px;
+    }
+
+    /* ---- 2. Main Header ---- */
+    .site-nav-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 550;
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .main-nav-bar {
+      max-width: 1300px;
+      margin: 0 auto;
+      height: 70px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    /* Brand Logo */
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-logo-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--ig-gradient);
+      padding: 2px;
+      box-shadow: 0 4px 15px rgba(220, 39, 67, 0.25);
+      flex-shrink: 0;
+    }
+    .nav-logo-badge-inner {
+      width: 100%;
+      height: 100%;
+      background: #090910;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold-bright);
+    }
+    .nav-brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin: 0;
+    }
+    .nav-brand-tagline {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* Search Bar */
+    .nav-search-box {
+      flex: 1;
+      max-width: 440px;
+      position: relative;
+    }
+    .nav-search-form-el {
+      display: flex;
+      align-items: center;
+      background: #121220;
+      border: 1px solid var(--border-subtle);
+      border-radius: 50px;
+      padding: 4px 6px 4px 16px;
+      transition: all 0.25s ease;
+    }
+    .nav-search-form-el:focus-within {
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+      background: #171728;
+    }
+    .nav-search-input-el {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 13.5px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .nav-search-input-el::placeholder {
+      color: #64748B;
+    }
+    .nav-search-submit-btn {
+      width: 34px;
+      height: 34px;
+      background: var(--gold-gradient);
+      border: none;
+      border-radius: 50%;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+    .nav-search-submit-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Desktop Actions */
+    .nav-action-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .nav-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .nav-pill-gold {
+      background: var(--gold-gradient);
+      color: #080810;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+    }
+    .nav-pill-gold:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    }
+    .nav-pill-outline {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      border-color: var(--border-subtle);
+    }
+    .nav-pill-outline:hover {
+      background: rgba(212, 175, 55, 0.1);
+      border-color: var(--border-gold);
+      color: var(--gold-bright);
+    }
+    .nav-cart-btn {
+      position: relative;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-bright);
+      padding: 8px 18px;
+    }
+    .nav-cart-btn:hover {
+      background: var(--gold-gradient);
+      color: #000;
+    }
+    .nav-cart-count-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--gold-bright);
+      color: #000;
+      font-size: 10px;
+      font-weight: 900;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    /* ---- 3. Category Scrolling Sub-Bar ---- */
+    .nav-categories-bar {
+      background: #0B0B14;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .nav-categories-bar::-webkit-scrollbar {
+      display: none;
+    }
+    .nav-categories-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .cat-tab {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      flex-shrink: 0;
+    }
+    .cat-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .cat-tab.active {
+      color: var(--gold-bright);
+      background: rgba(212, 175, 55, 0.12);
+      border-color: var(--border-gold);
+    }
+
+    /* ---- 4. Mobile Controls & Drawer ---- */
+    .nav-mobile-buttons {
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-icon-action-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .nav-icon-action-btn:hover, .nav-icon-action-btn.active {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--border-gold);
+      color: var(--gold-bright);
+    }
+
+    /* Collapsible Mobile Search Overlay */
+    .mobile-search-panel {
+      display: none;
+      background: #11111E;
+      border-top: 1px solid var(--border-subtle);
+      padding: 12px 16px;
+    }
+    .mobile-search-panel.is-active {
+      display: block;
+    }
+
+    /* Collapsible Mobile Navigation Drawer */
+    .mobile-menu-drawer {
+      display: none;
+      background: #0B0B14;
+      border-top: 1px solid var(--border-subtle);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .mobile-menu-drawer.is-active {
+      display: block;
+    }
+    .mobile-menu-section {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .mobile-menu-heading {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .mobile-nav-link-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 8px;
+      color: #E2E8F0;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      margin-bottom: 4px;
+    }
+    .mobile-nav-link-row:hover, .mobile-nav-link-row.active {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--gold-bright);
+    }
+    .mobile-nav-link-row.gold-accent {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-bright);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 900px) {
+      .nav-search-box { display: none !important; }
+      .nav-action-group { display: none !important; }
+      .nav-mobile-buttons { display: flex !important; }
+      .main-nav-bar { height: 62px; padding: 0 15px; }
+      .nav-brand-title { font-size: 19px; }
+      .nav-brand-tagline { display: none; }
+      .top-announcement { padding: 5px 12px; font-size: 10px; }
+    }
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- 1. Top Announcement Bar -->
+  <div class="top-announcement">
+    <div class="top-announcement-content">
+      <span class="top-announcement-pulse"></span>
+      <span>{{ t.announcement }}</span>
+    </div>
+    <div class="top-lang-switch">
+      <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
+      <span class="top-lang-divider">/</span>
+      <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}">FR</a>
+      <span class="top-lang-divider">/</span>
+      <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="font-family:sans-serif;">العربية</a>
+    </div>
+  </div>
+
+  <!-- 2. Sticky Master Navigation -->
+  <div class="site-nav-wrapper">
+    <header class="main-nav-bar">
+      
+      <!-- Brand Logo -->
+      <a href="{% url 'store:home' %}" class="nav-brand">
+        <div class="nav-logo-badge">
+          <div class="nav-logo-badge-inner">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5ZM19 19C19 19.55 18.55 20 18 20H6C5.45 20 5 19.55 5 19V18H19V19Z"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <h1 class="nav-brand-title">O-SHOP</h1>
+          <div class="nav-brand-tagline">{{ t.tagline }}</div>
+        </div>
+      </a>
+
+      <!-- Desktop Search Bar -->
+      <div class="nav-search-box">
+        <form action="{% url 'store:home' %}" method="GET" class="nav-search-form-el">
+          <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="{{ t.search_placeholder }}" class="nav-search-input-el">
+          <button type="submit" class="nav-search-submit-btn" aria-label="Search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- Desktop User Actions -->
+      <div class="nav-action-group">
+        {% if user.is_authenticated %}
+          {% if user.is_staff %}
+            <a href="{% url 'store:admin_dashboard' %}" class="nav-pill-btn nav-pill-gold">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+              {{ t.admin_dashboard }}
+            </a>
+          {% else %}
+            <a href="{% url 'store:profile' %}" class="nav-pill-btn nav-pill-outline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              {{ user.first_name|default:user.username }}
+            </a>
+          {% endif %}
+          <a href="{% url 'store:logout' %}" class="nav-pill-btn nav-pill-outline" style="color:var(--text-muted); padding:8px 12px;">{{ t.logout }}</a>
+        {% else %}
+          <a href="{% url 'store:login' %}" class="nav-pill-btn nav-pill-outline">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            {{ t.sign_in }}
+          </a>
+        {% endif %}
+
+        <!-- Cart Button -->
+        <button class="nav-pill-btn nav-cart-btn trigger-cart" aria-label="Shopping Cart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          {{ t.cart }}
+          <span class="nav-cart-count-badge cart-badge-count">{{ cart_count|default:0 }}</span>
+        </button>
+      </div>
+
+      <!-- Mobile Right Controls -->
+      <div class="nav-mobile-buttons">
+        <button id="toggleMobileSearch" class="nav-icon-action-btn" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+        <button class="nav-icon-action-btn trigger-cart" aria-label="Cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="nav-cart-count-badge cart-badge-count">{{ cart_count|default:0 }}</span>
+        </button>
+        <button id="toggleMobileMenu" class="nav-icon-action-btn" aria-label="Menu" aria-expanded="false">
+          <svg id="burgerSvg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+          <svg id="closeSvg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display:none;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+    </header>
+
+    <!-- Mobile Slide-Down Search -->
+    <div id="mobileSearchContainer" class="mobile-search-panel">
+      <form action="{% url 'store:home' %}" method="GET" class="nav-search-form-el" style="background:#090912;">
+        <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="{{ t.search_placeholder }}" class="nav-search-input-el">
+        <button type="submit" class="nav-search-submit-btn" aria-label="Search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileMenuContainer" class="mobile-menu-drawer">
+      <!-- Account Links -->
+      <div class="mobile-menu-section">
+        {% if user.is_authenticated %}
+          {% if user.is_staff %}
+            <a href="{% url 'store:admin_dashboard' %}" class="mobile-nav-link-row gold-accent">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+              {{ t.admin_dashboard }}
+            </a>
+          {% else %}
+            <a href="{% url 'store:profile' %}" class="mobile-nav-link-row">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              {{ t.account }}: {{ user.first_name|default:user.username }}
+            </a>
+          {% endif %}
+          <a href="{% url 'store:logout' %}" class="mobile-nav-link-row" style="color:var(--danger, #EF4444);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            {{ t.logout }}
+          </a>
+        {% else %}
+          <a href="{% url 'store:login' %}" class="mobile-nav-link-row gold-accent">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            {{ t.sign_in }} / {{ t.create_account }}
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Categories -->
+      <div class="mobile-menu-section">
+        <div class="mobile-menu-heading">{{ t.all_collection }}</div>
+        <a href="{% url 'store:home' %}" class="mobile-nav-link-row {% if not selected_category_slug %}active{% endif %}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          All Items
+        </a>
+        {% for cat in nav_categories %}
+          <a href="{% url 'store:home' %}?category={{ cat.slug }}" class="mobile-nav-link-row {% if selected_category_slug == cat.slug %}active{% endif %}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            {{ cat.name }}
+          </a>
+        {% endfor %}
+      </div>
+
+      <!-- Language Selector -->
+      <div class="mobile-menu-section">
+        <div class="mobile-menu-heading">Language / Langue</div>
+        <div style="display:flex; gap:8px;">
+          <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1px solid var(--border-subtle); border-radius:6px;">English</a>
+          <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1px solid var(--border-subtle); border-radius:6px;">Français</a>
+          <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1px solid var(--border-subtle); border-radius:6px; font-family:sans-serif;">العربية</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Category Horizontal Pills -->
+    <nav class="nav-categories-bar">
+      <div class="nav-categories-inner">
+        <a href="{% url 'store:home' %}" class="cat-tab {% if not selected_category_slug %}active{% endif %}">
+          {{ t.all_collection }}
+        </a>
+        {% for cat in nav_categories %}
+          <a href="{% url 'store:home' %}?category={{ cat.slug }}" class="cat-tab {% if selected_category_slug == cat.slug %}active{% endif %}">
+            {{ cat.name }}
+          </a>
+        {% endfor %}
+      </div>
+    </nav>
+  </div>
+
+  <!-- Flash Messages -->
+  {% if messages %}
+    <div class="container" style="padding-bottom:0;">
+      {% for message in messages %}
+        <div class="alert-toast" style="margin-top:1rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Main Content -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Slide-Over Cart Drawer -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3 class="gold-text" style="font-size:1.1rem; font-weight:900; letter-spacing:0.08em; text-transform:uppercase;">{{ t.shopping_bag }}</h3>
+      <button id="cartClose" class="btn btn-dark btn-sm">✕ Close</button>
+    </div>
+    <div class="cart-body">
+      {% if request.session.cart %}
+        {% for key, item in request.session.cart.items %}
+          <div class="cart-item">
+            {% if item.image %}
+              <img src="{{ item.image }}" class="cart-item-img" alt="{{ item.title }}" loading="lazy">
+            {% else %}
+              <div class="cart-item-img" style="display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.05em;">No Image</div>
+            {% endif %}
+            <div style="flex:1; min-width:0;">
+              <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:0.2rem; line-height:1.3;">{{ item.title }}</h4>
+              <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.3rem;">Size: <strong class="gold-text">{{ item.size }}</strong></div>
+              <div style="font-weight:800; color:var(--gold-bright); font-size:0.95rem; margin-bottom:0.6rem;">{{ item.price }} MAD</div>
+              <div style="display:flex; align-items:center; gap:0.4rem;">
+                <button class="btn btn-dark btn-sm" onclick="updateCartItem('{{ key }}', 'decrease')" style="padding:0.25rem 0.6rem; font-size:0.9rem;">−</button>
+                <span style="font-size:0.9rem; font-weight:800; min-width:20px; text-align:center;">{{ item.quantity }}</span>
+                <button class="btn btn-dark btn-sm" onclick="updateCartItem('{{ key }}', 'increase')" style="padding:0.25rem 0.6rem; font-size:0.9rem;">+</button>
+                <button class="btn btn-sm" onclick="updateCartItem('{{ key }}', 'remove')" style="margin-left:auto; color:var(--danger, #EF4444); background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); padding:0.25rem 0.65rem; font-size:0.72rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;">Remove</button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div style="text-align:center; padding:4rem 1rem; color:var(--text-muted);">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 1rem; opacity:0.4;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <p style="font-size:0.9rem; margin-bottom:1.25rem;">Your shopping bag is currently empty.</p>
+          <a href="{% url 'store:home' %}" class="btn btn-outline-gold btn-sm">{{ t.explore_shop }}</a>
+        </div>
+      {% endif %}
+    </div>
+    {% if request.session.cart %}
+      <div class="cart-footer">
+        <a href="{% url 'store:checkout' %}" class="btn btn-gold" style="width:100%; justify-content:center; padding:0.9rem; font-size:0.88rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase;">
+          {{ t.complete_order }} →
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:1rem;">
+          <span class="gold-text" style="font-family:'Outfit', sans-serif; font-size:1.4rem; font-weight:900; letter-spacing:0.12em;">O-SHOP</span>
+        </div>
+        <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.7; margin-bottom:1rem; max-width:320px;">{{ t.hero_desc }}</p>
+        <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.9;">
+          <div><strong style="color:#CBD5E1;">{{ t.location_label }}:</strong> Hay Anas, Safi, Morocco</div>
+          <div><strong style="color:#CBD5E1;">Express Delivery:</strong> {{ t.express_delivery }}</div>
+        </div>
+      </div>
+      <div>
+        <h4 class="gold-text" style="margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase;">Instagram Community</h4>
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.9rem; line-height:1.6;">Join 59.5K+ fashion enthusiasts on our page.</p>
+        <a href="https://instagram.com/oth_oshop07" target="_blank" rel="noopener" class="btn btn-outline-gold btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          @oth_oshop07
+        </a>
+      </div>
+      <div>
+        <h4 class="gold-text" style="margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase;">{{ t.customer_services }}</h4>
+        <ul style="list-style:none; font-size:0.84rem; color:var(--text-muted); display:flex; flex-direction:column; gap:0.6rem; line-height:1.5;">
+          <li>✓ WhatsApp Direct Order Support</li>
+          <li>✓ Cash on Delivery (COD) Nationwide</li>
+          <li>✓ Free Size Exchange Service</li>
+          <li>✓ 100% Premium Quality Guaranteed</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>{{ t.rights_reserved }}</span>
+      <div style="display:flex; gap:0.75rem;">
+        <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
+        <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}">FR</a>
+        <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="font-family:sans-serif;">العربية</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/cart.js' %}"></script>
+  <script>
+    // Mobile Drawer & Search Toggles
+    const menuBtn = document.getElementById('toggleMobileMenu');
+    const menuContainer = document.getElementById('mobileMenuContainer');
+    const searchBtn = document.getElementById('toggleMobileSearch');
+    const searchContainer = document.getElementById('mobileSearchContainer');
+    const burgerSvg = document.getElementById('burgerSvg');
+    const closeSvg = document.getElementById('closeSvg');
+
+    if (menuBtn) {
+      menuBtn.addEventListener('click', function() {
+        const isOpen = menuContainer.classList.toggle('is-active');
+        burgerSvg.style.display = isOpen ? 'none' : 'block';
+        closeSvg.style.display = isOpen ? 'block' : 'none';
+        menuBtn.classList.toggle('active', isOpen);
+        if (isOpen && searchContainer) {
+          searchContainer.classList.remove('is-active');
+          searchBtn.classList.remove('active');
+        }
+      });
+    }
+
+    if (searchBtn) {
+      searchBtn.addEventListener('click', function() {
+        const isOpen = searchContainer.classList.toggle('is-active');
+        searchBtn.classList.toggle('active', isOpen);
+        if (isOpen) {
+          if (menuContainer) {
+            menuContainer.classList.remove('is-active');
+            burgerSvg.style.display = 'block';
+            closeSvg.style.display = 'none';
+            menuBtn.classList.remove('active');
+          }
+          const inp = searchContainer.querySelector('input');
+          if (inp) setTimeout(() => inp.focus(), 100);
+        }
+      });
+    }
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

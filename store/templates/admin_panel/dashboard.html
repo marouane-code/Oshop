@@ -1,0 +1,242 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block title %}{{ t.admin_dashboard_title }} — O-SHOP Admin Portal{% endblock %}
+
+{% block workspace_header %}
+  <span>{{ t.sales_telemetry }}</span>
+  <span>/</span>
+  <span class="active-crumb">{{ t.admin_dashboard_title }}</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Title & Time Filter Ribbon -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1.25rem;">
+  <div>
+    <h1 style="font-size:1.9rem; font-weight:800;">{{ t.admin_dashboard_title }} & {{ t.sales_telemetry }}</h1>
+    <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">{{ t.hero_desc }}</p>
+  </div>
+
+  <!-- Time Filter Tabs -->
+  <div style="display:flex; gap:0.35rem; background:var(--admin-bg-surface); padding:0.3rem; border-radius:var(--radius-xs); border:1px solid var(--admin-border-subtle);">
+    <a href="?filter=all" class="btn {% if time_filter == 'all' %}btn-gold{% else %}btn-dark{% endif %}" style="font-size:0.72rem; padding:0.4rem 0.85rem; font-weight:800;">{{ t.all_time }}</a>
+    <a href="?filter=today" class="btn {% if time_filter == 'today' %}btn-gold{% else %}btn-dark{% endif %}" style="font-size:0.72rem; padding:0.4rem 0.85rem; font-weight:800;">{{ t.today }}</a>
+    <a href="?filter=week" class="btn {% if time_filter == 'week' %}btn-gold{% else %}btn-dark{% endif %}" style="font-size:0.72rem; padding:0.4rem 0.85rem; font-weight:800;">{{ t.this_week }}</a>
+    <a href="?filter=month" class="btn {% if time_filter == 'month' %}btn-gold{% else %}btn-dark{% endif %}" style="font-size:0.72rem; padding:0.4rem 0.85rem; font-weight:800;">{{ t.this_month }}</a>
+  </div>
+</div>
+
+<!-- KPI Cards Grid -->
+<div class="admin-kpi-grid">
+  
+  <!-- 1. Total Revenue Card -->
+  <div class="admin-kpi-card" style="border-color:var(--admin-border-gold);">
+    <div class="admin-kpi-header">
+      <span class="admin-kpi-label" style="color:var(--gold-bright);">{{ t.total_revenue }}</span>
+      <div class="admin-kpi-icon" style="background:rgba(255,215,0,0.12); color:var(--gold-bright);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+    </div>
+    <div class="admin-kpi-val gold-text">
+      {{ total_revenue }} <span style="font-size:1.1rem; font-weight:700;">MAD</span>
+    </div>
+    <div class="admin-kpi-sub">{{ t.selected_highlights }}: <strong>{{ time_filter|title }}</strong></div>
+  </div>
+
+  <!-- 2. Total Orders -->
+  <div class="admin-kpi-card">
+    <div class="admin-kpi-header">
+      <span class="admin-kpi-label">{{ t.total_orders }}</span>
+      <div class="admin-kpi-icon" style="background:rgba(59,130,246,0.12); color:var(--blue-accent);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </div>
+    </div>
+    <div class="admin-kpi-val">
+      {{ total_orders }}
+    </div>
+    <div class="admin-kpi-sub">{{ t.orders_sales }}</div>
+  </div>
+
+  <!-- 3. Units Dispatched -->
+  <div class="admin-kpi-card">
+    <div class="admin-kpi-header">
+      <span class="admin-kpi-label">{{ t.units_dispatched }}</span>
+      <div class="admin-kpi-icon" style="background:rgba(139,92,246,0.12); color:var(--purple-accent);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+      </div>
+    </div>
+    <div class="admin-kpi-val">
+      {{ items_sold }}
+    </div>
+    <div class="admin-kpi-sub">{{ t.items_in_store }}</div>
+  </div>
+
+  <!-- 4. Low Stock Alert Card -->
+  <div class="admin-kpi-card" style="border-color:rgba(239, 68, 68, 0.4);">
+    <div class="admin-kpi-header">
+      <span class="admin-kpi-label" style="color:var(--danger-accent);">{{ t.low_stock_warnings }}</span>
+      <div class="admin-kpi-icon" style="background:rgba(239,68,68,0.12); color:var(--danger-accent);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+    </div>
+    <div class="admin-kpi-val" style="color:var(--danger-accent);">
+      {{ low_stock_items.count }}
+    </div>
+    <div class="admin-kpi-sub">{{ t.low_stock_alerts }}</div>
+  </div>
+
+</div>
+
+<!-- Chart & Stock Warning Section -->
+<div style="display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem; margin-bottom:2.5rem;">
+  
+  <!-- Sales Over Time Chart Card -->
+  <div class="admin-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+      <h3 class="gold-text" style="font-size:1.05rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:800;">
+        {{ t.sales_telemetry }}
+      </h3>
+      <span class="admin-pill-badge status-POS">{{ t.system_live }}</span>
+    </div>
+    <div style="position:relative; width:100%; height:290px;">
+      <canvas id="salesChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Low Stock Drawer -->
+  <div class="admin-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+      <h3 style="font-size:1.05rem; color:var(--danger-accent); font-weight:800; letter-spacing:0.06em; text-transform:uppercase;">
+        {{ t.low_stock_alerts }}
+      </h3>
+      <a href="{% url 'store:admin_articles' %}" style="font-size:0.75rem; color:var(--gold-bright); font-weight:700; text-transform:uppercase;">{{ t.articles_stock }} &rarr;</a>
+    </div>
+
+    {% if low_stock_items %}
+      <div style="display:flex; flex-direction:column; gap:0.75rem; max-height:280px; overflow-y:auto; padding-right:0.25rem;">
+        {% for item in low_stock_items %}
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--admin-bg-elevated); padding:0.75rem 1rem; border-radius:var(--radius-xs); font-size:0.85rem; border-left:3px solid var(--danger-accent);">
+            <div>
+              <strong style="color:var(--text-main); font-size:0.85rem; display:block;">{{ item.article.title }}</strong>
+              <span style="font-size:0.75rem; color:var(--text-secondary);">{{ t.select_size }}: <strong class="gold-text">{{ item.size }}</strong></span>
+            </div>
+            <span class="admin-pill-badge status-CANCELLED">{{ item.stock_quantity }} LEFT</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="text-align:center; padding:3.5rem 1rem; color:var(--text-muted);">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-accent)" stroke-width="2" style="margin-bottom:0.75rem;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <p style="font-size:0.85rem; color:var(--text-secondary);">All variant stocks are healthy.</p>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- Best-Selling Products Table -->
+<div class="admin-table-wrapper">
+  <div style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--admin-border-subtle); display:flex; justify-content:space-between; align-items:center;">
+    <h3 class="gold-text" style="font-size:1.05rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:800;">
+      {{ t.top_performing }}
+    </h3>
+    <a href="{% url 'store:admin_articles' %}" style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase;">{{ t.articles_stock }} &rarr;</a>
+  </div>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>{{ t.view_item }}</th>
+        <th>{{ t.units_dispatched }}</th>
+        <th>{{ t.total_payable }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for art in best_articles %}
+        <tr>
+          <td><strong style="color:var(--text-main);">{{ art.article_title }}</strong></td>
+          <td><span class="gold-text" style="font-weight:800;">{{ art.total_qty }}</span> units</td>
+          <td style="font-weight:800; color:var(--gold-bright);">{{ art.total_sales }} MAD</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3" style="text-align:center; color:var(--text-muted); padding:3rem;">No sales telemetry recorded yet.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const response = await fetch('/admin-dashboard/api/sales-chart/');
+      const data = await response.json();
+
+      const ctx = document.getElementById('salesChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              label: 'Revenue (MAD)',
+              data: data.revenue,
+              borderColor: '#FFD700',
+              backgroundColor: 'rgba(255, 215, 0, 0.08)',
+              fill: true,
+              tension: 0.35,
+              borderWidth: 3,
+              pointBackgroundColor: '#FFD700',
+              pointRadius: 4
+            },
+            {
+              label: 'Orders Count',
+              data: data.orders,
+              borderColor: '#3B82F6',
+              backgroundColor: 'transparent',
+              tension: 0.35,
+              borderWidth: 2,
+              pointBackgroundColor: '#3B82F6',
+              pointRadius: 3,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { 
+              position: 'top',
+              labels: { color: '#F8FAFC', font: { family: 'Plus Jakarta Sans', size: 12 }, boxWidth: 14 } 
+            }
+          },
+          scales: {
+            x: { 
+              grid: { color: 'rgba(255,255,255,0.05)' }, 
+              ticks: { color: '#94A3B8', font: { family: 'Plus Jakarta Sans', size: 11 } } 
+            },
+            y: { 
+              grid: { color: 'rgba(255,255,255,0.05)' }, 
+              ticks: { color: '#FFD700', font: { family: 'Plus Jakarta Sans', size: 11 } } 
+            },
+            y1: { 
+              position: 'right', 
+              grid: { drawOnChartArea: false }, 
+              ticks: { color: '#3B82F6', font: { family: 'Plus Jakarta Sans', size: 11 } } 
+            }
+          }
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} — O-SHOP Admin Portal{% endblock %}
+
+{% block workspace_header %}
+  <span>Catalog</span>
+  <span>/</span>
+  <a href="{% url 'store:admin_categories' %}" style="color:var(--text-secondary);">Categories</a>
+  <span>/</span>
+  <span class="active-crumb">{{ title }}</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header & Back Button -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1.25rem;">
+  <div>
+    <h1 style="font-size:1.9rem; font-weight:800;">{{ title }}</h1>
+    <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">Configure category title, description, and storefront banner artwork.</p>
+  </div>
+  <a href="{% url 'store:admin_categories' %}" class="btn btn-dark" style="font-size:0.75rem; padding:0.5rem 1rem;">
+    &larr; Back to Categories
+  </a>
+</div>
+
+<div class="admin-card gold-glow" style="max-width:700px; margin:0 auto;">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="form-label">Category Name *</label>
+      <input type="text" name="name" value="{{ category.name|default:'' }}" class="form-control" placeholder="e.g. Shoes, T-Shirts, Hoodies" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description (Optional)</label>
+      <textarea name="description" class="form-control" rows="3" placeholder="Category highlights...">{{ category.description|default:'' }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Category Cover Image (Optional)</label>
+      {% if category.cover_image %}
+        <div style="margin-bottom:0.75rem;">
+          <img src="{{ category.cover_image.url }}" style="width:90px; height:90px; object-fit:cover; border-radius:var(--radius-xs); border:1px solid var(--admin-border-gold);">
+        </div>
+      {% endif %}
+      <input type="file" name="cover_image" class="form-control" accept="image/*">
+    </div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:2rem; align-items:center;">
+      <a href="{% url 'store:admin_categories' %}" class="btn btn-dark" style="font-size:0.8rem;">Cancel</a>
+      <button type="submit" class="btn btn-gold" style="font-size:0.85rem; font-weight:900; padding:0.75rem 1.8rem;">Save Category</button>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}

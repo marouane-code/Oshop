@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout — O-SHOP Safi{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:1050px;">
+
+  <div style="margin-bottom:2.5rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
+    <h1 style="font-size:2.2rem; font-weight:800; letter-spacing:-0.02em;">{{ t.complete_order }}</h1>
+    <p style="color:var(--text-muted); font-size:0.9rem; letter-spacing:0.02em;">{{ t.cod_notice }}</p>
+  </div>
+
+  <form action="{% url 'store:place_order' %}" method="POST" id="checkoutForm">
+    {% csrf_token %}
+
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:3rem;">
+      
+      <!-- Left Column: Shipping & Account Details -->
+      <div>
+        
+        {% if not user.is_authenticated %}
+          <!-- Unauthenticated User Auth Block -->
+          <div style="background:var(--bg-secondary); padding:2rem; border-radius:var(--radius-md); border:1px solid var(--border-gold); margin-bottom:2rem;">
+            <div style="display:flex; border-bottom:1px solid var(--border-color); margin-bottom:1.5rem;">
+              <button type="button" id="tabRegisterBtn" class="btn btn-gold" style="flex:1; border-bottom-left-radius:0; border-bottom-right-radius:0; font-size:0.8rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;" onclick="switchAuthTab('register')">
+                {{ t.create_account }}
+              </button>
+              <button type="button" id="tabLoginBtn" class="btn btn-dark" style="flex:1; border-bottom-left-radius:0; border-bottom-right-radius:0; font-size:0.8rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;" onclick="switchAuthTab('login')">
+                {{ t.sign_in }}
+              </button>
+            </div>
+
+            <input type="hidden" name="auth_action" id="authActionInput" value="register">
+
+            <!-- Register Tab -->
+            <div id="registerTab">
+              <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">{{ t.reg_details }}</h3>
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.full_name }} *</label>
+                <input type="text" name="reg_full_name" class="form-control" placeholder="e.g. Othmane Alami" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.phone_number }} *</label>
+                <input type="tel" name="reg_phone" class="form-control" placeholder="0600000000" required>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                  <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.city }} *</label>
+                  <select name="reg_city" class="form-control" required>
+                    <option value="Safi">Safi</option>
+                    <option value="Casablanca">Casablanca</option>
+                    <option value="Rabat">Rabat</option>
+                    <option value="Marrakech">Marrakech</option>
+                    <option value="Tangier">Tangier</option>
+                    <option value="Agadir">Agadir</option>
+                    <option value="Fes">Fes</option>
+                    <option value="Meknes">Meknes</option>
+                    <option value="Other">Other City in Morocco</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.email_address }} *</label>
+                  <input type="email" name="reg_email" class="form-control" placeholder="client@gmail.com" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.shipping_address }} *</label>
+                <textarea name="reg_address" class="form-control" rows="2" placeholder="Street, Neighborhood, House/Apt No." required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.password }} *</label>
+                <input type="password" name="reg_password" class="form-control" placeholder="Minimum 6 characters" required>
+              </div>
+            </div>
+
+            <!-- Login Tab -->
+            <div id="loginTab" style="display:none;">
+              <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">{{ t.sign_in }}</h3>
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.email_address }} / Username *</label>
+                <input type="text" name="login_username" id="loginUsername" class="form-control" placeholder="Your registered email">
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.password }} *</label>
+                <input type="password" name="login_password" id="loginPassword" class="form-control" placeholder="Your password">
+              </div>
+            </div>
+
+          </div>
+
+        {% else %}
+          <!-- Authenticated User Details -->
+          <div style="background:var(--bg-secondary); padding:2rem; border-radius:var(--radius-md); border:1px solid var(--border-color); margin-bottom:2rem;">
+            <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">{{ t.delivery_details }}</h3>
+            
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.25rem; background:var(--bg-elevated); padding:0.75rem 1rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              Logged in as: <strong>{{ user.first_name|default:user.username }}</strong> ({{ user.email }})
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.full_name }} *</label>
+              <input type="text" name="full_name" value="{{ user_profile.full_name|default:user.first_name }}" class="form-control" required>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.phone_number }} *</label>
+                <input type="tel" name="phone" value="{{ user_profile.phone|default:'' }}" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.city }} *</label>
+                <input type="text" name="city" value="{{ user_profile.city|default:'Safi' }}" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.shipping_address }} *</label>
+              <textarea name="address" class="form-control" rows="3" required>{{ user_profile.address|default:'' }}</textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">Special Delivery Instructions (Optional)</label>
+              <input type="text" name="notes" class="form-control" placeholder="e.g. Call before delivery">
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+
+      <!-- Right Column: Order Summary & Checkout -->
+      <div>
+        <div style="background:var(--bg-secondary); padding:2rem; border-radius:var(--radius-md); border:1px solid var(--border-gold); position:sticky; top:100px;">
+          <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">
+            {{ t.order_summary }}
+          </h3>
+
+          <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:1.5rem; max-height:280px; overflow-y:auto;">
+            {% for item in cart_items %}
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.875rem;">
+                <div>
+                  <div style="font-weight:600;">{{ item.quantity }}x {{ item.article.title }}</div>
+                  <div style="font-size:0.75rem; color:var(--text-muted);">Size: {{ item.size }}</div>
+                </div>
+                <div style="font-weight:700; color:var(--gold-bright);">{{ item.subtotal }} MAD</div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div style="border-top:1px dashed var(--border-color); padding-top:1rem; margin-bottom:1.5rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-size:0.85rem;">
+              <span style="color:var(--text-muted);">{{ t.subtotal }}:</span>
+              <span>{{ total_price }} MAD</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-size:0.85rem;">
+              <span style="color:var(--text-muted);">{{ t.shipping }}:</span>
+              <span class="gold-text">{{ t.calculated_dispatch }}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:1rem; font-size:1.25rem; font-weight:900;">
+              <span>{{ t.total_payable }}:</span>
+              <span class="gold-text">{{ total_price }} MAD</span>
+            </div>
+          </div>
+
+          <div style="background:var(--bg-elevated); padding:1rem; border-radius:var(--radius-sm); border:1px solid var(--border-color); margin-bottom:1.5rem;">
+            <div style="font-size:0.8rem; font-weight:800; color:var(--gold-bright); margin-bottom:0.25rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.payment_method }}</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">{{ t.cod_text }}</div>
+          </div>
+
+          <button type="submit" class="btn btn-gold" style="width:100%; padding:1rem; font-size:0.9rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase;">
+            {{ t.confirm_order }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+</div>
+
+<script>
+  function switchAuthTab(tab) {
+    const regTab = document.getElementById('registerTab');
+    const loginTab = document.getElementById('loginTab');
+    const regBtn = document.getElementById('tabRegisterBtn');
+    const loginBtn = document.getElementById('tabLoginBtn');
+    const authInput = document.getElementById('authActionInput');
+
+    if (tab === 'register') {
+      regTab.style.display = 'block';
+      loginTab.style.display = 'none';
+      regBtn.className = 'btn btn-gold';
+      loginBtn.className = 'btn btn-dark';
+      authInput.value = 'register';
+      
+      // Toggle required attrs
+      document.querySelector('[name=reg_full_name]').required = true;
+      document.querySelector('[name=reg_phone]').required = true;
+      document.querySelector('[name=reg_email]').required = true;
+      document.querySelector('[name=reg_address]').required = true;
+      document.querySelector('[name=reg_password]').required = true;
+      
+      document.getElementById('loginUsername').required = false;
+      document.getElementById('loginPassword').required = false;
+    } else {
+      regTab.style.display = 'none';
+      loginTab.style.display = 'block';
+      regBtn.className = 'btn btn-dark';
+      loginBtn.className = 'btn btn-gold';
+      authInput.value = 'login';
+      
+      document.querySelector('[name=reg_full_name]').required = false;
+      document.querySelector('[name=reg_phone]').required = false;
+      document.querySelector('[name=reg_email]').required = false;
+      document.querySelector('[name=reg_address]').required = false;
+      document.querySelector('[name=reg_password]').required = false;
+
+      document.getElementById('loginUsername').required = true;
+      document.getElementById('loginPassword').required = true;
+    }
+  }
+</script>
+{% endblock %}

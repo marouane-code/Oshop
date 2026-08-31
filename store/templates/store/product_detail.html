@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ article.title }} — O-SHOP Safi{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Breadcrumb -->
+  <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:2rem; letter-spacing:0.05em; text-transform:uppercase;">
+    <a href="{% url 'store:home' %}">Home</a> &nbsp;/&nbsp; 
+    <a href="{% url 'store:home' %}?category={{ article.category.slug }}">{{ article.category.name }}</a> &nbsp;/&nbsp; 
+    <span class="gold-text" style="font-weight:700;">{{ article.title }}</span>
+  </div>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:3.5rem; margin-bottom:5rem;">
+    
+    <!-- Product Images Gallery -->
+    <div>
+      <div style="width:100%; aspect-ratio:4/5; background:var(--bg-secondary); border-radius:var(--radius-md); border:1px solid var(--border-gold); overflow:hidden; margin-bottom:1rem;">
+        {% if article.primary_image %}
+          <img id="mainProductImg" src="{{ article.primary_image }}" alt="{{ article.title }}" style="width:100%; height:100%; object-fit:cover;">
+        {% else %}
+          <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase;">No Image Available</div>
+        {% endif %}
+      </div>
+
+      <!-- Thumbnail Selector -->
+      {% if article.images.all.count > 1 %}
+        <div style="display:flex; gap:0.75rem; overflow-x:auto; padding-bottom:0.5rem;">
+          {% for img in article.images.all %}
+            <img src="{{ img.image.url }}" onclick="document.getElementById('mainProductImg').src='{{ img.image.url }}'" style="width:70px; height:85px; object-fit:cover; border-radius:var(--radius-sm); border:1px solid var(--border-color); cursor:pointer;" class="thumb-option">
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Article Info & Size Picker -->
+    <div style="display:flex; flex-direction:column; justify-content:center;">
+      <span style="font-size:0.75rem; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.15em; font-weight:800;">
+        {{ article.category.name }}
+      </span>
+
+      <h1 style="font-size:2.5rem; margin-top:0.3rem; margin-bottom:0.75rem; line-height:1.15; font-weight:800; letter-spacing:-0.02em;">
+        {{ article.title }}
+      </h1>
+
+      <div style="font-size:2.2rem; font-weight:900; color:var(--gold-bright); margin-bottom:1.75rem;">
+        {{ article.price }} MAD
+      </div>
+
+      <!-- Select Size -->
+      <div style="margin-bottom:2rem;">
+        <label class="form-label" style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase;">
+          <span>{{ t.select_size }}</span>
+          <span id="selectedSizeLabel" class="gold-text" style="font-weight:800;">{{ t.please_choose }}</span>
+        </label>
+        
+        <div style="display:flex; flex-wrap:wrap; gap:0.6rem;">
+          {% for sz in article.sizes.all %}
+            <button 
+              type="button"
+              class="btn size-select-btn {% if sz.stock_quantity > 0 %}btn-dark{% else %}btn-dark{% endif %}"
+              style="padding:0.65rem 1.25rem; min-width:65px; border-radius:var(--radius-sm); font-weight:700; {% if sz.stock_quantity == 0 %}opacity:0.35; cursor:not-allowed;{% endif %}"
+              data-size="{{ sz.size }}"
+              data-stock="{{ sz.stock_quantity }}"
+              {% if sz.stock_quantity == 0 %}disabled{% endif %}
+              onclick="selectProductSize(this)"
+            >
+              {{ sz.size }}
+              {% if sz.stock_quantity > 0 %}
+                <span style="font-size:0.65rem; color:var(--gold-bright); display:block; margin-top:2px;">{{ sz.stock_quantity }} LEFT</span>
+              {% else %}
+                <span style="font-size:0.65rem; color:var(--status-cancelled); display:block; margin-top:2px;">SOLD OUT</span>
+              {% endif %}
+            </button>
+          {% empty %}
+            <button type="button" class="btn btn-gold size-select-btn" data-size="One Size" data-stock="10" onclick="selectProductSize(this)" style="font-size:0.85rem; letter-spacing:0.05em;">
+              ONE SIZE FITS ALL
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Quantity Picker -->
+      <div style="display:flex; align-items:center; gap:1.25rem; margin-bottom:2.25rem;">
+        <label class="form-label" style="margin:0; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.quantity }}</label>
+        <div style="display:flex; align-items:center; gap:0.5rem; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.25rem 0.6rem;">
+          <button class="btn btn-dark" style="padding:0.2rem 0.6rem; font-weight:700;" onclick="adjustQty(-1)">-</button>
+          <input type="number" id="itemQtyInput" value="1" min="1" max="10" style="width:45px; text-align:center; background:transparent; border:none; color:white; font-weight:800; font-size:1rem;">
+          <button class="btn btn-dark" style="padding:0.2rem 0.6rem; font-weight:700;" onclick="adjustQty(1)">+</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <button id="addCartBtn" class="btn btn-gold" style="flex:1; padding:1rem 1.75rem; font-size:0.9rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase;" onclick="triggerAddCart()">
+          {{ t.add_to_bag }}
+        </button>
+      </div>
+
+      <!-- Description -->
+      {% if article.description %}
+        <div style="margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--border-color);">
+          <h3 style="font-size:0.9rem; margin-bottom:0.75rem; color:var(--gold-bright); letter-spacing:0.1em; text-transform:uppercase; font-weight:800;">{{ t.product_spec }}</h3>
+          <p style="color:var(--text-muted); white-space:pre-line; font-size:0.925rem; line-height:1.7;">{{ article.description }}</p>
+        </div>
+      {% endif %}
+
+      <!-- Store Delivery Guarantee Badge -->
+      <div style="margin-top:2rem; background:var(--bg-secondary); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-gold); display:flex; gap:1.25rem; align-items:center;">
+        <div style="flex:1; font-size:0.85rem; color:var(--text-muted); line-height:1.6;">
+          <strong style="color:var(--gold-bright); font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase; display:block; margin-bottom:0.2rem;">{{ t.express_delivery }}</strong>
+          {{ t.express_desc }}
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Related Articles -->
+  {% if related_articles %}
+    <section style="margin-top:5rem; padding-top:2.5rem; border-top:1px solid var(--border-color);">
+      <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:1.75rem; letter-spacing:-0.01em;">{{ t.complementary }}</h2>
+      <div class="grid-products">
+        {% for rel in related_articles %}
+          <div class="product-card">
+            <a href="{% url 'store:product_detail' rel.slug %}" class="product-thumb">
+              {% if rel.primary_image %}
+                <img src="{{ rel.primary_image }}" alt="{{ rel.title }}">
+              {% endif %}
+            </a>
+            <div class="product-info">
+              <a href="{% url 'store:product_detail' rel.slug %}" class="product-title">{{ rel.title }}</a>
+              <div class="product-price">{{ rel.price }} MAD</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+</div>
+
+<script>
+  let selectedSize = null;
+
+  function selectProductSize(btn) {
+    document.querySelectorAll('.size-select-btn').forEach(b => {
+      b.classList.remove('btn-gold');
+      b.classList.add('btn-dark');
+    });
+    btn.classList.remove('btn-dark');
+    btn.classList.add('btn-gold');
+    selectedSize = btn.getAttribute('data-size');
+    document.getElementById('selectedSizeLabel').textContent = selectedSize;
+  }
+
+  function adjustQty(amount) {
+    const input = document.getElementById('itemQtyInput');
+    let val = parseInt(input.value) + amount;
+    if (val < 1) val = 1;
+    input.value = val;
+  }
+
+  function triggerAddCart() {
+    if (!selectedSize) {
+      alert("Please select your size first.");
+      return;
+    }
+    const qty = parseInt(document.getElementById('itemQtyInput').value) || 1;
+    window.addToCart({{ article.id }}, selectedSize, qty);
+  }
+</script>
+{% endblock %}

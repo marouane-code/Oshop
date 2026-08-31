@@ -1,0 +1,81 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block title %}Category Management — O-SHOP Admin Portal{% endblock %}
+
+{% block workspace_header %}
+  <span>Catalog</span>
+  <span>/</span>
+  <span class="active-crumb">Categories</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header & CTA -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1.25rem;">
+  <div>
+    <h1 style="font-size:1.9rem; font-weight:800;">Collection Categories</h1>
+    <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">Organize store collection categories, cover imagery, and item allocations.</p>
+  </div>
+  <a href="{% url 'store:admin_category_create' %}" class="btn btn-gold" style="font-size:0.8rem; font-weight:900; padding:0.65rem 1.35rem;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add New Category
+  </a>
+</div>
+
+<!-- SaaS Data Table -->
+<div class="admin-table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Cover Image</th>
+        <th>Category Name & URL Slug</th>
+        <th>Description</th>
+        <th>Articles Count</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cat in categories %}
+        <tr>
+          <td style="width:80px;">
+            {% if cat.cover_image %}
+              <img src="{{ cat.cover_image.url }}" style="width:54px; height:54px; object-fit:cover; border-radius:var(--radius-xs); border:1px solid var(--admin-border-gold);">
+            {% else %}
+              <div style="width:54px; height:54px; background:var(--admin-bg-elevated); border-radius:var(--radius-xs); border:1px dashed var(--admin-border-subtle); display:flex; align-items:center; justify-content:center; font-size:0.65rem; color:var(--text-muted); text-transform:uppercase; font-weight:700;">No Img</div>
+            {% endif %}
+          </td>
+          <td>
+            <strong style="font-size:0.95rem; color:var(--text-main); display:block;">{{ cat.name }}</strong>
+            <span style="font-size:0.75rem; color:var(--text-secondary); font-family:monospace;">/{{ cat.slug }}</span>
+          </td>
+          <td style="color:var(--text-secondary); font-size:0.85rem; max-width:350px;">
+            {{ cat.description|default:"No description provided."|truncatewords:18 }}
+          </td>
+          <td>
+            <span class="gold-text" style="font-weight:900; font-size:1.05rem;">{{ cat.articles_count }}</span>
+            <span style="font-size:0.78rem; color:var(--text-muted);"> catalog items</span>
+          </td>
+          <td>
+            <div style="display:flex; gap:0.4rem;">
+              <a href="{% url 'store:admin_category_edit' cat.id %}" class="btn btn-dark" style="padding:0.35rem 0.75rem; font-size:0.75rem;">
+                Edit
+              </a>
+              <a href="{% url 'store:admin_category_delete' cat.id %}" class="btn btn-dark" style="padding:0.35rem 0.75rem; font-size:0.75rem; color:var(--danger-accent);">
+                Delete
+              </a>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5" style="text-align:center; color:var(--text-muted); padding:3.5rem;">
+            No categories defined yet. Click "Add New Category" above.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
