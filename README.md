@@ -1,227 +1,293 @@
-# 👑 O-SHOP — Luxury E-Commerce & Management Platform
+# Oshop
 
-<div align="center">
+Oshop is a Django-based online store and stock-management app for a fashion or retail business. It combines a customer storefront, shopping cart, checkout flow, and an admin dashboard for managing products, categories, orders, and in-store POS sales.
 
-![Django](https://img.shields.io/badge/Django-5.0+-092E20?style=for-the-badge&logo=django&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-Supported-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![CSS3](https://img.shields.io/badge/Vanilla_CSS-Obsidian_&_Gold-D4AF37?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Active_Development-10B981?style=for-the-badge)
+This project is designed to be simple, practical, and easy to extend. The core logic lives in the `store` app, and the app uses Django's session-based cart, relational models, and a staff-only admin interface.
 
-**A high-performance, trilingual luxury streetwear e-commerce platform with a built-in Point of Sale (POS) and administrative management suite.**
+## Project overview
 
-[Quick Run Guide](#-how-to-run-the-project-step-by-step) • [Features](#-key-features) • [Architecture](#-project-structure) • [Localization](#-multi-language--rtl-support) • [Git Collaboration](#-collaborating-with-git)
+The app has three main parts:
 
----
+- Frontend storefront for customers
+- Shopping cart and checkout experience
+- Admin dashboard for stock, orders, and POS selling
 
-</div>
+At a high level:
 
-## 🚀 How to Run the Project (Step-by-Step)
+1. Customers browse products on the homepage.
+2. They can filter by category, search by keyword, and open a product detail page.
+3. Products are added to a cart stored in the user session.
+4. At checkout, the user completes an order and the server creates an `Order` plus multiple `OrderItem` records.
+5. The stock quantity for each selected size is decreased immediately.
+6. Staff users can review orders, update statuses, and process walk-in sales from the admin dashboard.
 
-Follow these exact steps to clone, configure, and launch the application on your computer:
+## Main features
 
-### 1️⃣ Clone the Repository
-```bash
-git clone https://github.com/<your-username>/oshop.git
-cd oshop
+- Product catalog with category filtering and search
+- Product detail pages with size and stock information
+- Session-based shopping cart
+- Checkout and order creation
+- User registration/login flow during checkout
+- Order tracking with statuses such as `PENDING`, `CONFIRMED`, `SHIPPED`, `DELIVERED`, and `CANCELLED`
+- Inventory management by item size
+- POS sales screen for in-store transactions
+- Dashboard summary with revenue, order count, and low-stock alerts
+- Image upload support for categories and articles
+
+## How the project works
+
+### 1. Storefront flow
+
+The storefront is handled mainly by `store/views/storefront.py` and routed through `store/urls.py`.
+
+Key routes include:
+
+- `/` -> homepage listing products and featured items
+- `/article/<slug>/` -> detailed product page
+- `/cart/` -> view cart contents
+- `/checkout/` -> order form / login / registration flow
+- `/place-order/` -> creates the order and updates stock
+- `/admin-dashboard/` -> staff admin dashboard
+- `/admin-dashboard/pos/` -> in-store sales screen
+
+The homepage loads:
+
+- all active products
+- categories
+- featured products
+- hero banner images
+
+The product list supports filtering by category and keyword search, and the logic is implemented in `home_view()`.
+
+### 2. Product and inventory model
+
+The data model is defined in `store/models.py`.
+
+Important models:
+
+- `Category`: product group
+- `Article`: a product entry with price, active status, slug, and images
+- `ArticleImage`: product gallery images
+- `ArticleSize`: each product can have multiple sizes with stock counts
+- `Order`: order header with customer data, total amount, and status
+- `OrderItem`: one row per product size in an order
+- `UserProfile`: extra customer profile data
+
+The stock system is important: each `Article` can have multiple `ArticleSize` rows. For example:
+
+- Article: "Nike Air Max"
+- Sizes: S, M, L, XL
+- Stock: 4, 10, 3, 0
+
+A cart item keeps the product ID and selected size. When an order is placed, the app checks stock and decrements the matching `ArticleSize.stock_quantity` value.
+
+### 3. Cart behavior
+
+The cart is stored in the session (`request.session['cart']`). This keeps the shopping cart available without requiring a database entry before checkout.
+
+The session cart is used in:
+
+- `get_cart()`
+- `save_cart()`
+- `add_to_cart_api()`
+- `update_cart_api()`
+
+The cart API endpoints accept JSON and return a success/error response. This is how the frontend updates the cart count and totals without full page reloads.
+
+### 4. Checkout and order creation
+
+The checkout flow is handled in:
+
+- `checkout_view()`
+- `place_order_view()`
+
+During checkout:
+
+- the app loads items from the session cart
+- validates the user state
+- allows login or account creation if needed
+- reads name, phone, address, city, and notes
+- creates an `Order`
+- creates one `OrderItem` per line item
+- calculates the total amount
+- subtracts stock from each size
+
+This is the moment where the real business logic happens: the order is saved, the stock is reduced, and the order total is finalized.
+
+### 5. Admin dashboard and inventory control
+
+The admin side lives in `store/views/admin_panel.py` and uses staff-only decorators.
+
+It includes:
+
+- `dashboard_view()` for summary metrics
+- `sales_chart_data_api()` for chart data
+- `pos_sale_view()` for in-store POS sales
+- `process_pos_sale_api()` for walk-in transaction processing
+- `orders_list_view()` for order management
+- `update_order_status_api()` for changing order statuses
+- CRUD views for categories and articles
+
+Staff members can:
+
+- view total revenue and sales trends
+- see the best-selling products
+- track low-stock items
+- update order statuses
+- sell items directly from POS
+- manage categories and articles
+
+### 6. Django project structure
+
+The main project entry points are:
+
+- `manage.py` - Django command runner
+- `oshop_project/settings.py` - project settings and database config
+- `oshop_project/urls.py` - global routing
+- `store/urls.py` - app routes
+- `store/models.py` - database models
+- `store/views/` - storefront and admin logic
+- `store/templates/` - HTML templates
+- `static/` - CSS and JS assets
+- `media/` - uploaded images
+
+## Project structure
+
+```text
+Oshop/
+├── manage.py
+├── requirements.txt
+├── seed_data.py
+├── db.sqlite3
+├── README.md
+├── media/
+├── static/
+├── oshop_project/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── store/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── context_processors.py
+│   ├── models.py
+│   ├── urls.py
+│   ├── migrations/
+│   ├── services/
+│   ├── templates/
+│   └── views/
+│       ├── __init__.py
+│       ├── admin_panel.py
+│       ├── client_profile.py
+│       └── storefront.py
+└── staticfiles/
 ```
 
----
+## Local setup
 
-### 2️⃣ Set Up Virtual Environment
+### 1. Create and activate a virtual environment
 
-<details open>
-<summary><b>🪟 On Windows (PowerShell or Command Prompt)</b></summary>
+On Windows:
 
-```powershell
-# Create virtual environment
+```bash
 python -m venv venv
-
-# Activate virtual environment
 .\venv\Scripts\activate
 ```
-*(If PowerShell gives an execution policy error, run: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` and retry activating).*
-</details>
 
-<details>
-<summary><b>🍎 On macOS / 🐧 Linux</b></summary>
+On macOS/Linux:
 
 ```bash
-# Create virtual environment
 python3 -m venv venv
-
-# Activate virtual environment
 source venv/bin/activate
 ```
-</details>
 
----
+### 2. Install dependencies
 
-### 3️⃣ Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
----
+### 3. Set environment variables
 
-### 4️⃣ Environment Configuration (`.env`)
-Create your local environment file by copying the template:
+The project loads values from a `.env` file through `python-dotenv`.
 
-**Windows (PowerShell):**
-```powershell
-Copy-Item .env.example .env
-```
+Create a `.env` file in the project root with values like:
 
-**macOS / Linux:**
-```bash
-cp .env.example .env
-```
-
-> **Note**: If you are using **SQLite** (default for local development), no changes are required in `.env`.
-> If using **MySQL**, update the credentials inside `.env`:
 ```env
+SECRET_KEY=your-secret-key
 DEBUG=True
-SECRET_KEY=your-secret-key-change-in-production
 DB_NAME=oshop_db
 DB_USER=root
-DB_PASSWORD=your_mysql_password
-DB_HOST=127.0.0.1
+DB_PASSWORD=your_password
+DB_HOST=localhost
 DB_PORT=3306
 ```
 
----
+The default settings in `oshop_project/settings.py` are configured for MySQL, but you can also adapt them for SQLite during local development if needed.
 
-### 5️⃣ Initialize Database & Seed Demo Data
-Run migrations to set up database tables, then populate the catalog with demo items:
+### 4. Apply migrations
 
 ```bash
-# 1. Apply database migrations
 python manage.py migrate
+```
 
-# 2. Seed initial categories, luxury articles, sizes, and demo images
-python manage.py shell < seed_data.py
+### 5. Create a superuser
 
-# 3. Create your Administrator account
+```bash
 python manage.py createsuperuser
 ```
-*(Follow the prompt to enter username, email, and password for admin access).*
 
----
+### 6. Seed demo data
 
-### 6️⃣ Run Development Server
+```bash
+python manage.py shell < seed_data.py
+```
+
+This script populates sample categories, products, sizes, and related content so the app is usable immediately.
+
+### 7. Run the server
+
 ```bash
 python manage.py runserver
 ```
 
-Once running, access the portals in your browser:
+Open the app in the browser:
 
-| Portal | URL | Description |
-| :--- | :--- | :--- |
-| **🛍️ Client Storefront** | [`http://127.0.0.1:8000/`](http://127.0.0.1:8000/) | Customer catalog, hero slideshow & checkout |
-| **📊 Admin Dashboard** | [`http://127.0.0.1:8000/admin-panel/dashboard/`](http://127.0.0.1:8000/admin-panel/dashboard/) | SaaS analytics, metrics & stock levels |
-| **💳 POS Terminal** | [`http://127.0.0.1:8000/admin-panel/pos/`](http://127.0.0.1:8000/admin-panel/pos/) | In-store point-of-sale checkout |
-| **📦 Order Management** | [`http://127.0.0.1:8000/admin-panel/orders/`](http://127.0.0.1:8000/admin-panel/orders/) | Status tracking (Pending → Shipped → Delivered) |
-| **⚙️ Django Admin** | [`http://127.0.0.1:8000/admin/`](http://127.0.0.1:8000/admin/) | Backend database administration |
+- Storefront: http://127.0.0.1:8000/
+- Django admin: http://127.0.0.1:8000/admin/
+- Admin dashboard: http://127.0.0.1:8000/admin-dashboard/
+- POS screen: http://127.0.0.1:8000/admin-dashboard/pos/
 
----
+## Typical workflow
 
-## ✨ Key Features
+### Customer workflow
 
-### 🛍️ Client Storefront
-- **Luxury Dark Mode Aesthetic**: High-contrast obsidian backgrounds, gold gradient accents, glassmorphic header (`backdrop-filter`), and fluid micro-animations.
-- **Dynamic Hero Banner**: Auto-shuffling interactive photo gallery showcasing active collection articles on every page load with smooth fade transitions.
-- **Responsive Mobile Navigation**: Clean sticky navigation with auto-collapsing search drawer, slide-down mobile menu, and slide-over Shopping Bag cart drawer (`100dvh` viewport safe).
-- **Product Catalog & Filtering**: Real-time category filtering, search queries, multi-size stock indicators, and instant order placement.
-- **Direct WhatsApp & COD Checkout**: Streamlined Cash-on-Delivery (COD) checkout tailored for the Moroccan market with automated WhatsApp order links.
+1. Visit the homepage.
+2. Browse products and filter by category.
+3. Open a product detail page.
+4. Choose a size and add the item to the cart.
+5. Continue to checkout.
+6. Log in or register.
+7. Submit the order.
+8. The system creates the order and updates the stock counts.
 
-### 🛡️ Admin & POS Portal
-- **Dedicated SaaS Admin Layout**: Fixed sidebar navigation with real-time sales metrics and low-stock alerts.
-- **Point of Sale (POS) Terminal**: Quick in-person walk-in order entry with dynamic item search, live total calculations, and receipt generation.
-- **Order & Inventory Management**: Track and update status orders (`Pending`, `Confirmed`, `Shipped`, `Delivered`, `Cancelled`) with stock level adjustments.
-- **Multi-Language Admin Controls**: Admin panel toggle for English, French, and Arabic.
+### Staff workflow
 
----
+1. Log in as a staff user.
+2. Open the dashboard to review revenue and stock levels.
+3. View or update orders.
+4. Open the POS screen for walk-in sales.
+5. Add product items to a sale, submit the transaction, and reduce stock.
 
-## 🌐 Multi-Language & RTL Support
+## Notes for contributors
 
-O-Shop includes built-in localization across both client storefront and admin console:
+- Keep business logic in the view layer or service layer, not directly inside templates.
+- Use Django forms when the app needs more complex validation in the future.
+- Be careful with stock updates: the product size check and decrement must happen within the same transaction for consistency.
+- Use the app's `Order` and `OrderItem` models as the source of truth for order history and reporting.
 
-| Language | Code | Direction | Support |
-| :--- | :--- | :--- | :--- |
-| **English** | `en` | LTR (`dir="ltr"`) | Full Storefront & Admin |
-| **Français** | `fr` | LTR (`dir="ltr"`) | Full Storefront & Admin |
-| **العربية (Arabic)** | `ar` | RTL (`dir="rtl"`) | Full Storefront, Admin & Mirrored Layouts |
+## License
 
-Language choice is automatically persisted across user sessions via session state.
-
----
-
-## 📂 Project Structure
-
-```
-Oshop/
-├── manage.py                   # Django management script
-├── requirements.txt            # Python dependencies
-├── seed_data.py                # Database population script
-├── .env.example                # Example environment configuration
-├── .gitignore                  # Git exclusions
-│
-├── oshop_project/              # Core Django Settings & Configuration
-│   ├── settings.py             # App configs, database routing & middleware
-│   ├── urls.py                 # Root URL router & media serving
-│   └── wsgi.py                 # WSGI entry point
-│
-├── store/                      # Main Application Module
-│   ├── models.py               # Category, Article, ArticleSize, Order, OrderItem
-│   ├── views/
-│   │   ├── storefront.py       # Catalog, product details, cart & checkout views
-│   │   └── admin_views.py      # POS, inventory management & analytics views
-│   ├── context_processors.py   # Multi-language dictionaries & cart counter
-│   ├── templates/
-│   │   ├── base.html           # Master storefront layout & navigation
-│   │   ├── store/              # Customer-facing views (home, detail, checkout)
-│   │   └── admin_panel/        # Admin portal views (dashboard, POS, orders)
-│   └── urls.py                 # Storefront & admin routing definitions
-│
-├── static/                     # Static Assets
-│   ├── css/
-│   │   ├── main.css            # Storefront design system & responsive rules
-│   │   └── admin.css           # Admin sidebar, table styles & RTL overrides
-│   └── js/
-│       └── cart.js             # Cart drawer interactions & quantity updates
-│
-└── media/                      # Uploaded product imagery
-```
-
----
-
-## 🤝 Collaborating with Git
-
-### How to push your updates:
-```bash
-git add .
-git commit -m "feat: description of your changes"
-git push origin main
-```
-
-### For your collaborator:
-1. **Pull latest changes**:
-   ```bash
-   git pull origin main
-   ```
-2. **Create a feature branch**:
-   ```bash
-   git checkout -b feature/awesome-feature
-   ```
-3. **Commit & Push branch**:
-   ```bash
-   git add .
-   git commit -m "feat: add awesome feature"
-   git push origin feature/awesome-feature
-   ```
-4. **Open a Pull Request (PR)** on GitHub to merge into `main`.
-
----
-
-## 📄 License
-This project is proprietary and built exclusively for **O-SHOP Safi, Morocco**. All rights reserved.
+This project is intended for internal or business use and can be adapted as needed. You should confirm the licensing terms before distributing or deploying it publicly.
