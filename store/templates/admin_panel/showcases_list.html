@@ -1,0 +1,169 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block title %}Featured Showcases & Outfits — O-SHOP Admin Portal{% endblock %}
+
+{% block workspace_header %}
+  <span>Catalog</span>
+  <span>/</span>
+  <span class="active-crumb">Featured Showcases & Outfits</span>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header & Add CTA -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1.25rem;">
+  <div>
+    <h1 style="font-size:1.9rem; font-weight:800;">Featured Showcases (Outfits)</h1>
+    <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">Curate themed multi-article outfit bundles that shoppers can explore, customize, and add to cart.</p>
+  </div>
+  <a href="{% url 'store:admin_showcase_create' %}" class="btn btn-gold" style="font-size:0.8rem; font-weight:900; padding:0.65rem 1.35rem;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Create New Showcase
+  </a>
+</div>
+
+<!-- Search Bar & Filters -->
+<div style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
+  <form method="GET" style="display:flex; gap:0.5rem; max-width:400px; width:100%;">
+    <input type="text" name="q" value="{{ search_query|default:'' }}" class="form-control" placeholder="Search showcases by title or description..." style="padding:0.5rem 1rem; font-size:0.85rem;">
+    <button type="submit" class="btn btn-dark" style="padding:0.5rem 1rem; font-size:0.85rem;">Search</button>
+    {% if search_query %}
+      <a href="{% url 'store:admin_showcases' %}" class="btn btn-dark" style="padding:0.5rem 0.85rem; font-size:0.85rem; color:var(--text-muted);">Reset</a>
+    {% endif %}
+  </form>
+
+  <div style="font-size:0.8rem; color:var(--text-muted);">
+    Total Showcases: <strong class="gold-text">{{ showcases.count }}</strong>
+  </div>
+</div>
+
+<!-- SaaS Data Table -->
+<div class="admin-table-wrapper">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Cover</th>
+        <th>Showcase Outfit Title</th>
+        <th>Articles in Look</th>
+        <th>Total Outfit Price</th>
+        <th>Storefront Status</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for showcase in showcases %}
+        <tr>
+          <td style="width:80px;">
+            {% if showcase.cover_image %}
+              <img src="{{ showcase.cover_image.url }}" alt="{{ showcase.title }}" style="width:58px; height:68px; object-fit:cover; border-radius:var(--radius-xs); border:1px solid var(--admin-border-gold);">
+            {% elif showcase.items.first and showcase.items.first.article.primary_image %}
+              <img src="{{ showcase.items.first.article.primary_image }}" alt="{{ showcase.title }}" style="width:58px; height:68px; object-fit:cover; border-radius:var(--radius-xs); border:1px solid var(--admin-border-subtle);">
+            {% else %}
+              <div style="width:58px; height:68px; background:var(--admin-bg-elevated); border-radius:var(--radius-xs); border:1px dashed var(--admin-border-subtle); display:flex; align-items:center; justify-content:center; font-size:0.6rem; color:var(--text-muted); text-transform:uppercase; font-weight:700; text-align:center; padding:4px;">No Cover</div>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <strong style="font-size:0.95rem; color:var(--text-main);">{{ showcase.title }}</strong>
+            </div>
+            {% if showcase.description %}
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem; max-width:320px; line-height:1.4;">{{ showcase.description|truncatechars:90 }}</p>
+            {% endif %}
+            <span style="font-size:0.7rem; color:var(--text-muted); font-family:monospace;">/showcase/{{ showcase.slug }}/</span>
+          </td>
+          <td>
+            <div style="display:flex; flex-direction:column; gap:0.35rem;">
+              <span class="admin-pill-badge status-CONFIRMED" style="width:fit-content; font-size:0.75rem; font-weight:800;">
+                {{ showcase.items_count }} ARTICLE{{ showcase.items_count|pluralize:"S" }}
+              </span>
+              <div style="display:flex; gap:4px; flex-wrap:wrap; max-width:260px;">
+                {% for it in showcase.items.all|slice:":5" %}
+                  <span style="font-size:0.7rem; background:var(--admin-bg-elevated); padding:2px 6px; border-radius:4px; border:1px solid var(--admin-border-subtle); color:var(--text-secondary);" title="{{ it.article.title }}">
+                    #{{ it.display_order }} {{ it.article.title|truncatechars:18 }}
+                  </span>
+                {% endfor %}
+              </div>
+            </div>
+          </td>
+          <td style="font-weight:900; color:var(--gold-bright); font-size:1.1rem; white-space:nowrap;">
+            {{ showcase.total_outfit_price }} MAD
+          </td>
+          <td>
+            <button 
+              type="button" 
+              onclick="toggleShowcaseStatus({{ showcase.id }}, this)" 
+              class="btn btn-dark" 
+              style="padding:0.3rem 0.75rem; font-size:0.75rem; border-radius:50px; cursor:pointer;"
+            >
+              {% if showcase.is_active %}
+                <span class="admin-pill-badge status-DELIVERED" style="padding:0; background:transparent;">Active</span>
+              {% else %}
+                <span class="admin-pill-badge status-CANCELLED" style="padding:0; background:transparent;">Inactive</span>
+              {% endif %}
+            </button>
+          </td>
+          <td style="font-size:0.78rem; color:var(--text-muted); white-space:nowrap;">
+            {{ showcase.created_at|date:"M d, Y" }}
+          </td>
+          <td>
+            <div style="display:flex; gap:0.4rem; align-items:center;">
+              {% if showcase.is_active %}
+                <a href="{% url 'store:showcase_detail' showcase.slug %}" target="_blank" class="btn btn-dark" style="padding:0.35rem 0.65rem; font-size:0.75rem; color:var(--gold-bright);" title="View Live Storefront Outfit">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              {% endif %}
+              <a href="{% url 'store:admin_showcase_edit' showcase.id %}" class="btn btn-dark" style="padding:0.35rem 0.75rem; font-size:0.75rem;">
+                Edit
+              </a>
+              <a href="{% url 'store:admin_showcase_delete' showcase.id %}" class="btn btn-dark" style="padding:0.35rem 0.75rem; font-size:0.75rem; color:var(--danger-accent);">
+                Delete
+              </a>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" style="text-align:center; color:var(--text-muted); padding:4rem 1.5rem;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 1rem; opacity:0.35;"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            <h3 style="font-size:1.1rem; color:var(--text-main); margin-bottom:0.5rem;">No Featured Showcases Yet</h3>
+            <p style="font-size:0.85rem; max-width:400px; margin:0 auto 1.5rem;">Assemble your first luxury outfit by pairing complementary jackets, tees, trousers, sneakers, and accessories.</p>
+            <a href="{% url 'store:admin_showcase_create' %}" class="btn btn-gold" style="font-size:0.8rem; font-weight:800; padding:0.6rem 1.25rem;">
+              Create First Showcase
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  async function toggleShowcaseStatus(showcaseId, btnElement) {
+    try {
+      const response = await fetch(`/admin-dashboard/showcases/${showcaseId}/toggle-status/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        if (data.is_active) {
+          btnElement.innerHTML = '<span class="admin-pill-badge status-DELIVERED" style="padding:0; background:transparent;">Active</span>';
+        } else {
+          btnElement.innerHTML = '<span class="admin-pill-badge status-CANCELLED" style="padding:0; background:transparent;">Inactive</span>';
+        }
+      } else {
+        alert(data.message || 'Could not toggle status.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error updating status.');
+    }
+  }
+</script>
+
+{% endblock %}

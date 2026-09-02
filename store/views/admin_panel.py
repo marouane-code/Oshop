@@ -8,7 +8,7 @@ from django.utils import timezone
 from datetime import timedelta
 import json
 
-from ..models import Category, Article, ArticleImage, ArticleSize, Order, OrderItem
+from ..models import Category, Article, ArticleImage, ArticleSize, Order, OrderItem, FeaturedShowcase, FeaturedShowcaseItem
 
 @staff_member_required
 def dashboard_view(request):
@@ -398,3 +398,159 @@ def article_delete_view(request, article_id):
         messages.success(request, f"Article '{title}' deleted.")
         return redirect('store:admin_articles')
     return render(request, 'admin_panel/confirm_delete.html', {'item_type': 'Article', 'item_name': article.title})
+
+
+# ==========================================
+# CRUD Views for Featured Showcases (Outfits)
+# ==========================================
+
+@staff_member_required
+def showcases_list_view(request):
+    search_query = request.GET.get('q', '').strip()
+    showcases = FeaturedShowcase.objects.annotate(
+        items_count=Count('items')
+    ).prefetch_related('items__article').all()
+
+    if search_query:
+        showcases = showcases.filter(title__icontains=search_query) | showcases.filter(description__icontains=search_query)
+
+    context = {
+        'showcases': showcases,
+        'search_query': search_query,
+    }
+    return render(request, 'admin_panel/showcases_list.html', context)
+
+
+@staff_member_required
+def showcase_create_view(request):
+    all_articles = Article.objects.filter(is_active=True).select_related('category').prefetch_related('images', 'sizes').order_by('category__name', 'title')
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        cover_image = request.FILES.get('cover_image')
+        is_active = request.POST.get('is_active') == 'on'
+
+        if not title:
+            messages.error(request, "Showcase title is required.")
+        else:
+            with transaction.atomic():
+                showcase = FeaturedShowcase.objects.create(
+                    title=title,
+                    description=description,
+                    cover_image=cover_image,
+                    is_active=is_active
+                )
+
+                # Process attached articles and orders
+                article_ids = request.POST.getlist('article_ids')
+                display_orders = request.POST.getlist('display_orders')
+
+                added_articles = set()
+                for idx, art_id in enumerate(article_ids):
+                    if art_id and art_id not in added_articles:
+                        try:
+                            article = Article.objects.get(id=art_id)
+                            order_val = int(display_orders[idx]) if idx < len(display_orders) and display_orders[idx].isdigit() else idx + 1
+                            FeaturedShowcaseItem.objects.create(
+                                showcase=showcase,
+                                article=article,
+                                display_order=order_val
+                            )
+                            added_articles.add(art_id)
+                        except Article.DoesNotExist:
+                            continue
+
+                messages.success(request, f"Featured Showcase '{showcase.title}' created with {len(added_articles)} articles.")
+                return redirect('store:admin_showcases')
+
+    context = {
+        'title': 'Create Featured Showcase',
+        'all_articles': all_articles,
+        'selected_items': [],
+    }
+    return render(request, 'admin_panel/showcase_form.html', context)
+
+
+@staff_member_required
+def showcase_edit_view(request, showcase_id):
+    showcase = get_object_or_404(FeaturedShowcase.objects.prefetch_related('items__article__images', 'items__article__category'), id=showcase_id)
+    all_articles = Article.objects.filter(is_active=True).select_related('category').prefetch_related('images', 'sizes').order_by('category__name', 'title')
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        cover_image = request.FILES.get('cover_image')
+        is_active = request.POST.get('is_active') == 'on'
+
+        if not title:
+            messages.error(request, "Showcase title is required.")
+        else:
+            with transaction.atomic():
+                showcase.title = title
+                showcase.description = description
+                showcase.is_active = is_active
+                if cover_image:
+                    showcase.cover_image = cover_image
+                showcase.save()
+
+                # Sync items
+                showcase.items.all().delete()
+                article_ids = request.POST.getlist('article_ids')
+                display_orders = request.POST.getlist('display_orders')
+
+                added_articles = set()
+                for idx, art_id in enumerate(article_ids):
+                    if art_id and art_id not in added_articles:
+                        try:
+                            article = Article.objects.get(id=art_id)
+                            order_val = int(display_orders[idx]) if idx < len(display_orders) and display_orders[idx].isdigit() else idx + 1
+                            FeaturedShowcaseItem.objects.create(
+                                showcase=showcase,
+                                article=article,
+                                display_order=order_val
+                            )
+                            added_articles.add(art_id)
+                        except Article.DoesNotExist:
+                            continue
+
+                messages.success(request, f"Showcase '{showcase.title}' updated successfully.")
+                return redirect('store:admin_showcases')
+
+    selected_items = showcase.items.select_related('article__category').prefetch_related('article__images').all()
+    context = {
+        'title': f"Edit Showcase: {showcase.title}",
+        'showcase': showcase,
+        'all_articles': all_articles,
+        'selected_items': selected_items,
+    }
+    return render(request, 'admin_panel/showcase_form.html', context)
+
+
+@staff_member_required
+def showcase_delete_view(request, showcase_id):
+    showcase = get_object_or_404(FeaturedShowcase, id=showcase_id)
+    if request.method == 'POST':
+        title = showcase.title
+        showcase.delete()
+        messages.success(request, f"Showcase '{title}' deleted.")
+        return redirect('store:admin_showcases')
+    return render(request, 'admin_panel/confirm_delete.html', {'item_type': 'Featured Showcase', 'item_name': showcase.title})
+
+
+@staff_member_required
+def toggle_showcase_status_api(request, showcase_id):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid method'}, status=405)
+    try:
+        showcase = get_object_or_404(FeaturedShowcase, id=showcase_id)
+        showcase.is_active = not showcase.is_active
+        showcase.save(update_fields=['is_active'])
+        return JsonResponse({
+            'success': True,
+            'is_active': showcase.is_active,
+            'message': f"Showcase is now {'active' if showcase.is_active else 'inactive'}."
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=400)
+

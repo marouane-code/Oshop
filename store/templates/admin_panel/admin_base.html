@@ -70,18 +70,23 @@
         <span>{{ t.articles_stock }}</span>
       </a>
 
+      <a href="{% url 'store:admin_showcases' %}" class="admin-nav-item {% if 'showcase' in url_name %}active{% endif %}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span>{{ t.showcases_label }}</span>
+      </a>
+
     </nav>
     {% endwith %}
 
     <!-- Quick Actions -->
     <div class="admin-sidebar-actions">
-      <a href="{% url 'store:admin_article_create' %}" class="btn btn-gold btn-sidebar-quick">
+      <a href="{% url 'store:admin_showcase_create' %}" class="btn btn-gold btn-sidebar-quick" style="margin-bottom:0.35rem;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        {{ t.add_showcase }}
+      </a>
+      <a href="{% url 'store:admin_article_create' %}" class="btn btn-outline-gold btn-sidebar-quick">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         {{ t.add_article }}
-      </a>
-      <a href="{% url 'store:admin_category_create' %}" class="btn btn-outline-gold btn-sidebar-quick">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        {{ t.add_category }}
       </a>
     </div>
 

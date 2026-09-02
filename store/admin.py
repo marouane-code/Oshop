@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Article, ArticleImage, ArticleSize, UserProfile, Order, OrderItem
+from .models import Category, Article, ArticleImage, ArticleSize, UserProfile, Order, OrderItem, FeaturedShowcase, FeaturedShowcaseItem
 
 class ArticleImageInline(admin.TabularInline):
     model = ArticleImage
@@ -38,3 +38,19 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ('source', 'status', 'created_at')
     search_fields = ('order_number', 'client_name', 'client_phone', 'client_city')
     inlines = [OrderItemInline]
+
+
+class FeaturedShowcaseItemInline(admin.TabularInline):
+    model = FeaturedShowcaseItem
+    extra = 1
+    raw_id_fields = ('article',)
+
+
+@admin.register(FeaturedShowcase)
+class FeaturedShowcaseAdmin(admin.ModelAdmin):
+    list_display = ('title', 'is_active', 'total_outfit_price', 'created_at')
+    list_filter = ('is_active', 'created_at')
+    search_fields = ('title', 'description')
+    prepopulated_fields = {'slug': ('title',)}
+    inlines = [FeaturedShowcaseItemInline]
+

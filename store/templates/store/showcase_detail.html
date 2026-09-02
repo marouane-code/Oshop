@@ -1,0 +1,555 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ showcase.title }} — Outfit Showcase | O-SHOP Safi{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding-bottom: 7rem;">
+
+  <!-- Breadcrumbs -->
+  <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:2rem; letter-spacing:0.05em; text-transform:uppercase; display:flex; align-items:center; gap:0.5rem;">
+    <a href="{% url 'store:home' %}" style="color:var(--text-muted);">Home</a>
+    <span>/</span>
+    <span style="color:var(--text-muted);">Showcase Outfits</span>
+    <span>/</span>
+    <span class="gold-text" style="font-weight:700;">{{ showcase.title }}</span>
+  </div>
+
+  <!-- Showcase Hero Banner -->
+  <section class="showcase-hero-card" style="
+    position: relative;
+    background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-secondary) 100%);
+    border: 1px solid var(--border-gold);
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    margin-bottom: 3.5rem;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  ">
+    <!-- Glow Orbs -->
+    <div style="position:absolute; width:350px; height:350px; background:radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 70%); top:-60px; right:-60px; pointer-events:none;"></div>
+    <div style="position:absolute; width:250px; height:250px; background:radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%); bottom:-50px; left:150px; pointer-events:none;"></div>
+
+    <div style="display:grid; grid-template-columns: 1fr {% if showcase.cover_image %}320px{% endif %}; gap:2.5rem; align-items:center; position:relative; z-index:2;">
+      <div>
+        <!-- Pill Badge -->
+        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,175,55,0.12); border:1px solid var(--border-gold); padding:0.35rem 1rem; border-radius:20px; margin-bottom:1.25rem;">
+          <span style="width:6px; height:6px; background:var(--gold-bright); border-radius:50%; box-shadow:0 0 8px var(--gold-bright); display:inline-block;"></span>
+          <span style="letter-spacing:0.12em; text-transform:uppercase; font-size:0.72rem; font-weight:800; color:var(--gold-bright);">Curated Outfit Showcase</span>
+        </div>
+
+        <h1 style="font-size:clamp(2.2rem, 4vw, 3.2rem); font-weight:900; letter-spacing:-0.02em; line-height:1.1; margin-bottom:1rem;">
+          {{ showcase.title }}
+        </h1>
+
+        {% if showcase.description %}
+          <p style="font-size:1.05rem; color:var(--text-secondary); max-width:650px; line-height:1.7; margin-bottom:1.75rem;">
+            {{ showcase.description }}
+          </p>
+        {% endif %}
+
+        <!-- Quick Summary Stats -->
+        <div style="display:flex; align-items:center; gap:2rem; flex-wrap:wrap; padding-top:1.25rem; border-top:1px solid rgba(255,255,255,0.08);">
+          <div>
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700;">Outfit Pieces</div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--text-main); margin-top:0.2rem;">
+              {{ ordered_items.count }} <span style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Articles</span>
+            </div>
+          </div>
+          <div style="width:1px; height:35px; background:rgba(255,255,255,0.08);"></div>
+          <div>
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700;">Full Outfit Value</div>
+            <div style="font-size:1.35rem; font-weight:900; color:var(--gold-bright); margin-top:0.2rem;">
+              {{ showcase.total_outfit_price }} MAD
+            </div>
+          </div>
+          <div style="width:1px; height:35px; background:rgba(255,255,255,0.08);"></div>
+          <div>
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700;">Delivery Guarantee</div>
+            <div style="font-size:0.95rem; font-weight:800; color:#10B981; margin-top:0.35rem; display:flex; align-items:center; gap:4px;">
+              ✓ Cash on Delivery (COD)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if showcase.cover_image %}
+        <div style="display:flex; justify-content:center;">
+          <img src="{{ showcase.cover_image.url }}" alt="{{ showcase.title }}" style="width:100%; max-width:320px; aspect-ratio:4/3; object-fit:cover; border-radius:14px; border:1px solid var(--border-gold); box-shadow:0 8px 30px rgba(0,0,0,0.5);">
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Showcase Controls Bar -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap:wrap; gap:1rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
+    <div>
+      <h2 style="font-size:1.5rem; font-weight:800; letter-spacing:-0.01em;">
+        Customize Your Look
+      </h2>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">
+        Pick and choose only the items and sizes you want. Selected pieces will be added directly to your bag as individual items.
+      </p>
+    </div>
+
+    <!-- Toggle All Quick Action -->
+    <div style="display:flex; gap:0.75rem;">
+      <button type="button" onclick="toggleSelectAll(true)" class="btn btn-outline-gold" style="font-size:0.78rem; padding:0.45rem 1rem; font-weight:700;">
+        {{ t.select_all }}
+      </button>
+      <button type="button" onclick="toggleSelectAll(false)" class="btn btn-dark" style="font-size:0.78rem; padding:0.45rem 1rem; font-weight:700;">
+        {{ t.deselect_all }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Articles Grid -->
+  <div class="outfit-articles-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1.75rem; margin-bottom:4rem;">
+    {% for item in ordered_items %}
+      {% with art=item.article %}
+        <div 
+          class="outfit-item-card selected" 
+          id="card-art-{{ art.id }}"
+          data-article-id="{{ art.id }}"
+          data-price="{{ art.price }}"
+          style="
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-gold);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+          "
+        >
+          <!-- Item Number Badge -->
+          <div style="position:absolute; top:12px; left:12px; z-index:4; background:rgba(8,8,16,0.85); backdrop-filter:blur(4px); border:1px solid var(--border-gold); color:var(--gold-bright); font-size:0.72rem; font-weight:900; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+            {{ item.display_order|default:forloop.counter }}
+          </div>
+
+          <!-- Selection Checkbox (Top-Right) -->
+          <div style="position:absolute; top:12px; right:12px; z-index:4;">
+            <label style="
+              display:flex; align-items:center; justify-content:center;
+              background:rgba(8,8,16,0.88); backdrop-filter:blur(4px);
+              border:1px solid var(--border-gold);
+              border-radius:8px; padding:6px 10px; cursor:pointer; gap:6px;
+              transition: all 0.2s;
+            ">
+              <input 
+                type="checkbox" 
+                class="article-select-checkbox" 
+                checked 
+                onchange="onArticleToggle({{ art.id }}, this.checked)"
+                style="accent-color: var(--gold-bright); width:16px; height:16px; cursor:pointer;"
+              >
+              <span class="checkbox-label-text" style="font-size:0.75rem; font-weight:800; color:var(--gold-bright); letter-spacing:0.04em;">INCLUDE</span>
+            </label>
+          </div>
+
+          <!-- Product Thumbnail -->
+          <a href="{% url 'store:product_detail' art.slug %}" target="_blank" class="card-thumb-link" style="display:block; width:100%; aspect-ratio:4/5; background:var(--bg-elevated); position:relative; overflow:hidden;">
+            {% if art.primary_image %}
+              <img src="{{ art.primary_image }}" alt="{{ art.title }}" style="width:100%; height:100%; object-fit:cover; transition:transform 0.35s ease;" class="card-art-img" loading="lazy">
+            {% else %}
+              <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.75rem; text-transform:uppercase;">No Image</div>
+            {% endif %}
+          </a>
+
+          <!-- Product Details -->
+          <div style="padding:1.25rem; display:flex; flex-direction:column; flex:1; justify-content:space-between; gap:1rem;">
+            <div>
+              <span style="font-size:0.72rem; color:var(--gold-bright); font-weight:800; text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:4px;">
+                {{ art.category.name }}
+              </span>
+              <a href="{% url 'store:product_detail' art.slug %}" target="_blank" style="font-size:1.05rem; font-weight:700; color:var(--text-main); line-height:1.3; text-decoration:none; display:block;">
+                {{ art.title }}
+              </a>
+              <div style="font-size:1.2rem; font-weight:900; color:var(--gold-bright); margin-top:0.5rem;">
+                {{ art.price }} MAD
+              </div>
+            </div>
+
+            <!-- Size Selector -->
+            <div class="size-selection-block" style="border-top:1px solid rgba(255,255,255,0.06); padding-top:0.85rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                <label style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin:0;">
+                  Size Variant:
+                </label>
+                <span class="selected-size-text gold-text" id="size-label-{{ art.id }}" style="font-size:0.78rem; font-weight:800;">
+                  {% if art.sizes.all|length == 1 and art.sizes.first.stock_quantity > 0 %}
+                    {{ art.sizes.first.size }}
+                  {% else %}
+                    Choose Size
+                  {% endif %}
+                </span>
+              </div>
+
+              <!-- Size Buttons Grid -->
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                {% for sz in art.sizes.all %}
+                  <button 
+                    type="button"
+                    class="btn size-pill-btn {% if sz.stock_quantity == 0 %}disabled-size{% endif %}"
+                    id="btn-sz-{{ art.id }}-{{ sz.size|slugify }}"
+                    data-article-id="{{ art.id }}"
+                    data-size="{{ sz.size }}"
+                    data-stock="{{ sz.stock_quantity }}"
+                    {% if sz.stock_quantity == 0 %}disabled{% endif %}
+                    onclick="selectCardSize({{ art.id }}, '{{ sz.size }}', this)"
+                    style="
+                      padding: 0.4rem 0.65rem;
+                      font-size: 0.78rem;
+                      font-weight: 700;
+                      border-radius: 8px;
+                      background: var(--bg-elevated);
+                      border: 1px solid var(--border-subtle);
+                      color: var(--text-main);
+                      cursor: pointer;
+                      transition: all 0.2s;
+                      {% if sz.stock_quantity == 0 %}opacity:0.35; cursor:not-allowed; text-decoration:line-through;{% endif %}
+                    "
+                    title="{% if sz.stock_quantity > 0 %}{{ sz.stock_quantity }} items left{% else %}Out of stock{% endif %}"
+                  >
+                    {{ sz.size }}
+                    {% if sz.stock_quantity > 0 and sz.stock_quantity <= 3 %}
+                      <span style="font-size:0.6rem; color:#EF4444; display:block; margin-top:1px;">{{ sz.stock_quantity }} left</span>
+                    {% endif %}
+                  </button>
+                {% empty %}
+                  <button 
+                    type="button" 
+                    class="btn size-pill-btn active-size"
+                    data-article-id="{{ art.id }}"
+                    data-size="One Size"
+                    data-stock="10"
+                    onclick="selectCardSize({{ art.id }}, 'One Size', this)"
+                    style="padding:0.4rem 0.75rem; font-size:0.78rem; font-weight:700; border-radius:8px; background:var(--gold-gradient); color:#000; border:none;"
+                  >
+                    One Size
+                  </button>
+                {% endfor %}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      {% endwith %}
+    {% endfor %}
+  </div>
+
+  <!-- Other Outfits Recommendation -->
+  {% if other_showcases %}
+    <section style="margin-top:5rem; padding-top:3rem; border-top:1px solid var(--border-color);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.75rem;">
+        <div>
+          <span style="font-size:0.75rem; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.15em; font-weight:800;">More Curated Looks</span>
+          <h2 style="font-size:1.6rem; font-weight:800; letter-spacing:-0.01em;">Explore Other Complete Outfits</h2>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1.5rem;">
+        {% for o_show in other_showcases %}
+          <div class="product-card" style="border:1px solid var(--border-gold);">
+            <span class="badge-featured" style="letter-spacing:0.1em; font-size:0.65rem; font-weight:800;">OUTFIT LOOK</span>
+            <a href="{% url 'store:showcase_detail' o_show.slug %}" class="product-thumb">
+              {% if o_show.cover_image %}
+                <img src="{{ o_show.cover_image.url }}" alt="{{ o_show.title }}" loading="lazy">
+              {% elif o_show.items.first and o_show.items.first.article.primary_image %}
+                <img src="{{ o_show.items.first.article.primary_image }}" alt="{{ o_show.title }}" loading="lazy">
+              {% endif %}
+            </a>
+            <div class="product-info">
+              <span class="product-category" style="font-size:0.72rem; color:var(--gold-bright);">{{ o_show.items.count }} Complete Pieces</span>
+              <a href="{% url 'store:showcase_detail' o_show.slug %}" class="product-title" style="font-size:1.05rem; font-weight:700;">{{ o_show.title }}</a>
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1rem;">
+                <div class="product-price" style="font-size:1.15rem; font-weight:800;">{{ o_show.total_outfit_price }} MAD</div>
+                <a href="{% url 'store:showcase_detail' o_show.slug %}" class="btn btn-outline-gold" style="font-size:0.75rem; padding:0.45rem 0.9rem; text-transform:uppercase;">View Look</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+</div>
+
+<!-- Sticky Bottom Action Bar -->
+<div id="stickyOutfitBar" style="
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 10, 18, 0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-gold);
+  box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
+  padding: 1rem 1.5rem;
+  z-index: 500;
+  transition: transform 0.3s ease;
+">
+  <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+    
+    <!-- Left: Selected Count & Live Subtotal -->
+    <div style="display:flex; align-items:center; gap:1.5rem;">
+      <div style="display:flex; align-items:center; gap:0.6rem;">
+        <span style="width:10px; height:10px; background:var(--gold-bright); border-radius:50%; box-shadow:0 0 10px var(--gold-bright);"></span>
+        <div>
+          <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); font-weight:700;">Selection</div>
+          <div style="font-size:0.95rem; font-weight:800; color:var(--text-main);">
+            <span id="selectedCountDisplay" class="gold-text">0</span> of {{ ordered_items.count }} {{ t.items_selected }}
+          </div>
+        </div>
+      </div>
+
+      <div style="width:1px; height:32px; background:rgba(255,255,255,0.1);"></div>
+
+      <div>
+        <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); font-weight:700;">Subtotal</div>
+        <div style="font-size:1.35rem; font-weight:900; color:var(--gold-bright);">
+          <span id="subtotalDisplay">0.00</span> MAD
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Add to Cart CTA -->
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <button 
+        type="button" 
+        id="addOutfitBtn" 
+        class="btn btn-gold" 
+        onclick="addSelectedOutfitToCart()"
+        style="padding:0.85rem 2rem; font-size:0.92rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase; display:flex; align-items:center; gap:0.6rem; box-shadow:0 4px 20px rgba(212,175,55,0.35);"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span id="btnText">{{ t.add_selected_to_bag }}</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .outfit-item-card.unselected {
+    opacity: 0.45;
+    border-color: rgba(255,255,255,0.06) !important;
+    filter: grayscale(85%);
+  }
+  .outfit-item-card.unselected .card-thumb-link {
+    pointer-events: none;
+  }
+  .outfit-item-card.unselected .size-selection-block {
+    pointer-events: none;
+  }
+  .size-pill-btn.active-size {
+    background: var(--gold-gradient) !important;
+    color: #080810 !important;
+    border-color: var(--gold-bright) !important;
+    font-weight: 900 !important;
+    box-shadow: 0 2px 8px rgba(212,175,55,0.35);
+  }
+  .outfit-item-card.missing-size {
+    border-color: #EF4444 !important;
+    box-shadow: 0 0 15px rgba(239,68,68,0.4) !important;
+    animation: shake 0.35s ease;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+</style>
+
+<script>
+  // State for article selections and sizes
+  const outfitArticles = {
+    {% for item in ordered_items %}
+      {{ item.article.id }}: {
+        id: {{ item.article.id }},
+        title: "{{ item.article.title|escapejs }}",
+        price: parseFloat("{{ item.article.price }}"),
+        selected: true,
+        size: {% if item.article.sizes.all|length == 1 and item.article.sizes.first.stock_quantity > 0 %}"{{ item.article.sizes.first.size }}"{% else %}null{% endif %},
+        quantity: 1
+      },
+    {% endfor %}
+  };
+
+  // Auto-select first in-stock size if none selected
+  document.addEventListener('DOMContentLoaded', () => {
+    {% for item in ordered_items %}
+      {% if item.article.sizes.all|length == 1 and item.article.sizes.first.stock_quantity > 0 %}
+        const szBtn = document.querySelector('#card-art-{{ item.article.id }} .size-pill-btn:not([disabled])');
+        if (szBtn) szBtn.classList.add('active-size');
+      {% endif %}
+    {% endfor %}
+    updateOutfitBar();
+  });
+
+  function onArticleToggle(articleId, isChecked) {
+    if (outfitArticles[articleId]) {
+      outfitArticles[articleId].selected = isChecked;
+      const card = document.getElementById(`card-art-${articleId}`);
+      if (card) {
+        if (isChecked) {
+          card.classList.remove('unselected');
+          card.classList.add('selected');
+          card.querySelector('.checkbox-label-text').textContent = 'INCLUDE';
+        } else {
+          card.classList.add('unselected');
+          card.classList.remove('selected', 'missing-size');
+          card.querySelector('.checkbox-label-text').textContent = 'EXCLUDED';
+        }
+      }
+      updateOutfitBar();
+    }
+  }
+
+  function selectCardSize(articleId, sizeName, btnElement) {
+    if (!outfitArticles[articleId]) return;
+    outfitArticles[articleId].size = sizeName;
+
+    // Unhighlight sibling size buttons for this card
+    const card = document.getElementById(`card-art-${articleId}`);
+    if (card) {
+      card.classList.remove('missing-size');
+      card.querySelectorAll('.size-pill-btn').forEach(b => b.classList.remove('active-size'));
+      btnElement.classList.add('active-size');
+      
+      const label = document.getElementById(`size-label-${articleId}`);
+      if (label) label.textContent = sizeName;
+    }
+  }
+
+  function toggleSelectAll(selectAll) {
+    Object.keys(outfitArticles).forEach(artId => {
+      const card = document.getElementById(`card-art-${artId}`);
+      if (card) {
+        const checkbox = card.querySelector('.article-select-checkbox');
+        if (checkbox) checkbox.checked = selectAll;
+      }
+      onArticleToggle(parseInt(artId), selectAll);
+    });
+  }
+
+  function updateOutfitBar() {
+    let count = 0;
+    let subtotal = 0;
+
+    Object.values(outfitArticles).forEach(item => {
+      if (item.selected) {
+        count += 1;
+        subtotal += item.price;
+      }
+    });
+
+    const countDisp = document.getElementById('selectedCountDisplay');
+    const subtotalDisp = document.getElementById('subtotalDisplay');
+    const btn = document.getElementById('addOutfitBtn');
+
+    if (countDisp) countDisp.textContent = count;
+    if (subtotalDisp) subtotalDisp.textContent = subtotal.toFixed(2);
+
+    if (btn) {
+      if (count === 0) {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+      } else {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
+    }
+  }
+
+  async function addSelectedOutfitToCart() {
+    const selectedItems = Object.values(outfitArticles).filter(i => i.selected);
+
+    if (selectedItems.length === 0) {
+      alert("Please select at least one article from this outfit.");
+      return;
+    }
+
+    // Validate size selection for each checked item
+    let hasMissingSize = false;
+    selectedItems.forEach(item => {
+      const card = document.getElementById(`card-art-${item.id}`);
+      if (!item.size) {
+        hasMissingSize = true;
+        if (card) card.classList.add('missing-size');
+      } else {
+        if (card) card.classList.remove('missing-size');
+      }
+    });
+
+    if (hasMissingSize) {
+      alert("Please choose a size for each selected article before adding to your bag.");
+      // Scroll to first missing size
+      const firstMissing = document.querySelector('.missing-size');
+      if (firstMissing) {
+        firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    const btn = document.getElementById('addOutfitBtn');
+    const btnText = document.getElementById('btnText');
+    const originalText = btnText.textContent;
+
+    btn.disabled = true;
+    btnText.textContent = "Adding to Bag...";
+
+    try {
+      const payload = {
+        items: selectedItems.map(i => ({
+          article_id: i.id,
+          size: i.size,
+          quantity: i.quantity || 1
+        }))
+      };
+
+      const response = await fetch('/api/cart/add-showcase/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update cart count badge
+        const badges = document.querySelectorAll('.cart-badge-count');
+        badges.forEach(b => b.textContent = data.cart_count);
+
+        if (data.require_login) {
+          // Trigger the existing login/register flow with next param so items aren't lost
+          window.location.href = data.login_url;
+        } else {
+          // Open side cart drawer or refresh
+          const cartDrawer = document.getElementById('cartDrawer');
+          const cartOverlay = document.getElementById('cartOverlay');
+          if (cartDrawer && cartOverlay) {
+            location.reload();
+          } else {
+            location.reload();
+          }
+        }
+      } else {
+        alert(data.message || "Failed to add items to bag.");
+        btn.disabled = false;
+        btnText.textContent = originalText;
+      }
+    } catch (err) {
+      console.error(err);
+      alert("A network error occurred. Please try again.");
+      btn.disabled = false;
+      btnText.textContent = originalText;
+    }
+  }
+</script>
+
+{% endblock %}

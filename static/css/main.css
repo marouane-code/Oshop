@@ -103,7 +103,7 @@ h1,h2,h3,h4,h5,h6 {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 1.5rem 1.25rem;
+  padding: 1rem 0.85rem;
 }
 .main-content { flex: 1; }
 

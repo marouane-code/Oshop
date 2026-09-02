@@ -190,6 +190,64 @@
 
 
 
+  <!-- Featured Outfit Showcases (Lookbook) -->
+  {% if showcases %}
+    <section style="margin-bottom: 4.5rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; flex-wrap:wrap; gap:1rem;">
+        <div>
+          <span style="font-size:0.75rem; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.15em; font-weight:800;">{{ t.featured_showcases }}</span>
+          <h2 style="font-size:1.75rem; font-weight:800; letter-spacing: -0.01em;">{{ t.complete_the_look }}</h2>
+        </div>
+        <span style="font-size:0.82rem; color:var(--text-muted);">Curated complete outfits with per-article size & piece selection</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:2rem;">
+        {% for sc in showcases %}
+          <div class="product-card" style="border: 1px solid var(--border-gold); background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-elevated) 100%);">
+            <span class="badge-featured" style="letter-spacing: 0.12em; font-size: 0.65rem; font-weight: 900; background: var(--gold-gradient); color:#000;">OUTFIT LOOK</span>
+            <a href="{% url 'store:showcase_detail' sc.slug %}" class="product-thumb" style="aspect-ratio: 16/10;">
+              {% if sc.cover_image %}
+                <img src="{{ sc.cover_image.url }}" alt="{{ sc.title }}" loading="lazy">
+              {% elif sc.items.first and sc.items.first.article.primary_image %}
+                <img src="{{ sc.items.first.article.primary_image }}" alt="{{ sc.title }}" loading="lazy">
+              {% else %}
+                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.75rem;">No Image</div>
+              {% endif %}
+            </a>
+            <div class="product-info">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+                <span style="font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold-bright); font-weight:800;">
+                  {{ sc.items.count }} Coordinated Pieces
+                </span>
+                <span style="font-size:0.75rem; color:var(--text-muted);">
+                  Pick & Choose
+                </span>
+              </div>
+              <a href="{% url 'store:showcase_detail' sc.slug %}" class="product-title" style="font-size:1.15rem; font-weight:800; line-height:1.25;">
+                {{ sc.title }}
+              </a>
+              {% if sc.description %}
+                <p style="font-size:0.82rem; color:var(--text-muted); margin-top:0.4rem; line-height:1.5;">
+                  {{ sc.description|truncatechars:90 }}
+                </p>
+              {% endif %}
+
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1.25rem; padding-top:0.85rem; border-top:1px solid rgba(255,255,255,0.06);">
+                <div>
+                  <span style="font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; display:block;">Outfit Value</span>
+                  <div style="font-size:1.2rem; font-weight:900; color:var(--gold-bright);">{{ sc.total_outfit_price }} MAD</div>
+                </div>
+                <a href="{% url 'store:showcase_detail' sc.slug %}" class="btn btn-gold" style="font-size:0.75rem; padding:0.5rem 1.1rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:800;">
+                  Explore Outfit &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
   <!-- Featured Items Grid -->
   {% if featured_articles %}
     <section style="margin-bottom: 4rem;">

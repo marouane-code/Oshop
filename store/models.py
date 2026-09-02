@@ -179,3 +179,56 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity}x {self.article_title} (Size {self.size})"
+
+
+class FeaturedShowcase(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
+    description = models.TextField(blank=True)
+    cover_image = models.ImageField(upload_to='showcases/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Featured Showcase'
+        verbose_name_plural = 'Featured Showcases'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while FeaturedShowcase.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    @property
+    def total_outfit_price(self):
+        return sum(item.article.price for item in self.items.select_related('article').all() if item.article.is_active)
+
+    @property
+    def active_items(self):
+        return self.items.filter(article__is_active=True).select_related('article').prefetch_related('article__images', 'article__sizes', 'article__category')
+
+    def __str__(self):
+        return self.title
+
+
+class FeaturedShowcaseItem(models.Model):
+    showcase = models.ForeignKey(FeaturedShowcase, on_delete=models.CASCADE, related_name='items')
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='showcase_items')
+    display_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['display_order', 'id']
+        unique_together = ('showcase', 'article')
+        verbose_name = 'Showcase Article'
+        verbose_name_plural = 'Showcase Articles'
+
+    def __str__(self):
+        return f"{self.showcase.title} - #{self.display_order} {self.article.title}"
+

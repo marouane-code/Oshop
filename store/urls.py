@@ -7,6 +7,7 @@ urlpatterns = [
     # Storefront Routes
     path('', storefront.home_view, name='home'),
     path('article/<slug:slug>/', storefront.article_detail_view, name='product_detail'),
+    path('showcase/<slug:slug>/', storefront.showcase_detail_view, name='showcase_detail'),
     path('cart/', storefront.cart_detail_view, name='cart_detail'),
     path('checkout/', storefront.checkout_view, name='checkout'),
     path('place-order/', storefront.place_order_view, name='place_order'),
@@ -17,6 +18,7 @@ urlpatterns = [
     
     # Storefront Cart APIs
     path('api/cart/add/', storefront.add_to_cart_api, name='api_cart_add'),
+    path('api/cart/add-showcase/', storefront.add_showcase_to_cart_api, name='api_cart_add_showcase'),
     path('api/cart/update/', storefront.update_cart_api, name='api_cart_update'),
     
     # Client Profile & Orders
@@ -41,4 +43,11 @@ urlpatterns = [
     path('admin-dashboard/articles/add/', admin_panel.article_create_view, name='admin_article_create'),
     path('admin-dashboard/articles/<int:article_id>/edit/', admin_panel.article_edit_view, name='admin_article_edit'),
     path('admin-dashboard/articles/<int:article_id>/delete/', admin_panel.article_delete_view, name='admin_article_delete'),
+
+    # Admin Featured Showcase CRUD
+    path('admin-dashboard/showcases/', admin_panel.showcases_list_view, name='admin_showcases'),
+    path('admin-dashboard/showcases/add/', admin_panel.showcase_create_view, name='admin_showcase_create'),
+    path('admin-dashboard/showcases/<int:showcase_id>/edit/', admin_panel.showcase_edit_view, name='admin_showcase_edit'),
+    path('admin-dashboard/showcases/<int:showcase_id>/delete/', admin_panel.showcase_delete_view, name='admin_showcase_delete'),
+    path('admin-dashboard/showcases/<int:showcase_id>/toggle-status/', admin_panel.toggle_showcase_status_api, name='admin_showcase_toggle_status'),
 ]

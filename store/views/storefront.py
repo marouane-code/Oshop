@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.views.decorators.http import require_POST
 import json
 
-from ..models import Category, Article, ArticleSize, Order, OrderItem, UserProfile
+from ..models import Category, Article, ArticleSize, Order, OrderItem, UserProfile, FeaturedShowcase, FeaturedShowcaseItem
 
 
 def home_view(request):
@@ -24,6 +24,9 @@ def home_view(request):
         articles = articles.filter(title__icontains=search_query) | articles.filter(description__icontains=search_query)
 
     featured_articles = Article.objects.filter(is_active=True, is_featured=True).prefetch_related('images', 'sizes')[:6]
+    showcases = FeaturedShowcase.objects.filter(is_active=True).prefetch_related(
+        'items__article__images', 'items__article__sizes', 'items__article__category'
+    )[:4]
     
     # Collect all article images for the hero banner slideshow
     from ..models import ArticleImage
@@ -35,6 +38,7 @@ def home_view(request):
         'categories': categories,
         'articles': articles,
         'featured_articles': featured_articles,
+        'showcases': showcases,
         'selected_category_slug': selected_category_slug,
         'search_query': search_query,
         'hero_images': hero_images,
@@ -52,6 +56,46 @@ def article_detail_view(request, slug):
         'related_articles': related_articles,
     }
     return render(request, 'store/product_detail.html', context)
+
+
+def showcase_detail_view(request, slug):
+    if request.user.is_staff:
+        showcase = get_object_or_404(
+            FeaturedShowcase.objects.prefetch_related(
+                'items__article__images',
+                'items__article__sizes',
+                'items__article__category'
+            ),
+            slug=slug
+        )
+    else:
+        showcase = get_object_or_404(
+            FeaturedShowcase.objects.prefetch_related(
+                'items__article__images',
+                'items__article__sizes',
+                'items__article__category'
+            ),
+            slug=slug,
+            is_active=True
+        )
+
+    # Order showcase items by display_order
+    ordered_items = showcase.items.filter(
+        article__is_active=True
+    ).select_related('article__category').prefetch_related(
+        'article__images', 'article__sizes'
+    ).order_by('display_order', 'id')
+
+    # Other active showcases for recommendation
+    other_showcases = FeaturedShowcase.objects.filter(is_active=True).exclude(id=showcase.id)[:3]
+
+    context = {
+        'showcase': showcase,
+        'ordered_items': ordered_items,
+        'other_showcases': other_showcases,
+    }
+    return render(request, 'store/showcase_detail.html', context)
+
 
 
 def get_cart(request):
@@ -130,6 +174,88 @@ def add_to_cart_api(request):
         
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=400)
+
+
+@require_POST
+def add_showcase_to_cart_api(request):
+    """
+    Adds multiple articles selected from a Featured Showcase to the buyer's cart.
+    Each selected article is added as its own independent line item (not bundled).
+    Respects live Article/ArticleSize stock validation.
+    """
+    try:
+        data = json.loads(request.body)
+        items = data.get('items', [])
+
+        if not items:
+            return JsonResponse({'success': False, 'message': 'Please select at least one article from the outfit.'}, status=400)
+
+        cart = get_cart(request)
+        validated_items = []
+
+        # Step 1: Pre-validate all requested articles and sizes
+        for it in items:
+            art_id = it.get('article_id')
+            size_label = it.get('size')
+            qty = int(it.get('quantity', 1))
+            if qty < 1:
+                qty = 1
+
+            if not art_id or not size_label:
+                return JsonResponse({'success': False, 'message': 'Each selected item must have a chosen size.'}, status=400)
+
+            article = get_object_or_404(Article, id=art_id, is_active=True)
+            size_obj = ArticleSize.objects.filter(article=article, size=size_label).first()
+
+            if not size_obj:
+                return JsonResponse({'success': False, 'message': f"Size '{size_label}' is not available for {article.title}."}, status=400)
+
+            # Check available stock considering what's already in session cart
+            cart_key = f"{article.id}_{size_label}"
+            existing_in_cart = cart.get(cart_key, {}).get('quantity', 0)
+            if (existing_in_cart + qty) > size_obj.stock_quantity:
+                return JsonResponse({
+                    'success': False,
+                    'message': f"Insufficient stock for {article.title} (Size {size_label}). Available: {size_obj.stock_quantity} (already {existing_in_cart} in your bag)."
+                }, status=400)
+
+            validated_items.append((article, size_label, qty))
+
+        # Step 2: Add each validated article as its own individual line item in the cart
+        for article, size_label, qty in validated_items:
+            cart_key = f"{article.id}_{size_label}"
+            if cart_key in cart:
+                cart[cart_key]['quantity'] += qty
+            else:
+                cart[cart_key] = {
+                    'article_id': article.id,
+                    'title': article.title,
+                    'price': str(article.price),
+                    'size': size_label,
+                    'quantity': qty,
+                    'image': article.primary_image or '',
+                }
+
+        save_cart(request, cart)
+        total_cart_count = sum(item['quantity'] for item in cart.values())
+
+        # If user is not authenticated, notify client to prompt login/register flow
+        require_login = not request.user.is_authenticated
+        referer = request.META.get('HTTP_REFERER', '')
+        login_url = f"/login/?next={referer or '/checkout/'}"
+
+        return JsonResponse({
+            'success': True,
+            'cart_count': total_cart_count,
+            'added_count': len(validated_items),
+            'require_login': require_login,
+            'login_url': login_url,
+            'message': f"Added {len(validated_items)} outfit piece(s) to your bag!"
+        })
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=400)
+
 
 
 @require_POST
