@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}O-SHOP Admin Portal — Safi Morocco{% endblock %}</title>
+  <title>{% block title %}Click Shop Admin Portal — Asfi Morocco{% endblock %}</title>
+  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A0A0A' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2L2.5 15.5A2 2 0 0 0 4 19h16a2 2 0 0 0 1.5-3.5L14.2 7c.5-.5.8-1.2.8-2a3 3 0 0 0-3-3z'/></svg>">
   
   <!-- Dedicated Admin Stylesheet -->
   <link rel="stylesheet" href="{% static 'css/admin.css' %}">
@@ -13,22 +15,29 @@
 </head>
 <body class="admin-body">
 
+  <!-- Sidebar Overlay -->
+  <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
   <!-- Fixed Left Sidebar Navigation -->
-  <aside class="admin-sidebar">
+  <aside class="admin-sidebar" id="adminSidebar">
     
     <!-- Sidebar Brand -->
     <div class="admin-sidebar-brand">
       <a href="{% url 'store:admin_dashboard' %}" class="admin-brand-link">
         <div class="admin-brand-logo">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5ZM19 19C19 19.5523 18.5523 20 18 20H6C5.44772 20 5 19.5523 5 19V18H19V19Z"/>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2L2.5 15.5A2 2 0 0 0 4 19h16a2 2 0 0 0 1.5-3.5L14.2 7c.5-.5.8-1.2.8-2a3 3 0 0 0-3-3z"/>
           </svg>
         </div>
         <div class="admin-brand-info">
-          <span class="gold-text admin-brand-name">O-SHOP</span>
+          <span class="admin-brand-name" style="font-weight:900; letter-spacing:0.08em; color:#0A0A0A;">CLICK SHOP</span>
           <span class="admin-brand-tag">{{ t.admin_console }}</span>
         </div>
       </a>
+      <!-- Mobile close button -->
+      <button class="admin-sidebar-close" id="adminSidebarClose" aria-label="Close menu" style="margin-top:0.5rem;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
 
     <!-- Terminal Status Badge -->
@@ -118,6 +127,10 @@
     
     <!-- Top Utility Header -->
     <header class="admin-workspace-header">
+      <!-- Mobile Hamburger Toggle -->
+      <button class="admin-mobile-toggle" id="adminSidebarToggle" aria-label="Open menu" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      </button>
       <div class="admin-breadcrumbs">
         {% block workspace_header %}
           <span>{{ t.admin_console }}</span>
@@ -161,5 +174,41 @@
   </div>
 
   {% block extra_js %}{% endblock %}
+
+  <script>
+    // Mobile sidebar toggle
+    const sidebar    = document.getElementById('adminSidebar');
+    const overlay    = document.getElementById('adminSidebarOverlay');
+    const toggleBtn  = document.getElementById('adminSidebarToggle');
+    const closeBtn   = document.getElementById('adminSidebarClose');
+
+    function openSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.add('is-open');
+      overlay.classList.add('active');
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.remove('is-open');
+      overlay.classList.remove('active');
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+    if (closeBtn)  closeBtn.addEventListener('click', closeSidebar);
+    if (overlay)   overlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar on nav-item click (mobile)
+    if (sidebar) {
+      sidebar.querySelectorAll('.admin-nav-item').forEach(function(link) {
+        link.addEventListener('click', function() {
+          if (window.innerWidth < 992) closeSidebar();
+        });
+      });
+    }
+  </script>
 </body>
 </html>

@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Sign In / Register — O-SHOP Safi{% endblock %}
+{% block title %}Sign In / Register — Click Shop{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width: 520px; padding-top: 3rem; padding-bottom: 5rem;">
-  <div class="card" style="background: var(--bg-secondary); border: 1px solid var(--border-gold); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-glass);">
+  <div class="card" style="background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm);">
     
     <!-- Header -->
     <div style="text-align: center; margin-bottom: 2rem;">
-      <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: var(--bg-elevated); border: 1px solid var(--border-gold); margin-bottom: 1rem; color: var(--gold-bright);">
+      <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: var(--bg-secondary); border: 1.5px solid var(--border-color); margin-bottom: 1rem; color: #0A0A0A;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </div>
-      <h2 class="gold-text" style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.01em;">Account Access</h2>
+      <h2 style="font-size: 1.6rem; font-weight: 900; letter-spacing: -0.01em; color: #0A0A0A;">Account Access</h2>
       <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem;">Sign in to your client profile or manager dashboard</p>
     </div>
 
     <!-- Auth Toggle Tabs -->
-    <div style="display: flex; background: var(--bg-primary); padding: 4px; border-radius: var(--radius-md); margin-bottom: 1.8rem; border: 1px solid var(--border-color);">
+    <div style="display: flex; background: var(--bg-secondary); padding: 4px; border-radius: var(--radius-md); margin-bottom: 1.8rem; border: 1px solid var(--border-color);">
       <button type="button" id="tabLoginBtn" class="btn btn-gold" style="flex: 1; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;" onclick="switchAuthTab('login')">
         Sign In
       </button>
@@ -56,7 +56,7 @@
 
       <div style="margin-bottom: 1.25rem;">
         <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Full Name</label>
-        <input type="text" name="reg_full_name" id="regFullName" class="form-control" placeholder="e.g. Othmane Alami" style="width: 100%; padding: 0.8rem 1rem;">
+        <input type="text" name="reg_full_name" id="regFullName" class="form-control" placeholder="e.g. Hamza Mansouri" style="width: 100%; padding: 0.8rem 1rem;">
       </div>
 
       <div style="margin-bottom: 1.25rem;">

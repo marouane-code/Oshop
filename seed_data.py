@@ -1,9 +1,12 @@
 import os
+import sys
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 import django
 from datetime import timedelta
 import random
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'oshop_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'clickshop_project.settings')
 django.setup()
 
 from django.contrib.auth.models import User
@@ -11,12 +14,12 @@ from django.utils import timezone
 from store.models import Category, Article, ArticleSize, Order, OrderItem, UserProfile
 
 def seed():
-    print("🌱 Seeding O-Shop database...")
+    print("🌱 Seeding Click Shop database...")
 
     # 1. Admin Superuser
     if not User.objects.filter(username='admin').exists():
-        admin = User.objects.create_superuser('admin', 'admin@oshop.ma', 'adminpassword')
-        admin.first_name = "Oshop Store Manager"
+        admin = User.objects.create_superuser('admin', 'admin@clickshop.ma', 'adminpassword')
+        admin.first_name = "Click Shop Manager"
         admin.save()
         print("✅ Superuser created: admin / adminpassword")
     else:
@@ -27,7 +30,7 @@ def seed():
         username='client@gmail.com',
         defaults={
             'email': 'client@gmail.com',
-            'first_name': 'Othmane Alami'
+            'first_name': 'Hamza Mansouri'
         }
     )
     if created:
@@ -35,19 +38,19 @@ def seed():
         client_user.save()
         UserProfile.objects.create(
             user=client_user,
-            full_name='Othmane Alami',
+            full_name='Hamza Mansouri',
             phone='0661234567',
-            address='Hay Anas, Rue 14, N° 25',
+            address='Sanya, Rue 12, N° 4',
             city='Safi'
         )
         print("✅ Demo Client created: client@gmail.com / clientpassword")
 
     # 3. Categories
     categories_data = [
-        {'name': 'Shoes & Sneakers', 'description': 'Premium urban sneakers and luxury footwear collection.'},
-        {'name': 'T-Shirts & Tops', 'description': 'Heavyweight cotton tees and graphic streetwear tops.'},
-        {'name': 'Hoodies & Jackets', 'description': 'Oversized fleece hoodies, puffer jackets, and streetwear outerwear.'},
-        {'name': 'Pants & Cargo', 'description': 'Tactical cargo pants, relaxed jeans, and urban sweatpants.'},
+        {'name': 'Shoes & Sneakers', 'description': 'Curated urban footwear and minimalist low-profile sneakers.'},
+        {'name': 'T-Shirts & Tops', 'description': 'Heavyweight combed cotton tees and modern graphic streetwear.'},
+        {'name': 'Hoodies & Jackets', 'description': 'Oversized luxury fleece hoodies, puffers, and minimal outerwear.'},
+        {'name': 'Pants & Cargo', 'description': 'Tailored cargo trousers, relaxed denim, and modern streetwear pants.'},
     ]
 
     cats = {}
@@ -58,52 +61,52 @@ def seed():
     # 4. Articles & Sizes
     articles_data = [
         {
-            'title': 'OS Crown Luxury Gold Hoodie',
+            'title': 'Click Shop Heavyweight Monochrome Hoodie',
             'category': cats['Hoodies & Jackets'],
-            'price': 499.00,
-            'description': 'Heavyweight 450GSM cotton fleece hoodie featuring embroidered gold monogram logo on chest. Oversized drop-shoulder streetwear fit.',
+            'price': 449.00,
+            'description': '460GSM ultra-dense organic cotton fleece hoodie in clean jet black. Subtle tonal chest embroidery with modern boxy drop-shoulder silhouette.',
             'is_featured': True,
-            'sizes': [('S', 4), ('M', 8), ('L', 12), ('XL', 2)] # Low stock alert on S & XL
+            'sizes': [('S', 5), ('M', 10), ('L', 12), ('XL', 4)]
         },
         {
-            'title': 'O-Shop Urban Black Cargo Pants',
+            'title': 'Click Shop Minimalist Cargo Trousers',
             'category': cats['Pants & Cargo'],
             'price': 389.00,
-            'description': 'Multi-pocket tactical cargo trousers in deep obsidian black. Adjustable ankle toggles and gold hardware accents.',
+            'description': 'Clean-cut utilitarian cargo trousers in matte black. Concealed snap pockets and adjustable bungee hems for versatile styling.',
             'is_featured': True,
-            'sizes': [('S', 6), ('M', 10), ('L', 5), ('XL', 3)]
+            'sizes': [('S', 6), ('M', 12), ('L', 8), ('XL', 3)]
         },
         {
-            'title': 'O-Shop Monogram High-Top Sneakers',
+            'title': 'Click Shop Low-Profile Urban Sneakers',
             'category': cats['Shoes & Sneakers'],
-            'price': 699.00,
-            'description': 'Handcrafted genuine leather high-top sneakers with gold crown emblem and rubber outsole grip.',
+            'price': 649.00,
+            'description': 'Clean monochrome leather low-top sneakers with cushioned cupsole and debossed branding. Hand-stitched detailing.',
             'is_featured': True,
-            'sizes': [('40', 3), ('41', 6), ('42', 7), ('43', 2), ('44', 1)]
+            'sizes': [('40', 4), ('41', 8), ('42', 10), ('43', 6), ('44', 3)]
         },
         {
-            'title': 'Signature O-Shop Oversized Tee (White & Gold)',
+            'title': 'Click Shop Essential Heavyweight Tee',
             'category': cats['T-Shirts & Tops'],
-            'price': 249.00,
-            'description': '100% Organic combed cotton 240GSM tee with metallic champagne gold back print.',
+            'price': 229.00,
+            'description': '260GSM combed organic cotton tee in crisp optic white. Ribbed mock collar and structured relaxed fit.',
             'is_featured': True,
-            'sizes': [('S', 10), ('M', 15), ('L', 12), ('XL', 8)]
+            'sizes': [('S', 12), ('M', 20), ('L', 18), ('XL', 8)]
         },
         {
-            'title': 'Safi Streetwear Puffer Jacket',
+            'title': 'Click Shop Sanya Insulated Puffer Jacket',
             'category': cats['Hoodies & Jackets'],
-            'price': 799.00,
-            'description': 'Insulated thermal puffer jacket with detachable hood and gold-zippered pockets. Perfect for autumn & winter style.',
+            'price': 749.00,
+            'description': 'Water-repellent matte-finish puffer jacket with lightweight thermal insulation, high-stand collar, and matte hardware.',
             'is_featured': False,
-            'sizes': [('M', 4), ('L', 6), ('XL', 2)]
+            'sizes': [('M', 5), ('L', 8), ('XL', 3)]
         },
         {
-            'title': 'Obsidian Retro Runner Sneakers',
+            'title': 'Click Shop Contrast Sole Runner',
             'category': cats['Shoes & Sneakers'],
-            'price': 599.00,
-            'description': 'Retro-inspired thick sole runners with breathable mesh paneling and reflective gold accents.',
+            'price': 579.00,
+            'description': 'Contemporary aerodynamic runners featuring technical mesh and premium suede accents in black and off-white.',
             'is_featured': False,
-            'sizes': [('41', 4), ('42', 8), ('43', 5)]
+            'sizes': [('41', 5), ('42', 7), ('43', 6)]
         }
     ]
 
@@ -124,7 +127,7 @@ def seed():
             ('Youssef Benani', '0665432109', 'Casablanca', 'Bd Zerktouni, Res Al Amal'),
             ('Khadija El Mansouri', '0671122334', 'Rabat', 'Agdal, Rue Omar Ibn Khattab'),
             ('Amine Chraibi', '0659988776', 'Marrakech', 'Gueliz, Ave Mohammed V'),
-            ('Fatima Zohra', '0612345678', 'Safi', 'Hay Anas, Rue 4'),
+            ('Fatima Zohra', '0612345678', 'Safi', 'Sanya, Rue 4'),
             ('Walk-In Customer', 'N/A', 'Safi', 'In-Store Walk-In Sale')
         ]
 

@@ -1,4 +1,4 @@
-# Oshop Project Package
+# Click Shop Project Package
 import pymysql
 pymysql.install_as_MySQLdb()
 

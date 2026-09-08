@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables from .env file
 load_dotenv(BASE_DIR / '.env')
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-oshop-secret-key-super-safe-mvp-key-2026')
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-clickshop-secret-key-super-safe-fashion-boutique-2026')
 
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 't')
 
@@ -35,7 +35,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'oshop_project.urls'
+ROOT_URLCONF = 'clickshop_project.urls'
 
 TEMPLATES = [
     {
@@ -54,12 +54,12 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'oshop_project.wsgi.application'
+WSGI_APPLICATION = 'clickshop_project.wsgi.application'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'oshop_db'),
+        'NAME': os.getenv('DB_NAME', 'clickshop_db'),
         'USER': os.getenv('DB_USER', 'root'),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
         'HOST': os.getenv('DB_HOST', 'localhost'),

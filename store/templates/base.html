@@ -4,34 +4,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#080810">
-  <title>{% block title %}O-SHOP — Wear Better, Look Better | Safi, Morocco{% endblock %}</title>
-  <meta name="description" content="O-Shop luxury streetwear & fashion in Safi, Morocco. Nationwide delivery. Cash on delivery.">
+  <meta name="theme-color" content="#FFFFFF">
+  <title>{% block title %}Click Shop — Curated Fashion For Every Style | Asfi, Morocco{% endblock %}</title>
+  <meta name="description" content="Click Shop — Curated Fashion For Every Style in Asfi (Safi), Morocco. Nationwide express delivery. Paiement à la livraison partout au Maroc.">
   
+  <!-- Custom Clothes-Hanger Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A0A0A' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2L2.5 15.5A2 2 0 0 0 4 19h16a2 2 0 0 0 1.5-3.5L14.2 7c.5-.5.8-1.2.8-2a3 3 0 0 0-3-3z'/></svg>">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=3.2">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=4.0">
 
   <style>
     /* =========================================================
-       CRITICAL EMBEDDED HEADER STYLES (Guaranteed Perfect Render)
+       CLICK SHOP — Clean Monochrome Embedded Styles
        ========================================================= */
     :root {
-      --bg-primary: #080810;
-      --bg-secondary: #0E0E1A;
-      --bg-elevated: #151524;
-      --bg-glass: rgba(10, 10, 18, 0.94);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-gold: rgba(212, 175, 55, 0.35);
-      --gold-bright: #FFD700;
-      --gold-primary: #D4AF37;
-      --gold-gradient: linear-gradient(135deg, #FFE259 0%, #FFA751 100%);
-      --text-main: #F8FAFC;
-      --text-muted: #94A3B8;
-      --ig-gradient: linear-gradient(45deg, #F09433 0%, #E6683C 25%, #DC2743 50%, #CC2366 75%, #BC1888 100%);
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F8F9FA;
+      --bg-elevated: #F1F3F5;
+      --bg-glass: rgba(255, 255, 255, 0.96);
+      --border-subtle: #E5E7EB;
+      --border-dark: #111827;
+      --brand-black: #0A0A0A;
+      --text-main: #0A0A0A;
+      --text-secondary: #374151;
+      --text-muted: #6B7280;
     }
 
     body {
@@ -43,13 +44,13 @@
       overflow-x: hidden;
     }
 
-    /* ---- 1. Top Mini Bar ---- */
+    /* ---- 1. Top Announcement Bar ---- */
     .top-announcement {
-      background: #05050A;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-      padding: 6px 20px;
+      background: #0A0A0A;
+      border-bottom: 1px solid #1F2937;
+      padding: 7px 20px;
       font-size: 11px;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -61,8 +62,8 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #E2E8F0;
-      font-weight: 600;
+      color: #F3F4F6;
+      font-weight: 700;
       text-transform: uppercase;
       overflow: hidden;
       white-space: nowrap;
@@ -83,20 +84,23 @@
       flex-shrink: 0;
     }
     .top-lang-btn {
-      color: var(--text-muted);
+      color: #9CA3AF;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 11px;
       padding: 2px 6px;
       border-radius: 4px;
       transition: all 0.2s ease;
     }
-    .top-lang-btn:hover, .top-lang-btn.active {
-      color: var(--gold-bright);
-      background: rgba(212, 175, 55, 0.15);
+    .top-lang-btn:hover {
+      color: #FFFFFF;
+    }
+    .top-lang-btn.active {
+      color: #0A0A0A;
+      background: #FFFFFF;
     }
     .top-lang-divider {
-      color: var(--border-subtle);
+      color: #4B5563;
       font-size: 10px;
     }
 
@@ -126,44 +130,39 @@
     .nav-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       text-decoration: none;
       flex-shrink: 0;
     }
     .nav-logo-badge {
       width: 42px;
       height: 42px;
-      border-radius: 12px;
-      background: var(--ig-gradient);
-      padding: 2px;
-      box-shadow: 0 4px 15px rgba(220, 39, 67, 0.25);
-      flex-shrink: 0;
-    }
-    .nav-logo-badge-inner {
-      width: 100%;
-      height: 100%;
-      background: #090910;
       border-radius: 10px;
+      background: #0A0A0A;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--gold-bright);
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+    .nav-brand:hover .nav-logo-badge {
+      transform: scale(1.05);
     }
     .nav-brand-title {
       font-family: 'Outfit', sans-serif;
       font-size: 22px;
       font-weight: 900;
-      letter-spacing: 0.08em;
-      background: var(--gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.12em;
+      color: #0A0A0A;
       line-height: 1;
       margin: 0;
     }
     .nav-brand-tagline {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text-muted);
       margin-top: 3px;
@@ -178,36 +177,36 @@
     .nav-search-form-el {
       display: flex;
       align-items: center;
-      background: #121220;
-      border: 1px solid var(--border-subtle);
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--border-subtle);
       border-radius: 50px;
       padding: 4px 6px 4px 16px;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
     }
     .nav-search-form-el:focus-within {
-      border-color: var(--gold-primary);
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
-      background: #171728;
+      border-color: #0A0A0A;
+      box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.08);
+      background: #FFFFFF;
     }
     .nav-search-input-el {
       flex: 1;
       background: transparent;
       border: none;
       outline: none;
-      color: #fff;
+      color: var(--text-main);
       font-size: 13.5px;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
     .nav-search-input-el::placeholder {
-      color: #64748B;
+      color: #9CA3AF;
     }
     .nav-search-submit-btn {
       width: 34px;
       height: 34px;
-      background: var(--gold-gradient);
+      background: #0A0A0A;
       border: none;
       border-radius: 50%;
-      color: #000;
+      color: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -238,46 +237,46 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
       text-decoration: none;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
       cursor: pointer;
-      border: 1px solid transparent;
+      border: 1.5px solid transparent;
     }
     .nav-pill-gold {
-      background: var(--gold-gradient);
-      color: #080810;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+      background: #0A0A0A;
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
     }
     .nav-pill-gold:hover {
+      background: #262626;
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
     }
     .nav-pill-outline {
-      background: rgba(255, 255, 255, 0.04);
+      background: transparent;
       color: var(--text-main);
       border-color: var(--border-subtle);
     }
     .nav-pill-outline:hover {
-      background: rgba(212, 175, 55, 0.1);
-      border-color: var(--border-gold);
-      color: var(--gold-bright);
+      background: var(--bg-secondary);
+      border-color: #0A0A0A;
+      color: #0A0A0A;
     }
     .nav-cart-btn {
       position: relative;
-      background: rgba(212, 175, 55, 0.1);
-      border: 1px solid var(--border-gold);
-      color: var(--gold-bright);
+      background: #0A0A0A;
+      border: 1.5px solid #0A0A0A;
+      color: #FFFFFF;
       padding: 8px 18px;
     }
     .nav-cart-btn:hover {
-      background: var(--gold-gradient);
-      color: #000;
+      background: #262626;
+      border-color: #262626;
     }
     .nav-cart-count-badge {
       position: absolute;
       top: -5px;
       right: -5px;
-      background: var(--gold-bright);
-      color: #000;
+      background: #DC2626;
+      color: #FFFFFF;
       font-size: 10px;
       font-weight: 900;
       width: 20px;
@@ -286,13 +285,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
 
     /* ---- 3. Category Scrolling Sub-Bar ---- */
     .nav-categories-bar {
-      background: #0B0B14;
-      border-top: 1px solid rgba(255,255,255,0.04);
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-subtle);
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
@@ -304,14 +303,14 @@
       max-width: 1300px;
       margin: 0 auto;
       padding: 0 20px;
-      height: 44px;
+      height: 46px;
       display: flex;
       align-items: center;
       gap: 6px;
       white-space: nowrap;
     }
     .cat-tab {
-      padding: 5px 14px;
+      padding: 6px 14px;
       border-radius: 20px;
       font-size: 12px;
       font-weight: 700;
@@ -324,13 +323,13 @@
       flex-shrink: 0;
     }
     .cat-tab:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.05);
+      color: #0A0A0A;
+      background: var(--bg-secondary);
     }
     .cat-tab.active {
-      color: var(--gold-bright);
-      background: rgba(212, 175, 55, 0.12);
-      border-color: var(--border-gold);
+      color: #FFFFFF;
+      background: #0A0A0A;
+      border-color: #0A0A0A;
     }
 
     /* ---- 4. Mobile Controls & Drawer ---- */
@@ -343,7 +342,7 @@
       width: 40px;
       height: 40px;
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--bg-secondary);
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
       display: flex;
@@ -354,16 +353,17 @@
       transition: all 0.2s ease;
     }
     .nav-icon-action-btn:hover, .nav-icon-action-btn.active {
-      background: rgba(212, 175, 55, 0.15);
-      border-color: var(--border-gold);
-      color: var(--gold-bright);
+      background: #E5E7EB;
+      border-color: #0A0A0A;
+      color: #0A0A0A;
     }
 
     /* Collapsible Mobile Search Overlay */
     .mobile-search-panel {
       display: none;
-      background: #11111E;
+      background: #FFFFFF;
       border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
       padding: 12px 16px;
     }
     .mobile-search-panel.is-active {
@@ -373,9 +373,9 @@
     /* Collapsible Mobile Navigation Drawer */
     .mobile-menu-drawer {
       display: none;
-      background: #0B0B14;
+      background: #FFFFFF;
       border-top: 1px solid var(--border-subtle);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.1);
       max-height: 80vh;
       overflow-y: auto;
     }
@@ -384,7 +384,7 @@
     }
     .mobile-menu-section {
       padding: 12px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid #F3F4F6;
     }
     .mobile-menu-heading {
       font-size: 10px;
@@ -400,7 +400,7 @@
       gap: 12px;
       padding: 11px 12px;
       border-radius: 8px;
-      color: #E2E8F0;
+      color: var(--text-secondary);
       text-decoration: none;
       font-size: 14px;
       font-weight: 600;
@@ -408,13 +408,13 @@
       margin-bottom: 4px;
     }
     .mobile-nav-link-row:hover, .mobile-nav-link-row.active {
-      background: rgba(212, 175, 55, 0.1);
-      color: var(--gold-bright);
+      background: var(--bg-secondary);
+      color: #0A0A0A;
     }
     .mobile-nav-link-row.gold-accent {
-      background: rgba(212, 175, 55, 0.12);
-      border: 1px solid var(--border-gold);
-      color: var(--gold-bright);
+      background: #0A0A0A;
+      border: 1px solid #0A0A0A;
+      color: #FFFFFF;
     }
 
     /* Responsive Breakpoints */
@@ -425,7 +425,7 @@
       .main-nav-bar { height: 62px; padding: 0 15px; }
       .nav-brand-title { font-size: 19px; }
       .nav-brand-tagline { display: none; }
-      .top-announcement { padding: 5px 12px; font-size: 10px; }
+      .top-announcement { padding: 6px 12px; font-size: 10px; }
     }
   </style>
 
@@ -452,17 +452,15 @@
   <div class="site-nav-wrapper">
     <header class="main-nav-bar">
       
-      <!-- Brand Logo -->
+      <!-- Brand Logo: Clothes Hanger Icon + CLICK SHOP Wordmark -->
       <a href="{% url 'store:home' %}" class="nav-brand">
-        <div class="nav-logo-badge">
-          <div class="nav-logo-badge-inner">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5ZM19 19C19 19.55 18.55 20 18 20H6C5.45 20 5 19.55 5 19V18H19V19Z"/>
-            </svg>
-          </div>
+        <div class="nav-logo-badge" title="Click Shop">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2L2.5 15.5A2 2 0 0 0 4 19h16a2 2 0 0 0 1.5-3.5L14.2 7c.5-.5.8-1.2.8-2a3 3 0 0 0-3-3z"/>
+          </svg>
         </div>
         <div>
-          <h1 class="nav-brand-title">O-SHOP</h1>
+          <h1 class="nav-brand-title">CLICK SHOP</h1>
           <div class="nav-brand-tagline">{{ t.tagline }}</div>
         </div>
       </a>
@@ -526,7 +524,7 @@
 
     <!-- Mobile Slide-Down Search -->
     <div id="mobileSearchContainer" class="mobile-search-panel">
-      <form action="{% url 'store:home' %}" method="GET" class="nav-search-form-el" style="background:#090912;">
+      <form action="{% url 'store:home' %}" method="GET" class="nav-search-form-el" style="background:#F8F9FA;">
         <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="{{ t.search_placeholder }}" class="nav-search-input-el">
         <button type="submit" class="nav-search-submit-btn" aria-label="Search">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -550,7 +548,7 @@
               {{ t.account }}: {{ user.first_name|default:user.username }}
             </a>
           {% endif %}
-          <a href="{% url 'store:logout' %}" class="mobile-nav-link-row" style="color:var(--danger, #EF4444);">
+          <a href="{% url 'store:logout' %}" class="mobile-nav-link-row" style="color:var(--danger, #DC2626);">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             {{ t.logout }}
           </a>
@@ -581,9 +579,9 @@
       <div class="mobile-menu-section">
         <div class="mobile-menu-heading">Language / Langue</div>
         <div style="display:flex; gap:8px;">
-          <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1px solid var(--border-subtle); border-radius:6px;">English</a>
-          <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1px solid var(--border-subtle); border-radius:6px;">Français</a>
-          <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1px solid var(--border-subtle); border-radius:6px; font-family:sans-serif;">العربية</a>
+          <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1.5px solid var(--border-subtle); border-radius:6px; color:#0A0A0A;">English</a>
+          <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1.5px solid var(--border-subtle); border-radius:6px; color:#0A0A0A;">Français</a>
+          <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1.5px solid var(--border-subtle); border-radius:6px; color:#0A0A0A; font-family:sans-serif;">العربية</a>
         </div>
       </div>
     </div>
@@ -624,7 +622,7 @@
   <div class="cart-overlay" id="cartOverlay"></div>
   <div class="cart-drawer" id="cartDrawer">
     <div class="cart-header">
-      <h3 class="gold-text" style="font-size:1.1rem; font-weight:900; letter-spacing:0.08em; text-transform:uppercase;">{{ t.shopping_bag }}</h3>
+      <h3 style="font-size:1.1rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase; color:#0A0A0A;">{{ t.shopping_bag }}</h3>
       <button id="cartClose" class="btn btn-dark btn-sm">✕ Close</button>
     </div>
     <div class="cart-body">
@@ -637,14 +635,14 @@
               <div class="cart-item-img" style="display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.05em;">No Image</div>
             {% endif %}
             <div style="flex:1; min-width:0;">
-              <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:0.2rem; line-height:1.3;">{{ item.title }}</h4>
-              <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.3rem;">Size: <strong class="gold-text">{{ item.size }}</strong></div>
-              <div style="font-weight:800; color:var(--gold-bright); font-size:0.95rem; margin-bottom:0.6rem;">{{ item.price }} MAD</div>
+              <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:0.2rem; line-height:1.3; color:#0A0A0A;">{{ item.title }}</h4>
+              <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.3rem;">Size: <strong style="color:#0A0A0A;">{{ item.size }}</strong></div>
+              <div style="font-weight:800; color:#0A0A0A; font-size:0.95rem; margin-bottom:0.6rem;">{{ item.price }} MAD</div>
               <div style="display:flex; align-items:center; gap:0.4rem;">
                 <button class="btn btn-dark btn-sm" onclick="updateCartItem('{{ key }}', 'decrease')" style="padding:0.25rem 0.6rem; font-size:0.9rem;">−</button>
                 <span style="font-size:0.9rem; font-weight:800; min-width:20px; text-align:center;">{{ item.quantity }}</span>
                 <button class="btn btn-dark btn-sm" onclick="updateCartItem('{{ key }}', 'increase')" style="padding:0.25rem 0.6rem; font-size:0.9rem;">+</button>
-                <button class="btn btn-sm" onclick="updateCartItem('{{ key }}', 'remove')" style="margin-left:auto; color:var(--danger, #EF4444); background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); padding:0.25rem 0.65rem; font-size:0.72rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;">Remove</button>
+                <button class="btn btn-sm" onclick="updateCartItem('{{ key }}', 'remove')" style="margin-left:auto; color:var(--danger, #DC2626); background:#FEE2E2; border:1px solid #FCA5A5; padding:0.25rem 0.65rem; font-size:0.72rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;">Remove</button>
               </div>
             </div>
           </div>
@@ -653,7 +651,7 @@
         <div style="text-align:center; padding:4rem 1rem; color:var(--text-muted);">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 1rem; opacity:0.4;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <p style="font-size:0.9rem; margin-bottom:1.25rem;">Your shopping bag is currently empty.</p>
-          <a href="{% url 'store:home' %}" class="btn btn-outline-gold btn-sm">{{ t.explore_shop }}</a>
+          <a href="{% url 'store:home' %}" class="btn btn-gold btn-sm">{{ t.explore_shop }}</a>
         </div>
       {% endif %}
     </div>
@@ -666,43 +664,84 @@
     {% endif %}
   </div>
 
+  <!-- Mobile Bottom Sticky Navigation Bar -->
+  <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
+    <a href="{% url 'store:home' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'home' and not selected_category_slug %}active{% endif %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </a>
+    <button type="button" id="mobileBottomNavCategories" class="mobile-bottom-item" style="background:none; border:none; cursor:pointer;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+      <span>Browse</span>
+    </button>
+    <button type="button" class="mobile-bottom-item trigger-cart" style="background:none; border:none; cursor:pointer;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span>Bag</span>
+      <span class="mobile-bottom-badge cart-badge-count">{{ cart_count|default:0 }}</span>
+    </button>
+    {% if user.is_authenticated %}
+      {% if user.is_staff %}
+        <a href="{% url 'store:admin_dashboard' %}" class="mobile-bottom-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span>Admin</span>
+        </a>
+      {% else %}
+        <a href="{% url 'store:profile' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Account</span>
+        </a>
+      {% endif %}
+    {% else %}
+      <a href="{% url 'store:login' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Sign In</span>
+      </a>
+    {% endif %}
+  </nav>
+
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-grid">
       <div>
-        <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:1rem;">
-          <span class="gold-text" style="font-family:'Outfit', sans-serif; font-size:1.4rem; font-weight:900; letter-spacing:0.12em;">O-SHOP</span>
+        <div style="display:flex; align-items:center; gap:0.65rem; margin-bottom:1rem;">
+          <div style="width:34px; height:34px; background:#0A0A0A; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#FFFFFF;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2L2.5 15.5A2 2 0 0 0 4 19h16a2 2 0 0 0 1.5-3.5L14.2 7c.5-.5.8-1.2.8-2a3 3 0 0 0-3-3z"/>
+            </svg>
+          </div>
+          <span style="font-family:'Outfit', sans-serif; font-size:1.35rem; font-weight:900; letter-spacing:0.12em; color:#0A0A0A;">CLICK SHOP</span>
         </div>
         <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.7; margin-bottom:1rem; max-width:320px;">{{ t.hero_desc }}</p>
         <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.9;">
-          <div><strong style="color:#CBD5E1;">{{ t.location_label }}:</strong> Hay Anas, Safi, Morocco</div>
-          <div><strong style="color:#CBD5E1;">Express Delivery:</strong> {{ t.express_delivery }}</div>
+          <div><strong style="color:#0A0A0A;">Boutique:</strong> Sanya, Asfi (Safi), Morocco 📍</div>
+          <div><strong style="color:#0A0A0A;">Hours:</strong> 11:00 AM – 10:00 PM</div>
+          <div><strong style="color:#0A0A0A;">Delivery:</strong> Livraison partout au Maroc 🚚 🇲🇦</div>
         </div>
       </div>
       <div>
-        <h4 class="gold-text" style="margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase;">Instagram Community</h4>
-        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.9rem; line-height:1.6;">Join 59.5K+ fashion enthusiasts on our page.</p>
-        <a href="https://instagram.com/oth_oshop07" target="_blank" rel="noopener" class="btn btn-outline-gold btn-sm">
+        <h4 style="margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase; color:#0A0A0A;">Instagram Community</h4>
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.9rem; line-height:1.6;">Follow @click__shop_1.0 for newly curated drops, outfit restocks, and style inspiration.</p>
+        <a href="https://instagram.com/click__shop_1.0" target="_blank" rel="noopener" class="btn btn-outline-gold btn-sm" style="display:inline-flex;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          @oth_oshop07
+          @click__shop_1.0
         </a>
       </div>
       <div>
-        <h4 class="gold-text" style="margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase;">{{ t.customer_services }}</h4>
+        <h4 style="margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase; color:#0A0A0A;">{{ t.customer_services }}</h4>
         <ul style="list-style:none; font-size:0.84rem; color:var(--text-muted); display:flex; flex-direction:column; gap:0.6rem; line-height:1.5;">
           <li>✓ WhatsApp Direct Order Support</li>
-          <li>✓ Cash on Delivery (COD) Nationwide</li>
-          <li>✓ Free Size Exchange Service</li>
-          <li>✓ 100% Premium Quality Guaranteed</li>
+          <li>✓ Cash on Delivery (Paiement à la livraison)</li>
+          <li>✓ Fast Shipping Across All Morocco Cities</li>
+          <li>✓ Curated Quality & Modern Silhouettes</li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>{{ t.rights_reserved }}</span>
       <div style="display:flex; gap:0.75rem;">
-        <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
-        <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}">FR</a>
-        <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="font-family:sans-serif;">العربية</a>
+        <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}" style="color:#0A0A0A;">EN</a>
+        <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}" style="color:#0A0A0A;">FR</a>
+        <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="color:#0A0A0A; font-family:sans-serif;">العربية</a>
       </div>
     </div>
   </footer>
@@ -716,6 +755,7 @@
     const searchContainer = document.getElementById('mobileSearchContainer');
     const burgerSvg = document.getElementById('burgerSvg');
     const closeSvg = document.getElementById('closeSvg');
+    const bottomBrowseBtn = document.getElementById('mobileBottomNavCategories');
 
     if (menuBtn) {
       menuBtn.addEventListener('click', function() {
@@ -730,6 +770,22 @@
       });
     }
 
+    if (bottomBrowseBtn) {
+      bottomBrowseBtn.addEventListener('click', function() {
+        if (menuContainer) {
+          const isOpen = menuContainer.classList.toggle('is-active');
+          if (burgerSvg && closeSvg) {
+            burgerSvg.style.display = isOpen ? 'none' : 'block';
+            closeSvg.style.display = isOpen ? 'block' : 'none';
+          }
+          if (menuBtn) menuBtn.classList.toggle('active', isOpen);
+          if (isOpen) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }
+      });
+    }
+
     if (searchBtn) {
       searchBtn.addEventListener('click', function() {
         const isOpen = searchContainer.classList.toggle('is-active');
@@ -737,9 +793,9 @@
         if (isOpen) {
           if (menuContainer) {
             menuContainer.classList.remove('is-active');
-            burgerSvg.style.display = 'block';
-            closeSvg.style.display = 'none';
-            menuBtn.classList.remove('active');
+            if (burgerSvg) burgerSvg.style.display = 'block';
+            if (closeSvg) closeSvg.style.display = 'none';
+            if (menuBtn) menuBtn.classList.remove('active');
           }
           const inp = searchContainer.querySelector('input');
           if (inp) setTimeout(() => inp.focus(), 100);

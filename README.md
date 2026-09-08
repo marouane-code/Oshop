@@ -1,6 +1,6 @@
-# Oshop
+# Click Shop
 
-Oshop is a Django-based online store and stock-management app for a fashion or retail business. It combines a customer storefront, shopping cart, checkout flow, and an admin dashboard for managing products, categories, orders, and in-store POS sales.
+Click Shop is a Django-based curated fashion store and stock-management platform for a contemporary streetwear and apparel boutique. It combines a customer storefront, shopping cart, checkout flow, and an admin dashboard for managing products, categories, orders, and in-store POS sales.
 
 This project is designed to be simple, practical, and easy to extend. The core logic lives in the `store` app, and the app uses Django's session-based cart, relational models, and a staff-only admin interface.
 
@@ -8,9 +8,9 @@ This project is designed to be simple, practical, and easy to extend. The core l
 
 The app has three main parts:
 
-- Frontend storefront for customers
-- Shopping cart and checkout experience
-- Admin dashboard for stock, orders, and POS selling
+- Minimalist monochrome storefront for customers (mobile-optimized)
+- Shopping cart and checkout experience with Cash on Delivery (COD)
+- Admin dashboard for stock, telemetry, orders, and in-store POS selling
 
 At a high level:
 
@@ -23,14 +23,16 @@ At a high level:
 
 ## Main features
 
+- Minimalist monochrome streetwear aesthetic with clothes-hanger branding
 - Product catalog with category filtering and search
-- Product detail pages with size and stock information
-- Session-based shopping cart
-- Checkout and order creation
+- Product detail pages with size and stock information, plus floating mobile Add to Bag CTA
+- Thumb-friendly mobile navigation bar with active badges
+- Session-based shopping cart with slide-out drawer
+- Checkout and order creation with COD (Livraison partout au Maroc 🚚 🇲🇦)
 - User registration/login flow during checkout
 - Order tracking with statuses such as `PENDING`, `CONFIRMED`, `SHIPPED`, `DELIVERED`, and `CANCELLED`
 - Inventory management by item size
-- POS sales screen for in-store transactions
+- POS sales screen for in-store transactions in Sanya, Asfi
 - Dashboard summary with revenue, order count, and low-stock alerts
 - Image upload support for categories and articles
 
@@ -68,10 +70,10 @@ Important models:
 - `Category`: product group
 - `Article`: a product entry with price, active status, slug, and images
 - `ArticleImage`: product gallery images
-- `ArticleSize`: each product can have multiple sizes with stock counts
-- `Order`: order header with customer data, total amount, and status
-- `OrderItem`: one row per product size in an order
-- `UserProfile`: extra customer profile data
+- `ArticleSize`: size inventory tracking
+- `Order`: online or in-store order record
+- `OrderItem`: individual line items within an order
+- `FeaturedShowcase`: curated lookbook outfits with multiple coordinated articles
 
 The stock system is important: each `Article` can have multiple `ArticleSize` rows. For example:
 
@@ -81,69 +83,39 @@ The stock system is important: each `Article` can have multiple `ArticleSize` ro
 
 A cart item keeps the product ID and selected size. When an order is placed, the app checks stock and decrements the matching `ArticleSize.stock_quantity` value.
 
-### 3. Cart behavior
+### 3. Shopping cart logic
 
-The cart is stored in the session (`request.session['cart']`). This keeps the shopping cart available without requiring a database entry before checkout.
+Cart operations live in `store/views/storefront.py` and session helper logic. The session stores a dictionary under the key `'cart'`, where keys are formatted as `"<article_id>_<size>"`.
 
-The session cart is used in:
+### 4. Admin and POS workflow
 
-- `get_cart()`
-- `save_cart()`
-- `add_to_cart_api()`
-- `update_cart_api()`
+Staff-only views are in `store/views/admin_panel.py`.
 
-The cart API endpoints accept JSON and return a success/error response. This is how the frontend updates the cart count and totals without full page reloads.
+The admin panel allows staff to:
 
-### 4. Checkout and order creation
+- track revenue, total orders, dispatched items, and low-stock alerts
+- create, edit, and delete articles, sizes, and categories
+- curate lookbook showcases and coordinate outfit pieces
+- update order status across the fulfillment lifecycle
+- process in-store sales through the dedicated POS terminal
 
-The checkout flow is handled in:
+### 5. Multi-language support
 
-- `checkout_view()`
-- `place_order_view()`
+Language switching is supported across:
 
-During checkout:
+- English (`en`)
+- French (`fr`)
+- Arabic (`ar`) with complete RTL layout support
 
-- the app loads items from the session cart
-- validates the user state
-- allows login or account creation if needed
-- reads name, phone, address, city, and notes
-- creates an `Order`
-- creates one `OrderItem` per line item
-- calculates the total amount
-- subtracts stock from each size
-
-This is the moment where the real business logic happens: the order is saved, the stock is reduced, and the order total is finalized.
-
-### 5. Admin dashboard and inventory control
-
-The admin side lives in `store/views/admin_panel.py` and uses staff-only decorators.
-
-It includes:
-
-- `dashboard_view()` for summary metrics
-- `sales_chart_data_api()` for chart data
-- `pos_sale_view()` for in-store POS sales
-- `process_pos_sale_api()` for walk-in transaction processing
-- `orders_list_view()` for order management
-- `update_order_status_api()` for changing order statuses
-- CRUD views for categories and articles
-
-Staff members can:
-
-- view total revenue and sales trends
-- see the best-selling products
-- track low-stock items
-- update order statuses
-- sell items directly from POS
-- manage categories and articles
+Translations and brand metadata are stored in `store/context_processors.py`.
 
 ### 6. Django project structure
 
 The main project entry points are:
 
 - `manage.py` - Django command runner
-- `oshop_project/settings.py` - project settings and database config
-- `oshop_project/urls.py` - global routing
+- `clickshop_project/settings.py` - project settings and database config
+- `clickshop_project/urls.py` - global routing
 - `store/urls.py` - app routes
 - `store/models.py` - database models
 - `store/views/` - storefront and admin logic
@@ -154,7 +126,7 @@ The main project entry points are:
 ## Project structure
 
 ```text
-Oshop/
+Click Shop/
 ├── manage.py
 ├── requirements.txt
 ├── seed_data.py
@@ -162,7 +134,7 @@ Oshop/
 ├── README.md
 ├── media/
 ├── static/
-├── oshop_project/
+├── clickshop_project/
 │   ├── __init__.py
 │   ├── settings.py
 │   ├── urls.py
@@ -218,14 +190,14 @@ Create a `.env` file in the project root with values like:
 ```env
 SECRET_KEY=your-secret-key
 DEBUG=True
-DB_NAME=oshop_db
+DB_NAME=clickshop_db
 DB_USER=root
 DB_PASSWORD=your_password
 DB_HOST=localhost
 DB_PORT=3306
 ```
 
-The default settings in `oshop_project/settings.py` are configured for MySQL, but you can also adapt them for SQLite during local development if needed.
+The default settings in `clickshop_project/settings.py` are configured for MySQL, but you can also adapt them for SQLite during local development if needed.
 
 ### 4. Apply migrations
 

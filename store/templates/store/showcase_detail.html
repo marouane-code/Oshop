@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ showcase.title }} — Outfit Showcase | O-SHOP Safi{% endblock %}
+{% block title %}{{ showcase.title }} — Outfit Showcase | Click Shop{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width: 1200px; margin: 0 auto; padding-bottom: 7rem;">
@@ -27,13 +27,13 @@
     box-shadow: 0 16px 40px rgba(0,0,0,0.5);
   ">
     <!-- Glow Orbs -->
-    <div style="position:absolute; width:350px; height:350px; background:radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 70%); top:-60px; right:-60px; pointer-events:none;"></div>
-    <div style="position:absolute; width:250px; height:250px; background:radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%); bottom:-50px; left:150px; pointer-events:none;"></div>
+    <div style="position:absolute; width:350px; height:350px; background:radial-gradient(circle, rgba(0,0,0,0.04) 0%, transparent 70%); top:-60px; right:-60px; pointer-events:none;"></div>
+    <div style="position:absolute; width:250px; height:250px; background:radial-gradient(circle, rgba(0,0,0,0.02) 0%, transparent 70%); bottom:-50px; left:150px; pointer-events:none;"></div>
 
     <div style="display:grid; grid-template-columns: 1fr {% if showcase.cover_image %}320px{% endif %}; gap:2.5rem; align-items:center; position:relative; z-index:2;">
       <div>
         <!-- Pill Badge -->
-        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(212,175,55,0.12); border:1px solid var(--border-gold); padding:0.35rem 1rem; border-radius:20px; margin-bottom:1.25rem;">
+        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(0,0,0,0.05); border:1px solid var(--border-color); padding:0.35rem 1rem; border-radius:20px; margin-bottom:1.25rem;">
           <span style="width:6px; height:6px; background:var(--gold-bright); border-radius:50%; box-shadow:0 0 8px var(--gold-bright); display:inline-block;"></span>
           <span style="letter-spacing:0.12em; text-transform:uppercase; font-size:0.72rem; font-weight:800; color:var(--gold-bright);">Curated Outfit Showcase</span>
         </div>
@@ -321,7 +321,7 @@
         id="addOutfitBtn" 
         class="btn btn-gold" 
         onclick="addSelectedOutfitToCart()"
-        style="padding:0.85rem 2rem; font-size:0.92rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase; display:flex; align-items:center; gap:0.6rem; box-shadow:0 4px 20px rgba(212,175,55,0.35);"
+        style="padding:0.85rem 2rem; font-size:0.92rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase; display:flex; align-items:center; gap:0.6rem; box-shadow:0 4px 20px rgba(0,0,0,0.18);"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         <span id="btnText">{{ t.add_selected_to_bag }}</span>
@@ -344,11 +344,11 @@
     pointer-events: none;
   }
   .size-pill-btn.active-size {
-    background: var(--gold-gradient) !important;
-    color: #080810 !important;
-    border-color: var(--gold-bright) !important;
+    background: #0A0A0A !important;
+    color: #FFFFFF !important;
+    border-color: #0A0A0A !important;
     font-weight: 900 !important;
-    box-shadow: 0 2px 8px rgba(212,175,55,0.35);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
   .outfit-item-card.missing-size {
     border-color: #EF4444 !important;

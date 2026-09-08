@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ article.title }} — O-SHOP Safi{% endblock %}
+{% block title %}{{ article.title }} — Click Shop{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -10,26 +10,26 @@
   <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:2rem; letter-spacing:0.05em; text-transform:uppercase;">
     <a href="{% url 'store:home' %}">Home</a> &nbsp;/&nbsp; 
     <a href="{% url 'store:home' %}?category={{ article.category.slug }}">{{ article.category.name }}</a> &nbsp;/&nbsp; 
-    <span class="gold-text" style="font-weight:700;">{{ article.title }}</span>
+    <span style="font-weight:700; color:#0A0A0A;">{{ article.title }}</span>
   </div>
 
   <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:3.5rem; margin-bottom:5rem;">
     
     <!-- Product Images Gallery -->
     <div>
-      <div style="width:100%; aspect-ratio:4/5; background:var(--bg-secondary); border-radius:var(--radius-md); border:1px solid var(--border-gold); overflow:hidden; margin-bottom:1rem;">
+      <div style="width:100%; aspect-ratio:4/5; background:var(--bg-secondary); border-radius:var(--radius-md); border:1.5px solid var(--border-color); overflow:hidden; margin-bottom:1rem;">
         {% if article.primary_image %}
-          <img id="mainProductImg" src="{{ article.primary_image }}" alt="{{ article.title }}" style="width:100%; height:100%; object-fit:cover;">
+          <img id="mainProductImg" src="{{ article.primary_image }}" alt="{{ article.title }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
         {% else %}
           <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase;">No Image Available</div>
         {% endif %}
       </div>
 
-      <!-- Thumbnail Selector -->
+      <!-- Thumbnail Selector & Mobile Horizontal Gallery -->
       {% if article.images.all.count > 1 %}
-        <div style="display:flex; gap:0.75rem; overflow-x:auto; padding-bottom:0.5rem;">
+        <div style="display:flex; gap:0.75rem; overflow-x:auto; padding-bottom:0.5rem; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;">
           {% for img in article.images.all %}
-            <img src="{{ img.image.url }}" onclick="document.getElementById('mainProductImg').src='{{ img.image.url }}'" style="width:70px; height:85px; object-fit:cover; border-radius:var(--radius-sm); border:1px solid var(--border-color); cursor:pointer;" class="thumb-option">
+            <img src="{{ img.image.url }}" onclick="document.getElementById('mainProductImg').src='{{ img.image.url }}'" style="width:75px; height:90px; object-fit:cover; border-radius:var(--radius-sm); border:1.5px solid var(--border-color); cursor:pointer; flex-shrink:0; scroll-snap-align:start;" class="thumb-option" loading="lazy">
           {% endfor %}
         </div>
       {% endif %}
@@ -37,15 +37,15 @@
 
     <!-- Article Info & Size Picker -->
     <div style="display:flex; flex-direction:column; justify-content:center;">
-      <span style="font-size:0.75rem; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.15em; font-weight:800;">
+      <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.12em; font-weight:800;">
         {{ article.category.name }}
       </span>
 
-      <h1 style="font-size:2.5rem; margin-top:0.3rem; margin-bottom:0.75rem; line-height:1.15; font-weight:800; letter-spacing:-0.02em;">
+      <h1 style="font-size:2.4rem; margin-top:0.3rem; margin-bottom:0.75rem; line-height:1.15; font-weight:900; letter-spacing:-0.02em; color:#0A0A0A;">
         {{ article.title }}
       </h1>
 
-      <div style="font-size:2.2rem; font-weight:900; color:var(--gold-bright); margin-bottom:1.75rem;">
+      <div style="font-size:2.2rem; font-weight:900; color:#0A0A0A; margin-bottom:1.75rem;">
         {{ article.price }} MAD
       </div>
 
@@ -53,7 +53,7 @@
       <div style="margin-bottom:2rem;">
         <label class="form-label" style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase;">
           <span>{{ t.select_size }}</span>
-          <span id="selectedSizeLabel" class="gold-text" style="font-weight:800;">{{ t.please_choose }}</span>
+          <span id="selectedSizeLabel" style="font-weight:800; color:#0A0A0A;">{{ t.please_choose }}</span>
         </label>
         
         <div style="display:flex; flex-wrap:wrap; gap:0.6rem;">
@@ -69,9 +69,9 @@
             >
               {{ sz.size }}
               {% if sz.stock_quantity > 0 %}
-                <span style="font-size:0.65rem; color:var(--gold-bright); display:block; margin-top:2px;">{{ sz.stock_quantity }} LEFT</span>
+                <span style="font-size:0.65rem; color:var(--text-muted); display:block; margin-top:2px;">{{ sz.stock_quantity }} LEFT</span>
               {% else %}
-                <span style="font-size:0.65rem; color:var(--status-cancelled); display:block; margin-top:2px;">SOLD OUT</span>
+                <span style="font-size:0.65rem; color:var(--danger, #DC2626); display:block; margin-top:2px;">SOLD OUT</span>
               {% endif %}
             </button>
           {% empty %}
@@ -85,16 +85,16 @@
       <!-- Quantity Picker -->
       <div style="display:flex; align-items:center; gap:1.25rem; margin-bottom:2.25rem;">
         <label class="form-label" style="margin:0; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.quantity }}</label>
-        <div style="display:flex; align-items:center; gap:0.5rem; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.25rem 0.6rem;">
+        <div style="display:flex; align-items:center; gap:0.5rem; background:var(--bg-secondary); border:1.5px solid var(--border-color); border-radius:var(--radius-sm); padding:0.25rem 0.6rem;">
           <button class="btn btn-dark" style="padding:0.2rem 0.6rem; font-weight:700;" onclick="adjustQty(-1)">-</button>
-          <input type="number" id="itemQtyInput" value="1" min="1" max="10" style="width:45px; text-align:center; background:transparent; border:none; color:white; font-weight:800; font-size:1rem;">
+          <input type="number" id="itemQtyInput" value="1" min="1" max="10" style="width:45px; text-align:center; background:transparent; border:none; color:#0A0A0A; font-weight:800; font-size:1rem;">
           <button class="btn btn-dark" style="padding:0.2rem 0.6rem; font-weight:700;" onclick="adjustQty(1)">+</button>
         </div>
       </div>
 
       <!-- Action Buttons -->
       <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-        <button id="addCartBtn" class="btn btn-gold" style="flex:1; padding:1rem 1.75rem; font-size:0.9rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase;" onclick="triggerAddCart()">
+        <button id="addCartBtn" class="btn btn-gold" style="flex:1; padding:1rem 1.75rem; font-size:0.9rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;" onclick="triggerAddCart()">
           {{ t.add_to_bag }}
         </button>
       </div>
@@ -102,15 +102,15 @@
       <!-- Description -->
       {% if article.description %}
         <div style="margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--border-color);">
-          <h3 style="font-size:0.9rem; margin-bottom:0.75rem; color:var(--gold-bright); letter-spacing:0.1em; text-transform:uppercase; font-weight:800;">{{ t.product_spec }}</h3>
-          <p style="color:var(--text-muted); white-space:pre-line; font-size:0.925rem; line-height:1.7;">{{ article.description }}</p>
+          <h3 style="font-size:0.85rem; margin-bottom:0.75rem; color:#0A0A0A; letter-spacing:0.1em; text-transform:uppercase; font-weight:800;">{{ t.product_spec }}</h3>
+          <p style="color:var(--text-secondary); white-space:pre-line; font-size:0.925rem; line-height:1.7;">{{ article.description }}</p>
         </div>
       {% endif %}
 
       <!-- Store Delivery Guarantee Badge -->
-      <div style="margin-top:2rem; background:var(--bg-secondary); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-gold); display:flex; gap:1.25rem; align-items:center;">
-        <div style="flex:1; font-size:0.85rem; color:var(--text-muted); line-height:1.6;">
-          <strong style="color:var(--gold-bright); font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase; display:block; margin-bottom:0.2rem;">{{ t.express_delivery }}</strong>
+      <div style="margin-top:2rem; background:var(--bg-secondary); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-color); display:flex; gap:1.25rem; align-items:center;">
+        <div style="flex:1; font-size:0.85rem; color:var(--text-secondary); line-height:1.6;">
+          <strong style="color:#0A0A0A; font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase; display:block; margin-bottom:0.2rem;">{{ t.express_delivery }}</strong>
           {{ t.express_desc }}
         </div>
       </div>
@@ -129,6 +129,8 @@
             <a href="{% url 'store:product_detail' rel.slug %}" class="product-thumb">
               {% if rel.primary_image %}
                 <img src="{{ rel.primary_image }}" alt="{{ rel.title }}">
+              {% else %}
+                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.75rem;">No Image Available</div>
               {% endif %}
             </a>
             <div class="product-info">
@@ -141,6 +143,19 @@
     </section>
   {% endif %}
 
+</div>
+
+<!-- Sticky Floating Add to Bag CTA on Mobile View -->
+<div class="mobile-product-cta">
+  <div class="mobile-product-cta-inner">
+    <div style="min-width:0;">
+      <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ article.title }}</div>
+      <div style="font-size:1.1rem; font-weight:900; color:#0A0A0A;">{{ article.price }} MAD</div>
+    </div>
+    <button type="button" class="btn btn-gold" style="padding:0.75rem 1.4rem; font-size:0.85rem; font-weight:800; flex-shrink:0;" onclick="triggerAddCart()">
+      {{ t.add_to_bag }}
+    </button>
+  </div>
 </div>
 
 <script>

@@ -1,41 +1,41 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Order Confirmed #{{ order.order_number }} — O-SHOP Safi{% endblock %}
+{% block title %}Order Confirmed #{{ order.order_number }} — Click Shop{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width:750px; text-align:center;">
 
-  <div style="background:var(--bg-secondary); border-radius:var(--radius-lg); border:1px solid var(--border-gold); padding:3.5rem 2rem; box-shadow:var(--shadow-glass);">
+  <div style="background:var(--bg-card); border-radius:var(--radius-lg); border:1.5px solid var(--border-color); padding:3.5rem 2rem; box-shadow:var(--shadow-sm);">
 
     <!-- Success Icon -->
-    <div style="width:70px; height:70px; background:var(--gold-gradient); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; color:var(--text-dark);">
+    <div style="width:70px; height:70px; background:#0A0A0A; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; color:#FFFFFF;">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
     </div>
 
-    <div style="font-size:0.75rem; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.15em; font-weight:800;">
+    <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.15em; font-weight:800;">
       {{ t.order_success_title }}
     </div>
 
-    <h1 style="font-size:2.2rem; font-weight:800; margin-top:0.3rem; margin-bottom:1rem; letter-spacing:-0.01em;">
+    <h1 style="font-size:2.2rem; font-weight:900; margin-top:0.3rem; margin-bottom:1rem; letter-spacing:-0.02em; color:#0A0A0A;">
       {{ t.thank_you }}
     </h1>
 
-    <p style="color:var(--text-muted); font-size:1rem; margin-bottom:2.5rem;">
-      {{ t.order_ref }}: <strong class="gold-text">#{{ order.order_number }}</strong>
+    <p style="color:var(--text-secondary); font-size:1rem; margin-bottom:2.5rem;">
+      {{ t.order_ref }}: <strong style="color:#0A0A0A;">#{{ order.order_number }}</strong>
     </p>
 
     <!-- Order Items Summary Table -->
-    <div style="text-align:left; background:var(--bg-elevated); padding:1.5rem; border-radius:var(--radius-md); border:1px solid var(--border-color); margin-bottom:2.5rem;">
-      <h3 class="gold-text" style="font-size:0.9rem; margin-bottom:1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:800;">
+    <div style="text-align:left; background:var(--bg-secondary); padding:1.5rem; border-radius:var(--radius-md); border:1px solid var(--border-color); margin-bottom:2.5rem;">
+      <h3 style="font-size:0.9rem; margin-bottom:1rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:800; color:#0A0A0A;">
         {{ t.receipt_overview }}
       </h3>
 
-      <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">
+      <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.5rem;">
         <span>Customer: <strong>{{ order.client_name }}</strong></span>
         <span>Phone: <strong>{{ order.client_phone }}</strong></span>
       </div>
-      <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+      <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;">
         Destination: <strong>{{ order.client_city }}, {{ order.client_address }}</strong>
       </div>
 
@@ -43,14 +43,14 @@
         {% for item in order.items.all %}
           <div style="display:flex; justify-content:space-between; font-size:0.875rem;">
             <span>{{ item.quantity }}x {{ item.article_title }} (Size {{ item.size }})</span>
-            <span style="font-weight:700; color:var(--gold-bright);">{{ item.subtotal }} MAD</span>
+            <span style="font-weight:700; color:#0A0A0A;">{{ item.subtotal }} MAD</span>
           </div>
         {% endfor %}
       </div>
 
-      <div style="border-top:1px dashed var(--border-color); padding-top:1rem; margin-top:1rem; display:flex; justify-content:space-between; font-weight:800; font-size:1.1rem;">
+      <div style="border-top:1px dashed var(--border-color); padding-top:1rem; margin-top:1rem; display:flex; justify-content:space-between; font-weight:800; font-size:1.1rem; color:#0A0A0A;">
         <span>{{ t.total_payable }} (COD):</span>
-        <span class="gold-text">{{ order.total_amount }} MAD</span>
+        <span style="font-size:1.25rem;">{{ order.total_amount }} MAD</span>
       </div>
     </div>
 
