@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Checkout — Click Shop{% endblock %}
+{% block title %}Checkout — Wolf Shoes{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width:1050px;">
@@ -50,7 +50,6 @@
                 <div class="form-group">
                   <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.city }} *</label>
                   <select name="reg_city" class="form-control" required>
-                    <option value="Safi">Safi</option>
                     <option value="Casablanca">Casablanca</option>
                     <option value="Rabat">Rabat</option>
                     <option value="Marrakech">Marrakech</option>
@@ -115,7 +114,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.city }} *</label>
-                <input type="text" name="city" value="{{ user_profile.city|default:'Safi' }}" class="form-control" required>
+                <input type="text" name="city" value="{{ user_profile.city|default:'Casablanca' }}" class="form-control" required>
               </div>
             </div>
 

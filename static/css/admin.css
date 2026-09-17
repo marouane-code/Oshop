@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 /* ==========================================
-   CLICK SHOP Admin Portal Design System
+  WOLF SHOES Admin Portal Design System
    ========================================== */
 
 :root {
-  /* Surface & Canvas — Click Shop Light Monochrome */
+  /* Surface & Canvas — Wolf Shoes Light Monochrome */
   --admin-bg-base:    #F8F9FA;
   --admin-bg-sidebar: #FFFFFF;
   --admin-bg-surface: #FFFFFF;

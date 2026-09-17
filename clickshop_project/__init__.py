@@ -1,4 +1,4 @@
-# Click Shop Project Package
+# Wolf Shoes Project Package
 import pymysql
 pymysql.install_as_MySQLdb()
 

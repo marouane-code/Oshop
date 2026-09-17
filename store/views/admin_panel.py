@@ -121,8 +121,8 @@ def process_pos_sale_api(request):
                 user=request.user,
                 client_name='In-Store Customer',
                 client_phone='N/A',
-                client_address='In-Store Walk-In (Safi)',
-                client_city='Safi',
+                client_address='In-Store Walk-In (Casablanca)',
+                client_city='Casablanca',
                 source=Order.SOURCE_IN_STORE,
                 status=Order.STATUS_DELIVERED,
                 notes=notes

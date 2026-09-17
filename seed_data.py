@@ -14,12 +14,12 @@ from django.utils import timezone
 from store.models import Category, Article, ArticleSize, Order, OrderItem, UserProfile
 
 def seed():
-    print("🌱 Seeding Click Shop database...")
+    print("🌱 Seeding Wolf Shoes database...")
 
     # 1. Admin Superuser
     if not User.objects.filter(username='admin').exists():
-        admin = User.objects.create_superuser('admin', 'admin@clickshop.ma', 'adminpassword')
-        admin.first_name = "Click Shop Manager"
+        admin = User.objects.create_superuser('admin', 'admin@wolfshoes.ma', 'adminpassword')
+        admin.first_name = "Wolf Shoes Manager"
         admin.save()
         print("✅ Superuser created: admin / adminpassword")
     else:
@@ -40,8 +40,8 @@ def seed():
             user=client_user,
             full_name='Hamza Mansouri',
             phone='0661234567',
-            address='Sanya, Rue 12, N° 4',
-            city='Safi'
+            address='Casablanca, Morocco',
+            city='Casablanca'
         )
         print("✅ Demo Client created: client@gmail.com / clientpassword")
 
@@ -61,7 +61,7 @@ def seed():
     # 4. Articles & Sizes
     articles_data = [
         {
-            'title': 'Click Shop Heavyweight Monochrome Hoodie',
+            'title': 'Wolf Shoes Classic Espadrille',
             'category': cats['Hoodies & Jackets'],
             'price': 449.00,
             'description': '460GSM ultra-dense organic cotton fleece hoodie in clean jet black. Subtle tonal chest embroidery with modern boxy drop-shoulder silhouette.',
@@ -69,7 +69,7 @@ def seed():
             'sizes': [('S', 5), ('M', 10), ('L', 12), ('XL', 4)]
         },
         {
-            'title': 'Click Shop Minimalist Cargo Trousers',
+            'title': 'Wolf Shoes Everyday Espadrille',
             'category': cats['Pants & Cargo'],
             'price': 389.00,
             'description': 'Clean-cut utilitarian cargo trousers in matte black. Concealed snap pockets and adjustable bungee hems for versatile styling.',
@@ -77,7 +77,7 @@ def seed():
             'sizes': [('S', 6), ('M', 12), ('L', 8), ('XL', 3)]
         },
         {
-            'title': 'Click Shop Low-Profile Urban Sneakers',
+            'title': 'Wolf Shoes Urban Espadrille',
             'category': cats['Shoes & Sneakers'],
             'price': 649.00,
             'description': 'Clean monochrome leather low-top sneakers with cushioned cupsole and debossed branding. Hand-stitched detailing.',
@@ -85,7 +85,7 @@ def seed():
             'sizes': [('40', 4), ('41', 8), ('42', 10), ('43', 6), ('44', 3)]
         },
         {
-            'title': 'Click Shop Essential Heavyweight Tee',
+            'title': 'Wolf Shoes Essential Espadrille',
             'category': cats['T-Shirts & Tops'],
             'price': 229.00,
             'description': '260GSM combed organic cotton tee in crisp optic white. Ribbed mock collar and structured relaxed fit.',
@@ -93,7 +93,7 @@ def seed():
             'sizes': [('S', 12), ('M', 20), ('L', 18), ('XL', 8)]
         },
         {
-            'title': 'Click Shop Sanya Insulated Puffer Jacket',
+            'title': 'Wolf Shoes Casablanca Espadrille',
             'category': cats['Hoodies & Jackets'],
             'price': 749.00,
             'description': 'Water-repellent matte-finish puffer jacket with lightweight thermal insulation, high-stand collar, and matte hardware.',
@@ -101,7 +101,7 @@ def seed():
             'sizes': [('M', 5), ('L', 8), ('XL', 3)]
         },
         {
-            'title': 'Click Shop Contrast Sole Runner',
+            'title': 'Wolf Shoes Contrast Sole Espadrille',
             'category': cats['Shoes & Sneakers'],
             'price': 579.00,
             'description': 'Contemporary aerodynamic runners featuring technical mesh and premium suede accents in black and off-white.',
@@ -127,8 +127,8 @@ def seed():
             ('Youssef Benani', '0665432109', 'Casablanca', 'Bd Zerktouni, Res Al Amal'),
             ('Khadija El Mansouri', '0671122334', 'Rabat', 'Agdal, Rue Omar Ibn Khattab'),
             ('Amine Chraibi', '0659988776', 'Marrakech', 'Gueliz, Ave Mohammed V'),
-            ('Fatima Zohra', '0612345678', 'Safi', 'Sanya, Rue 4'),
-            ('Walk-In Customer', 'N/A', 'Safi', 'In-Store Walk-In Sale')
+            ('Fatima Zohra', '0612345678', 'Casablanca', 'Casablanca, Morocco'),
+            ('Walk-In Customer', 'N/A', 'Casablanca', 'In-Store Walk-In Sale')
         ]
 
         for i in range(12):

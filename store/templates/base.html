@@ -5,11 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#FFFFFF">
-  <title>{% block title %}Click Shop — Curated Fashion For Every Style | Asfi, Morocco{% endblock %}</title>
-  <meta name="description" content="Click Shop — Curated Fashion For Every Style in Asfi (Safi), Morocco. Nationwide express delivery. Paiement à la livraison partout au Maroc.">
+  <title>{% block title %}Wolf Shoes — Espadrilles for Men & Women | Casablanca, Morocco{% endblock %}</title>
+  <meta name="description" content="Wolf Shoes — Espadrilles for men and women in Casablanca, Morocco. Home delivery nationwide. Cash on delivery available.">
   
-  <!-- Custom Clothes-Hanger Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230A0A0A' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2L2.5 15.5A2 2 0 0 0 4 19h16a2 2 0 0 0 1.5-3.5L14.2 7c.5-.5.8-1.2.8-2a3 3 0 0 0-3-3z'/></svg>">
+  <link rel="icon" type="image/jpeg" href="{% static 'images/wolfshoes-logo.svg.jpg' %}">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +19,7 @@
 
   <style>
     /* =========================================================
-       CLICK SHOP — Clean Monochrome Embedded Styles
+      WOLF SHOES — Clean Monochrome Embedded Styles
        ========================================================= */
     :root {
       --bg-primary: #FFFFFF;
@@ -146,6 +145,13 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
       flex-shrink: 0;
       transition: transform 0.2s ease;
+    }
+    .nav-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
     }
     .nav-brand:hover .nav-logo-badge {
       transform: scale(1.05);
@@ -452,15 +458,11 @@
   <div class="site-nav-wrapper">
     <header class="main-nav-bar">
       
-      <!-- Brand Logo: Clothes Hanger Icon + CLICK SHOP Wordmark -->
+      <!-- Brand Logo -->
       <a href="{% url 'store:home' %}" class="nav-brand">
-        <div class="nav-logo-badge" title="Click Shop">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2L2.5 15.5A2 2 0 0 0 4 19h16a2 2 0 0 0 1.5-3.5L14.2 7c.5-.5.8-1.2.8-2a3 3 0 0 0-3-3z"/>
-          </svg>
-        </div>
+        <img src="{% static 'images/wolfshoes-logo.svg.jpg' %}" alt="Wolf Shoes" class="nav-logo">
         <div>
-          <h1 class="nav-brand-title">CLICK SHOP</h1>
+          <h1 class="nav-brand-title">WOLF SHOES</h1>
           <div class="nav-brand-tagline">{{ t.tagline }}</div>
         </div>
       </a>
@@ -704,26 +706,22 @@
     <div class="footer-grid">
       <div>
         <div style="display:flex; align-items:center; gap:0.65rem; margin-bottom:1rem;">
-          <div style="width:34px; height:34px; background:#0A0A0A; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#FFFFFF;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2L2.5 15.5A2 2 0 0 0 4 19h16a2 2 0 0 0 1.5-3.5L14.2 7c.5-.5.8-1.2.8-2a3 3 0 0 0-3-3z"/>
-            </svg>
-          </div>
-          <span style="font-family:'Outfit', sans-serif; font-size:1.35rem; font-weight:900; letter-spacing:0.12em; color:#0A0A0A;">CLICK SHOP</span>
+          <img src="{% static 'images/wolfshoes-logo.svg.jpg' %}" alt="Wolf Shoes" style="width:34px; height:34px; object-fit:contain;">
+          <span style="font-family:'Outfit', sans-serif; font-size:1.35rem; font-weight:900; letter-spacing:0.12em; color:#0A0A0A;">WOLF SHOES</span>
         </div>
         <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.7; margin-bottom:1rem; max-width:320px;">{{ t.hero_desc }}</p>
         <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.9;">
-          <div><strong style="color:#0A0A0A;">Boutique:</strong> Sanya, Asfi (Safi), Morocco 📍</div>
-          <div><strong style="color:#0A0A0A;">Hours:</strong> 11:00 AM – 10:00 PM</div>
-          <div><strong style="color:#0A0A0A;">Delivery:</strong> Livraison partout au Maroc 🚚 🇲🇦</div>
+          <div><strong style="color:#0A0A0A;">Location:</strong> Casablanca, Morocco 📍</div>
+          <div><strong style="color:#0A0A0A;">Phone:</strong> 07 14 32 50 39 ☎️</div>
+          <div><strong style="color:#0A0A0A;">Delivery:</strong> Home delivery 🚚 🇲🇦</div>
         </div>
       </div>
       <div>
         <h4 style="margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase; color:#0A0A0A;">Instagram Community</h4>
-        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.9rem; line-height:1.6;">Follow @click__shop_1.0 for newly curated drops, outfit restocks, and style inspiration.</p>
-        <a href="https://instagram.com/click__shop_1.0" target="_blank" rel="noopener" class="btn btn-outline-gold btn-sm" style="display:inline-flex;">
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.9rem; line-height:1.6;">Follow @wolf.shoes7 for new espadrille drops and restocks.</p>
+        <a href="https://instagram.com/wolf.shoes7" target="_blank" rel="noopener" class="btn btn-outline-gold btn-sm" style="display:inline-flex;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          @click__shop_1.0
+          @wolf.shoes7
         </a>
       </div>
       <div>

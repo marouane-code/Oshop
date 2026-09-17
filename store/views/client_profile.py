@@ -10,7 +10,7 @@ def profile_view(request):
         'full_name': user.get_full_name() or user.username,
         'phone': '',
         'address': '',
-        'city': 'Safi'
+        'city': 'Casablanca'
     })
     
     if request.method == 'POST':

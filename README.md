@@ -1,6 +1,6 @@
-# Click Shop
+# Wolf Shoes
 
-Click Shop is a Django-based curated fashion store and stock-management platform for a contemporary streetwear and apparel boutique. It combines a customer storefront, shopping cart, checkout flow, and an admin dashboard for managing products, categories, orders, and in-store POS sales.
+Wolf Shoes is a Django-based espadrille store and stock-management platform for men and women in Casablanca, Morocco. It combines a customer storefront, shopping cart, checkout flow, and an admin dashboard for managing products, categories, orders, and in-store POS sales.
 
 This project is designed to be simple, practical, and easy to extend. The core logic lives in the `store` app, and the app uses Django's session-based cart, relational models, and a staff-only admin interface.
 
@@ -32,7 +32,7 @@ At a high level:
 - User registration/login flow during checkout
 - Order tracking with statuses such as `PENDING`, `CONFIRMED`, `SHIPPED`, `DELIVERED`, and `CANCELLED`
 - Inventory management by item size
-- POS sales screen for in-store transactions in Sanya, Asfi
+- POS sales screen for in-store transactions in Casablanca
 - Dashboard summary with revenue, order count, and low-stock alerts
 - Image upload support for categories and articles
 
@@ -126,7 +126,7 @@ The main project entry points are:
 ## Project structure
 
 ```text
-Click Shop/
+Wolf Shoes/
 ├── manage.py
 ├── requirements.txt
 ├── seed_data.py
@@ -190,7 +190,7 @@ Create a `.env` file in the project root with values like:
 ```env
 SECRET_KEY=your-secret-key
 DEBUG=True
-DB_NAME=clickshop_db
+DB_NAME=wolfshoes_db
 DB_USER=root
 DB_PASSWORD=your_password
 DB_HOST=localhost
