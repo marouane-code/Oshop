@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ article.title }} — Wolf Shoes{% endblock %}
+{% block title %}{{ article.title }} — Mario Clothes{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -19,7 +19,7 @@
     <div>
       <div style="width:100%; aspect-ratio:4/5; background:var(--bg-secondary); border-radius:var(--radius-md); border:1.5px solid var(--border-color); overflow:hidden; margin-bottom:1rem;">
         {% if article.primary_image %}
-          <img id="mainProductImg" src="{{ article.primary_image }}" alt="{{ article.title }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy">
+          <img id="mainProductImg" src="{{ article.primary_image }}" alt="{{ article.title }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy" class="product-shuffle-image" data-shuffle-images="{{ article.image_urls|escapejs }}">
         {% else %}
           <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase;">No Image Available</div>
         {% endif %}
@@ -49,6 +49,31 @@
         {{ article.price }} MAD
       </div>
 
+      <!-- Select Color (when article has colors) -->
+      {% if article.has_colors %}
+        <div style="margin-bottom:1.5rem;">
+          <label class="form-label" style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase;">
+            <span>{{ t.select_color }}</span>
+            <span id="selectedColorLabel" style="font-weight:800; color:#0A0A0A;">{{ t.please_choose }}</span>
+          </label>
+          
+          <div style="display:flex; flex-wrap:wrap; gap:0.6rem;" id="colorButtonsContainer">
+            {% for col in article.available_colors %}
+              <button 
+                type="button"
+                class="btn color-select-btn btn-dark"
+                style="padding:0.65rem 1.25rem; min-width:75px; border-radius:var(--radius-sm); font-weight:700;"
+                data-color="{{ col }}"
+                onclick="selectProductColor(this)"
+              >
+                {{ col }}
+                <span class="color-stock-sublabel" style="font-size:0.65rem; color:var(--text-muted); display:block; margin-top:2px;"></span>
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
       <!-- Select Size -->
       <div style="margin-bottom:2rem;">
         <label class="form-label" style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase;">
@@ -56,23 +81,17 @@
           <span id="selectedSizeLabel" style="font-weight:800; color:#0A0A0A;">{{ t.please_choose }}</span>
         </label>
         
-        <div style="display:flex; flex-wrap:wrap; gap:0.6rem;">
-          {% for sz in article.sizes.all %}
+        <div style="display:flex; flex-wrap:wrap; gap:0.6rem;" id="sizeButtonsContainer">
+          {% for sz in article.available_sizes %}
             <button 
               type="button"
-              class="btn size-select-btn {% if sz.stock_quantity > 0 %}btn-dark{% else %}btn-dark{% endif %}"
-              style="padding:0.65rem 1.25rem; min-width:65px; border-radius:var(--radius-sm); font-weight:700; {% if sz.stock_quantity == 0 %}opacity:0.35; cursor:not-allowed;{% endif %}"
-              data-size="{{ sz.size }}"
-              data-stock="{{ sz.stock_quantity }}"
-              {% if sz.stock_quantity == 0 %}disabled{% endif %}
+              class="btn size-select-btn btn-dark"
+              style="padding:0.65rem 1.25rem; min-width:65px; border-radius:var(--radius-sm); font-weight:700;"
+              data-size="{{ sz }}"
               onclick="selectProductSize(this)"
             >
-              {{ sz.size }}
-              {% if sz.stock_quantity > 0 %}
-                <span style="font-size:0.65rem; color:var(--text-muted); display:block; margin-top:2px;">{{ sz.stock_quantity }} LEFT</span>
-              {% else %}
-                <span style="font-size:0.65rem; color:var(--danger, #DC2626); display:block; margin-top:2px;">SOLD OUT</span>
-              {% endif %}
+              {{ sz }}
+              <span class="size-stock-sublabel" style="font-size:0.65rem; color:var(--text-muted); display:block; margin-top:2px;"></span>
             </button>
           {% empty %}
             <button type="button" class="btn btn-gold size-select-btn" data-size="One Size" data-stock="10" onclick="selectProductSize(this)" style="font-size:0.85rem; letter-spacing:0.05em;">
@@ -95,7 +114,7 @@
       <!-- Action Buttons -->
       <div style="display:flex; gap:1rem; flex-wrap:wrap;">
         <button id="addCartBtn" class="btn btn-gold" style="flex:1; padding:1rem 1.75rem; font-size:0.9rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;" onclick="triggerAddCart()">
-          {{ t.add_to_bag }}
+          {% if article.has_colors %}{{ t.please_choose }}{% else %}{{ t.add_to_bag }}{% endif %}
         </button>
       </div>
 
@@ -128,7 +147,7 @@
           <div class="product-card">
             <a href="{% url 'store:product_detail' rel.slug %}" class="product-thumb">
               {% if rel.primary_image %}
-                <img src="{{ rel.primary_image }}" alt="{{ rel.title }}">
+                <img src="{{ rel.primary_image }}" alt="{{ rel.title }}" class="product-shuffle-image" data-shuffle-images="{{ rel.image_urls|escapejs }}">
               {% else %}
                 <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.75rem;">No Image Available</div>
               {% endif %}
@@ -152,24 +171,195 @@
       <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ article.title }}</div>
       <div style="font-size:1.1rem; font-weight:900; color:#0A0A0A;">{{ article.price }} MAD</div>
     </div>
-    <button type="button" class="btn btn-gold" style="padding:0.75rem 1.4rem; font-size:0.85rem; font-weight:800; flex-shrink:0;" onclick="triggerAddCart()">
-      {{ t.add_to_bag }}
+    <button type="button" id="mobileAddCartBtn" class="btn btn-gold" style="padding:0.75rem 1.4rem; font-size:0.85rem; font-weight:800; flex-shrink:0;" onclick="triggerAddCart()">
+      {% if article.has_colors %}{{ t.please_choose }}{% else %}{{ t.add_to_bag }}{% endif %}
     </button>
   </div>
 </div>
 
 <script>
+  const variants = JSON.parse('{{ article.variants_json|escapejs }}');
+  const hasColors = {{ article.has_colors|yesno:"true,false" }};
+  const pleaseChooseText = "{{ t.please_choose }}";
+  const addToBagText = "{{ t.add_to_bag }}";
+
+  let selectedColor = null;
   let selectedSize = null;
 
+  function initVariantDisplay() {
+    updateColorSublabels();
+    updateSizeSublabels();
+    updateAddCartState();
+  }
+
+  function updateColorSublabels() {
+    if (!hasColors) return;
+
+    document.querySelectorAll('.color-select-btn').forEach(btn => {
+      const col = btn.getAttribute('data-color');
+      const sublabel = btn.querySelector('.color-stock-sublabel');
+
+      let stockForCol = 0;
+      if (selectedSize) {
+        const match = variants.find(v => v.color === col && v.size === selectedSize);
+        stockForCol = match ? match.stock : 0;
+      } else {
+        // Sum stock for this color across all sizes
+        stockForCol = variants.filter(v => v.color === col).reduce((acc, v) => acc + v.stock, 0);
+      }
+
+      if (stockForCol > 0) {
+        sublabel.textContent = `${stockForCol} LEFT`;
+        sublabel.style.color = "var(--text-muted)";
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+      } else {
+        sublabel.textContent = "SOLD OUT";
+        sublabel.style.color = "var(--danger, #DC2626)";
+        if (selectedSize) {
+          btn.disabled = true;
+          btn.style.opacity = "0.35";
+          btn.style.cursor = "not-allowed";
+        }
+      }
+    });
+  }
+
+  function updateSizeSublabels() {
+    document.querySelectorAll('.size-select-btn').forEach(btn => {
+      const sz = btn.getAttribute('data-size');
+      const sublabel = btn.querySelector('.size-stock-sublabel');
+      if (!sublabel) return;
+
+      let stockForSz = 0;
+      if (hasColors && selectedColor) {
+        const match = variants.find(v => v.size === sz && v.color === selectedColor);
+        stockForSz = match ? match.stock : 0;
+      } else {
+        // Sum stock for this size
+        stockForSz = variants.filter(v => v.size === sz).reduce((acc, v) => acc + v.stock, 0);
+      }
+
+      if (stockForSz > 0) {
+        sublabel.textContent = `${stockForSz} LEFT`;
+        sublabel.style.color = "var(--text-muted)";
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+      } else {
+        sublabel.textContent = "SOLD OUT";
+        sublabel.style.color = "var(--danger, #DC2626)";
+        btn.disabled = true;
+        btn.style.opacity = "0.35";
+        btn.style.cursor = "not-allowed";
+      }
+    });
+  }
+
+  function selectProductColor(btn) {
+    const col = btn.getAttribute('data-color');
+    if (selectedColor === col) return;
+
+    document.querySelectorAll('.color-select-btn').forEach(b => {
+      b.classList.remove('btn-gold');
+      b.classList.add('btn-dark');
+    });
+    btn.classList.remove('btn-dark');
+    btn.classList.add('btn-gold');
+
+    selectedColor = col;
+    const colorLabelElem = document.getElementById('selectedColorLabel');
+    if (colorLabelElem) colorLabelElem.textContent = selectedColor;
+
+    // Check if currently selected size is available in new color
+    if (selectedSize) {
+      const match = variants.find(v => v.size === selectedSize && v.color === selectedColor);
+      if (!match || match.stock <= 0) {
+        selectedSize = null;
+        document.getElementById('selectedSizeLabel').textContent = pleaseChooseText;
+        document.querySelectorAll('.size-select-btn').forEach(b => {
+          b.classList.remove('btn-gold');
+          b.classList.add('btn-dark');
+        });
+      }
+    }
+
+    updateSizeSublabels();
+    updateAddCartState();
+  }
+
   function selectProductSize(btn) {
+    const sz = btn.getAttribute('data-size');
+    
     document.querySelectorAll('.size-select-btn').forEach(b => {
       b.classList.remove('btn-gold');
       b.classList.add('btn-dark');
     });
     btn.classList.remove('btn-dark');
     btn.classList.add('btn-gold');
-    selectedSize = btn.getAttribute('data-size');
+
+    selectedSize = sz;
     document.getElementById('selectedSizeLabel').textContent = selectedSize;
+
+    // If has colors and no color chosen yet, update color badges availability
+    if (hasColors) {
+      if (selectedColor) {
+        const match = variants.find(v => v.size === selectedSize && v.color === selectedColor);
+        if (!match || match.stock <= 0) {
+          selectedColor = null;
+          const colorLabelElem = document.getElementById('selectedColorLabel');
+          if (colorLabelElem) colorLabelElem.textContent = pleaseChooseText;
+          document.querySelectorAll('.color-select-btn').forEach(b => {
+            b.classList.remove('btn-gold');
+            b.classList.add('btn-dark');
+          });
+        }
+      }
+      updateColorSublabels();
+    }
+
+    updateAddCartState();
+  }
+
+  function updateAddCartState() {
+    const addBtn = document.getElementById('addCartBtn');
+    const mobBtn = document.getElementById('mobileAddCartBtn');
+    const isReady = hasColors ? (selectedColor && selectedSize) : !!selectedSize;
+
+    let availableStock = 0;
+    if (isReady) {
+      if (hasColors) {
+        const match = variants.find(v => v.size === selectedSize && v.color === selectedColor);
+        availableStock = match ? match.stock : 0;
+      } else {
+        const match = variants.find(v => v.size === selectedSize);
+        availableStock = match ? match.stock : 0;
+      }
+    }
+
+    const canBuy = isReady && availableStock > 0;
+    let label = addToBagText;
+
+    if (!isReady) {
+      label = pleaseChooseText;
+    } else if (availableStock <= 0) {
+      label = "SOLD OUT";
+    }
+
+    [addBtn, mobBtn].forEach(b => {
+      if (!b) return;
+      b.textContent = label;
+      if (canBuy) {
+        b.disabled = false;
+        b.style.opacity = "1";
+        b.style.cursor = "pointer";
+      } else {
+        b.disabled = true;
+        b.style.opacity = "0.5";
+        b.style.cursor = "not-allowed";
+      }
+    });
   }
 
   function adjustQty(amount) {
@@ -180,12 +370,24 @@
   }
 
   function triggerAddCart() {
+    if (hasColors && !selectedColor) {
+      alert("Please select a color first.");
+      return;
+    }
     if (!selectedSize) {
       alert("Please select your size first.");
       return;
     }
+
     const qty = parseInt(document.getElementById('itemQtyInput').value) || 1;
-    window.addToCart({{ article.id }}, selectedSize, qty);
+    window.addToCart({
+      articleId: {{ article.id }},
+      size: selectedSize,
+      color: selectedColor || '',
+      quantity: qty
+    });
   }
+
+  document.addEventListener('DOMContentLoaded', initVariantDisplay);
 </script>
 {% endblock %}

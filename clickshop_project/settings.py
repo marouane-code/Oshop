@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables from .env file
 load_dotenv(BASE_DIR / '.env')
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-wolfshoes-secret-key-2026')
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-marioclothes-secret-key-2026')
 
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 't')
 
@@ -59,7 +59,7 @@ WSGI_APPLICATION = 'clickshop_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'wolfshoes_db'),
+        'NAME': os.getenv('DB_NAME', 'marioclothes_db'),
         'USER': os.getenv('DB_USER', 'root'),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
         'HOST': os.getenv('DB_HOST', 'localhost'),

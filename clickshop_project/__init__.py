@@ -1,4 +1,4 @@
-# Wolf Shoes Project Package
+# Mario Clothes Project Package
 import pymysql
 pymysql.install_as_MySQLdb()
 

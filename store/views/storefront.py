@@ -28,11 +28,39 @@ def home_view(request):
         'items__article__images', 'items__article__sizes', 'items__article__category'
     )[:4]
     
-    # Collect all article images for the hero banner slideshow
+    # Collect article images for the full-bleed hero carousel (featured first)
     from ..models import ArticleImage
-    hero_images = list(ArticleImage.objects.filter(
-        article__is_active=True
-    ).select_related('article').values_list('image', flat=True)[:20])
+    featured_img_objs = list(ArticleImage.objects.filter(
+        article__is_active=True, article__is_featured=True
+    ).select_related('article', 'article__category')[:12])
+    
+    other_img_objs = list(ArticleImage.objects.filter(
+        article__is_active=True, article__is_featured=False
+    ).select_related('article', 'article__category')[:8])
+    
+    hero_slides = []
+    seen_articles = set()
+    for img in (featured_img_objs + other_img_objs):
+        if img.article_id not in seen_articles and img.image:
+            seen_articles.add(img.article_id)
+            hero_slides.append({
+                'image_url': img.image.url if hasattr(img.image, 'url') else f"/media/{img.image}",
+                'title': img.article.title,
+                'price': img.article.price,
+                'slug': img.article.slug,
+                'category': img.article.category.name if img.article.category else 'Mario Collection'
+            })
+            
+    # Fallback if no specific images found
+    if not hero_slides:
+        for img in ArticleImage.objects.filter(article__is_active=True).select_related('article', 'article__category')[:10]:
+            hero_slides.append({
+                'image_url': img.image.url if hasattr(img.image, 'url') else f"/media/{img.image}",
+                'title': img.article.title,
+                'price': img.article.price,
+                'slug': img.article.slug,
+                'category': img.article.category.name if img.article.category else 'Mario Collection'
+            })
     
     context = {
         'categories': categories,
@@ -41,7 +69,9 @@ def home_view(request):
         'showcases': showcases,
         'selected_category_slug': selected_category_slug,
         'search_query': search_query,
-        'hero_images': hero_images,
+        'hero_slides': hero_slides,
+        'hero_images': [s['image_url'] for s in hero_slides],
+        'is_homepage': True,
     }
     return render(request, 'store/home.html', context)
 
@@ -49,7 +79,10 @@ def home_view(request):
 
 def article_detail_view(request, slug):
     article = get_object_or_404(Article.objects.prefetch_related('images', 'sizes', 'category'), slug=slug)
-    related_articles = Article.objects.filter(category=article.category, is_active=True).exclude(id=article.id)[:4]
+    related_articles = Article.objects.filter(
+        category=article.category,
+        is_active=True,
+    ).exclude(id=article.id).prefetch_related('images')[:4]
     
     context = {
         'article': article,
@@ -107,7 +140,7 @@ def save_cart(request, cart):
     request.session.modified = True
 
 
-def cart_detail_view(request):
+def build_cart_items(request):
     cart = get_cart(request)
     cart_items = []
     total_price = 0
@@ -115,6 +148,7 @@ def cart_detail_view(request):
     for key, item in cart.items():
         article_id = item.get('article_id')
         size_label = item.get('size')
+        color_label = item.get('color', '')
         quantity = item.get('quantity')
         
         try:
@@ -125,11 +159,18 @@ def cart_detail_view(request):
                 'key': key,
                 'article': article,
                 'size': size_label,
+                'color': color_label,
                 'quantity': quantity,
                 'subtotal': subtotal,
             })
         except Article.DoesNotExist:
             continue
+
+    return cart_items, total_price
+
+
+def cart_detail_view(request):
+    cart_items, total_price = build_cart_items(request)
             
     context = {
         'cart_items': cart_items,
@@ -138,23 +179,58 @@ def cart_detail_view(request):
     return render(request, 'store/cart.html', context)
 
 
+def cart_contents_api(request):
+    cart_items, total_price = build_cart_items(request)
+    return JsonResponse({
+        'items': [
+            {
+                'key': item['key'],
+                'title': item['article'].title,
+                'image': item['article'].primary_image or '',
+                'size': item['size'],
+                'color': item['color'],
+                'quantity': item['quantity'],
+                'unit_price': float(item['article'].price),
+                'subtotal': float(item['subtotal']),
+            }
+            for item in cart_items
+        ],
+        'subtotal': float(total_price),
+        'cart_count': sum(item['quantity'] for item in cart_items),
+    })
+
+
 @require_POST
 def add_to_cart_api(request):
     try:
         data = json.loads(request.body)
         article_id = data.get('article_id')
         size = data.get('size')
-        quantity = int(data.get('quantity', 1))
+        color = (data.get('color') or '').strip()
+        try:
+            quantity = int(data.get('quantity', 1))
+        except (TypeError, ValueError):
+            return JsonResponse({
+                'success': False,
+                'message': 'Quantity must be a whole number. Color values must be sent in the color field.'
+            }, status=400)
+        if quantity < 1:
+            return JsonResponse({'success': False, 'message': 'Quantity must be at least 1.'}, status=400)
         
         article = get_object_or_404(Article, id=article_id)
         
-        # Check size stock
-        size_obj = ArticleSize.objects.filter(article=article, size=size).first()
+        # Check variant stock
+        if color:
+            size_obj = ArticleSize.objects.filter(article=article, size=size, color=color).first()
+        else:
+            size_obj = ArticleSize.objects.filter(article=article, size=size).first()
+
+        variant_desc = f"size {size}" + (f" and color {color}" if color else "")
         if not size_obj or size_obj.stock_quantity < quantity:
-            return JsonResponse({'success': False, 'message': f'Sorry, only {size_obj.stock_quantity if size_obj else 0} left in size {size}.'}, status=400)
+            return JsonResponse({'success': False, 'message': f'Sorry, only {size_obj.stock_quantity if size_obj else 0} left in {variant_desc}.'}, status=400)
             
         cart = get_cart(request)
-        cart_key = f"{article_id}_{size}"
+        cart_key = f"{article_id}_{size}_{color}" if color else f"{article_id}_{size}"
         
         if cart_key in cart:
             cart[cart_key]['quantity'] += quantity
@@ -164,13 +240,14 @@ def add_to_cart_api(request):
                 'title': article.title,
                 'price': str(article.price),
                 'size': size,
+                'color': color,
                 'quantity': quantity,
                 'image': article.primary_image or '',
             }
             
         save_cart(request, cart)
         total_count = sum(item['quantity'] for item in cart.values())
-        return JsonResponse({'success': True, 'cart_count': total_count, 'message': f'Added {article.title} (Size {size}) to cart!'})
+        return JsonResponse({'success': True, 'cart_count': total_count, 'message': f'Added {article.title} ({variant_desc}) to cart!'})
         
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=400)
@@ -193,10 +270,11 @@ def add_showcase_to_cart_api(request):
         cart = get_cart(request)
         validated_items = []
 
-        # Step 1: Pre-validate all requested articles and sizes
+        # Step 1: Pre-validate all requested articles, sizes, and optional colors
         for it in items:
             art_id = it.get('article_id')
             size_label = it.get('size')
+            color_label = (it.get('color') or '').strip()
             qty = int(it.get('quantity', 1))
             if qty < 1:
                 qty = 1
@@ -205,13 +283,16 @@ def add_showcase_to_cart_api(request):
                 return JsonResponse({'success': False, 'message': 'Each selected item must have a chosen size.'}, status=400)
 
             article = get_object_or_404(Article, id=art_id, is_active=True)
-            size_obj = ArticleSize.objects.filter(article=article, size=size_label).first()
+            if color_label:
+                size_obj = ArticleSize.objects.filter(article=article, size=size_label, color=color_label).first()
+            else:
+                size_obj = ArticleSize.objects.filter(article=article, size=size_label).first()
 
             if not size_obj:
-                return JsonResponse({'success': False, 'message': f"Size '{size_label}' is not available for {article.title}."}, status=400)
+                return JsonResponse({'success': False, 'message': f"Variant '{size_label}' is not available for {article.title}."}, status=400)
 
             # Check available stock considering what's already in session cart
-            cart_key = f"{article.id}_{size_label}"
+            cart_key = f"{article.id}_{size_label}_{color_label}" if color_label else f"{article.id}_{size_label}"
             existing_in_cart = cart.get(cart_key, {}).get('quantity', 0)
             if (existing_in_cart + qty) > size_obj.stock_quantity:
                 return JsonResponse({
@@ -219,11 +300,11 @@ def add_showcase_to_cart_api(request):
                     'message': f"Insufficient stock for {article.title} (Size {size_label}). Available: {size_obj.stock_quantity} (already {existing_in_cart} in your bag)."
                 }, status=400)
 
-            validated_items.append((article, size_label, qty))
+            validated_items.append((article, size_label, color_label, qty))
 
         # Step 2: Add each validated article as its own individual line item in the cart
-        for article, size_label, qty in validated_items:
-            cart_key = f"{article.id}_{size_label}"
+        for article, size_label, color_label, qty in validated_items:
+            cart_key = f"{article.id}_{size_label}_{color_label}" if color_label else f"{article.id}_{size_label}"
             if cart_key in cart:
                 cart[cart_key]['quantity'] += qty
             else:
@@ -232,6 +313,7 @@ def add_showcase_to_cart_api(request):
                     'title': article.title,
                     'price': str(article.price),
                     'size': size_label,
+                    'color': color_label,
                     'quantity': qty,
                     'image': article.primary_image or '',
                 }
@@ -271,7 +353,11 @@ def update_cart_api(request):
                 # Check stock
                 art_id = cart[key]['article_id']
                 sz = cart[key]['size']
-                size_obj = ArticleSize.objects.filter(article_id=art_id, size=sz).first()
+                col = cart[key].get('color', '')
+                if col:
+                    size_obj = ArticleSize.objects.filter(article_id=art_id, size=sz, color=col).first()
+                else:
+                    size_obj = ArticleSize.objects.filter(article_id=art_id, size=sz).first()
                 if size_obj and cart[key]['quantity'] + 1 > size_obj.stock_quantity:
                     return JsonResponse({'success': False, 'message': f'Cannot add more. Max available stock is {size_obj.stock_quantity}.'}, status=400)
                 cart[key]['quantity'] += 1
@@ -302,6 +388,7 @@ def checkout_view(request):
     for key, item in cart.items():
         article_id = item.get('article_id')
         size_label = item.get('size')
+        color_label = item.get('color', '')
         quantity = item.get('quantity')
         
         try:
@@ -311,6 +398,7 @@ def checkout_view(request):
             cart_items.append({
                 'article': article,
                 'size': size_label,
+                'color': color_label,
                 'quantity': quantity,
                 'subtotal': subtotal,
             })
@@ -407,13 +495,22 @@ def place_order_view(request):
             for key, item in cart.items():
                 article_id = item.get('article_id')
                 size_label = item.get('size')
+                color_label = item.get('color', '').strip()
                 quantity = item.get('quantity')
                 
                 article = Article.objects.select_for_update().get(id=article_id)
-                size_obj = ArticleSize.objects.select_for_update().get(article=article, size=size_label)
+                if color_label:
+                    size_obj = ArticleSize.objects.select_for_update().filter(article=article, size=size_label, color=color_label).first()
+                else:
+                    size_obj = ArticleSize.objects.select_for_update().filter(article=article, size=size_label).first()
                 
+                if not size_obj:
+                    variant_desc = f"Size {size_label}" + (f" / Color {color_label}" if color_label else "")
+                    raise Exception(f"Variant ({variant_desc}) not found for {article.title}")
+                    
                 if size_obj.stock_quantity < quantity:
-                    raise Exception(f"Insufficient stock for {article.title} (Size {size_label}). Available: {size_obj.stock_quantity}")
+                    variant_desc = f"Size {size_label}" + (f" / Color {color_label}" if color_label else "")
+                    raise Exception(f"Insufficient stock for {article.title} ({variant_desc}). Available: {size_obj.stock_quantity}")
                     
                 # Decrement stock
                 size_obj.stock_quantity -= quantity
@@ -427,6 +524,7 @@ def place_order_view(request):
                     article=article,
                     article_title=article.title,
                     size=size_label,
+                    color=color_label,
                     quantity=quantity,
                     unit_price=article.price,
                     subtotal=item_subtotal

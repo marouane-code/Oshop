@@ -1,7 +1,7 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
 
-{% block title %}In-Store Walk-In POS Terminal — Wolf Shoes Admin Portal{% endblock %}
+{% block title %}In-Store Walk-In POS Terminal — Mario Clothes Admin Portal{% endblock %}
 
 {% block workspace_header %}
   <span>Sales</span>
@@ -45,6 +45,11 @@
         </select>
       </div>
 
+      <div class="form-group" id="posColorGroup" style="display:none;">
+        <label class="form-label">Color Variant *</label>
+        <select id="posColorSelect" class="form-control"></select>
+      </div>
+
       <div class="form-group">
         <label class="form-label">Size & Live Stock Level *</label>
         <select id="posSizeSelect" class="form-control"></select>
@@ -77,7 +82,7 @@
           <thead>
             <tr>
               <th>Article</th>
-              <th>Size</th>
+              <th>Variant</th>
               <th>Unit Price</th>
               <th>Qty</th>
               <th>Subtotal</th>

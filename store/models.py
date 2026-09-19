@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 import uuid
+import json
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -53,11 +54,46 @@ class Article(models.Model):
         return sum(size.stock_quantity for size in self.sizes.all())
 
     @property
+    def has_colors(self):
+        return any(bool(s.color and s.color.strip()) for s in self.sizes.all())
+
+    @property
+    def available_colors(self):
+        colors = []
+        for s in self.sizes.all():
+            if s.color and s.color.strip() and s.color.strip() not in colors:
+                colors.append(s.color.strip())
+        return colors
+
+    @property
+    def available_sizes(self):
+        sizes = []
+        for s in self.sizes.all():
+            if s.size and s.size.strip() not in sizes:
+                sizes.append(s.size.strip())
+        return sizes
+
+    @property
+    def variants_json(self):
+        import json
+        data = [
+            {'size': s.size, 'color': s.color or '', 'stock': s.stock_quantity}
+            for s in self.sizes.all()
+        ]
+        return json.dumps(data)
+
+    @property
     def primary_image(self):
         img = self.images.filter(is_primary=True).first()
         if not img:
             img = self.images.first()
         return img.image.url if img and img.image else None
+
+    @property
+    def image_urls(self):
+        return json.dumps([
+            img.image.url for img in self.images.all() if img.image
+        ])
 
     def __str__(self):
         return f"{self.title} ({self.category.name})"
@@ -96,13 +132,16 @@ class ArticleSize(models.Model):
 
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='sizes')
     size = models.CharField(max_length=20)
+    color = models.CharField(max_length=50, blank=True, default='')
     stock_quantity = models.PositiveIntegerField(default=0)
 
     class Meta:
-        unique_together = ('article', 'size')
-        ordering = ['size']
+        unique_together = ('article', 'size', 'color')
+        ordering = ['size', 'color']
 
     def __str__(self):
+        if self.color:
+            return f"{self.article.title} - Size {self.size} / Color {self.color} ({self.stock_quantity} in stock)"
         return f"{self.article.title} - Size {self.size} ({self.stock_quantity} in stock)"
 
 
@@ -169,6 +208,7 @@ class OrderItem(models.Model):
     article = models.ForeignKey(Article, on_delete=models.SET_NULL, null=True, blank=True, related_name='order_items')
     article_title = models.CharField(max_length=200)
     size = models.CharField(max_length=20)
+    color = models.CharField(max_length=50, blank=True, default='')
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
@@ -178,6 +218,8 @@ class OrderItem(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
+        if self.color:
+            return f"{self.quantity}x {self.article_title} (Size {self.size}, Color {self.color})"
         return f"{self.quantity}x {self.article_title} (Size {self.size})"
 
 

@@ -1,7 +1,7 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
 
-{% block title %}{{ title }} — Wolf Shoes Admin Portal{% endblock %}
+{% block title %}{{ title }} — Mario Clothes Admin Portal{% endblock %}
 
 {% block workspace_header %}
   <span>Catalog</span>
@@ -124,9 +124,15 @@
               <td>
                 <div style="display:flex; flex-wrap:wrap; gap:4px;">
                   {% for s in item.article.sizes.all %}
-                    <span style="font-size:0.7rem; background:var(--admin-bg-elevated); padding:2px 5px; border-radius:4px; border:1px solid var(--admin-border-subtle); color:{% if s.stock_quantity > 0 %}var(--text-main){% else %}var(--danger-accent){% endif %};">
-                      {{ s.size }} ({{ s.stock_quantity }})
-                    </span>
+                    {% if s.stock_quantity > 0 %}
+                      <span style="font-size:0.7rem; background:var(--admin-bg-elevated); padding:2px 5px; border-radius:4px; border:1px solid var(--admin-border-subtle); color:var(--text-main);">
+                        {{ s.size }} ({{ s.stock_quantity }})
+                      </span>
+                    {% else %}
+                      <span style="font-size:0.7rem; background:var(--admin-bg-elevated); padding:2px 5px; border-radius:4px; border:1px solid var(--admin-border-subtle); color:var(--danger-accent);">
+                        {{ s.size }} ({{ s.stock_quantity }})
+                      </span>
+                    {% endif %}
                   {% empty %}
                     <span style="font-size:0.75rem; color:var(--text-muted);">One Size</span>
                   {% endfor %}
@@ -172,7 +178,7 @@
         <h3 class="gold-text" style="font-size:1.2rem; font-weight:800; margin:0;">Select Articles to Add</h3>
         <p style="color:var(--text-muted); font-size:0.8rem; margin-top:0.2rem;">Choose any existing article across all catalog categories.</p>
       </div>
-      <button type="button" onclick="closeArticlePickerModal()" class="btn btn-dark" style="padding:0.35rem 0.75rem; font-size:0.9rem;">✕ Close</button>
+      <button type="button" onclick="closeArticlePickerModal()" class="btn btn-dark" style="padding:0.35rem 0.75rem; font-size:0.9rem;">Close</button>
     </div>
 
     <!-- Modal Search Filter Bar -->
@@ -214,7 +220,7 @@
             <button 
               type="button" 
               class="btn btn-outline-gold add-art-btn" 
-              onclick="addArticleToOutfit({{ art.id }}, '{{ art.title|escapejs }}', '{{ art.category.name|escapejs }}', '{{ art.price }}', '{{ art.primary_image|default:'' }}', '{{ art.sizes.all|length }}')"
+              onclick="addArticleToOutfit({{ art.id }}, '{{ art.title|escapejs }}', '{{ art.category.name|escapejs }}', '{{ art.price }}', '{{ art.primary_image|default:''|escapejs }}', '{{ art.sizes.all|length }}')"
               style="font-size:0.72rem; padding:0.3rem 0.65rem; font-weight:800;"
             >
               + Add
@@ -234,26 +240,35 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
 <script>
   function openArticlePickerModal() {
     const modal = document.getElementById('articlePickerModal');
-    modal.style.display = 'flex';
-    updateModalButtonsState();
-    document.getElementById('modalSearchInput').focus();
+    if (modal) {
+      modal.style.display = 'flex';
+      updateModalButtonsState();
+      const searchInput = document.getElementById('modalSearchInput');
+      if (searchInput) searchInput.focus();
+    }
   }
 
   function closeArticlePickerModal() {
-    document.getElementById('articlePickerModal').style.display = 'none';
+    const modal = document.getElementById('articlePickerModal');
+    if (modal) modal.style.display = 'none';
   }
 
   // Filter articles in modal
   function filterModalArticles() {
-    const q = document.getElementById('modalSearchInput').value.toLowerCase().trim();
+    const searchInput = document.getElementById('modalSearchInput');
+    if (!searchInput) return;
+    const q = searchInput.value.toLowerCase().trim();
     const cards = document.querySelectorAll('.modal-article-card');
     cards.forEach(card => {
-      const title = card.getAttribute('data-title');
-      const cat = card.getAttribute('data-category');
-      if (title.includes(q) || cat.includes(q)) {
+      const title = card.getAttribute('data-title') || '';
+      const cat = card.getAttribute('data-category') || '';
+      if (!q || title.includes(q) || cat.includes(q)) {
         card.style.display = 'flex';
       } else {
         card.style.display = 'none';
@@ -264,39 +279,41 @@
   // Update Add button disabled state if already in outfit
   function updateModalButtonsState() {
     const tbody = document.getElementById('selectedArticlesTbody');
+    if (!tbody) return;
     const existingIds = Array.from(tbody.querySelectorAll('tr')).map(r => r.getAttribute('data-article-id'));
 
     document.querySelectorAll('.modal-article-card').forEach(card => {
       const id = card.getAttribute('data-id');
       const btn = card.querySelector('.add-art-btn');
-      if (existingIds.includes(id)) {
-        btn.textContent = '✓ Added';
-        btn.classList.remove('btn-outline-gold');
-        btn.classList.add('btn-dark');
-        btn.style.opacity = '0.5';
-        btn.disabled = true;
-      } else {
-        btn.textContent = '+ Add';
-        btn.classList.remove('btn-dark');
-        btn.classList.add('btn-outline-gold');
-        btn.style.opacity = '1';
-        btn.disabled = false;
+      if (btn) {
+        if (existingIds.includes(id)) {
+          btn.textContent = 'Added';
+          btn.classList.remove('btn-outline-gold');
+          btn.classList.add('btn-dark');
+          btn.style.opacity = '0.5';
+          btn.disabled = true;
+        } else {
+          btn.textContent = '+ Add';
+          btn.classList.remove('btn-dark');
+          btn.classList.add('btn-outline-gold');
+          btn.style.opacity = '1';
+          btn.disabled = false;
+        }
       }
     });
 
     // Update counter
-    document.getElementById('itemsCounter').textContent = existingIds.length;
+    const counter = document.getElementById('itemsCounter');
+    if (counter) counter.textContent = existingIds.length;
     const noAlert = document.getElementById('noArticlesAlert');
-    if (existingIds.length === 0) {
-      noAlert.style.display = 'block';
-    } else {
-      noAlert.style.display = 'none';
+    if (noAlert) {
+      noAlert.style.display = (existingIds.length === 0) ? 'block' : 'none';
     }
   }
 
   function addArticleToOutfit(id, title, category, price, primaryImg, sizeCount) {
     const tbody = document.getElementById('selectedArticlesTbody');
-    if (document.getElementById(`row-article-${id}`)) {
+    if (!tbody || document.getElementById(`row-article-${id}`)) {
       return;
     }
 
@@ -319,11 +336,11 @@
         ${imgHtml}
       </td>
       <td>
-        <strong style="font-size:0.92rem; color:var(--text-main); display:block;">${title}</strong>
-        <span style="font-size:0.75rem; color:var(--gold-bright); text-transform:uppercase; font-weight:700;">${category}</span>
+        <strong style="font-size:0.92rem; color:var(--text-main); display:block;">${escapeHtml(title)}</strong>
+        <span style="font-size:0.75rem; color:var(--gold-bright); text-transform:uppercase; font-weight:700;">${escapeHtml(category)}</span>
       </td>
       <td style="font-weight:800; color:var(--gold-bright); font-size:0.95rem;">
-        ${price} MAD
+        ${escapeHtml(price)} MAD
       </td>
       <td>
         <span style="font-size:0.75rem; color:var(--text-secondary); background:var(--admin-bg-elevated); padding:3px 8px; border-radius:4px; border:1px solid var(--admin-border-subtle);">
@@ -349,13 +366,21 @@
     }
   }
 
+  function escapeHtml(text) {
+    if (!text) return '';
+    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
   // Close modal on Escape or clicking outside
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeArticlePickerModal();
   });
-  document.getElementById('articlePickerModal').addEventListener('click', (e) => {
-    if (e.target.id === 'articlePickerModal') closeArticlePickerModal();
-  });
-</script>
 
+  const pickerModal = document.getElementById('articlePickerModal');
+  if (pickerModal) {
+    pickerModal.addEventListener('click', (e) => {
+      if (e.target.id === 'articlePickerModal') closeArticlePickerModal();
+    });
+  }
+</script>
 {% endblock %}

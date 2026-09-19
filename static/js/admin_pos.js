@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let posCart = [];
 
   const articleSelect = document.getElementById('posArticleSelect');
+  const colorGroup = document.getElementById('posColorGroup');
+  const colorSelect = document.getElementById('posColorSelect');
   const sizeSelect = document.getElementById('posSizeSelect');
   const qtyInput = document.getElementById('posQtyInput');
   const addBtn = document.getElementById('posAddBtn');
@@ -13,26 +15,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const totalAmountElem = document.getElementById('posTotalAmount');
   const checkoutBtn = document.getElementById('posCheckoutBtn');
 
-  // Populate Sizes dropdown on article change
+  function updateArticleSelection() {
+    const selectedArticleId = parseInt(articleSelect.value);
+    const article = articlesData.find(a => a.id === selectedArticleId);
+    
+    if (!article) return;
+
+    if (article.has_colors && article.colors && article.colors.length > 0) {
+      if (colorGroup) colorGroup.style.display = 'block';
+      colorSelect.innerHTML = '';
+      article.colors.forEach(col => {
+        const opt = document.createElement('option');
+        opt.value = col;
+        opt.textContent = col;
+        colorSelect.appendChild(opt);
+      });
+    } else {
+      if (colorGroup) colorGroup.style.display = 'none';
+      colorSelect.innerHTML = '';
+    }
+
+    updateSizes();
+  }
+
+  // Populate Sizes dropdown on article / color change
   function updateSizes() {
     const selectedArticleId = parseInt(articleSelect.value);
     const article = articlesData.find(a => a.id === selectedArticleId);
     sizeSelect.innerHTML = '';
 
-    if (article && article.sizes) {
-      article.sizes.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.size;
-        opt.textContent = `${s.size} (${s.stock} in stock)`;
-        if (s.stock <= 0) opt.disabled = true;
-        sizeSelect.appendChild(opt);
-      });
-    }
+    if (!article || !article.sizes) return;
+
+    const selectedColor = (colorGroup && colorGroup.style.display !== 'none') ? colorSelect.value : '';
+
+    const matchingVariants = article.sizes.filter(s => {
+      if (selectedColor) {
+        return s.color === selectedColor;
+      }
+      return true;
+    });
+
+    matchingVariants.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.size;
+      const colLabel = s.color ? `[${s.color}] ` : '';
+      opt.textContent = `${colLabel}${s.size} (${s.stock} in stock)`;
+      if (s.stock <= 0) opt.disabled = true;
+      sizeSelect.appendChild(opt);
+    });
   }
 
   if (articleSelect) {
-    articleSelect.addEventListener('change', updateSizes);
-    updateSizes();
+    articleSelect.addEventListener('change', updateArticleSelection);
+    if (colorSelect) {
+      colorSelect.addEventListener('change', updateSizes);
+    }
+    updateArticleSelection();
   }
 
   function renderPosCart() {
@@ -54,7 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         </td>
-        <td><span class="size-pill selected">${item.size}</span></td>
+        <td>
+          <span class="size-pill selected">${item.size}</span>
+          ${item.color ? `<span style="font-size:0.75rem; background:var(--admin-bg-elevated); padding:2px 6px; border-radius:4px; border:1px solid var(--admin-border-gold); color:var(--gold-bright); margin-left:4px; font-weight:700;">${item.color}</span>` : ''}
+        </td>
         <td>${item.price.toFixed(2)} MAD</td>
         <td>
           <input type="number" min="1" value="${item.quantity}" style="width:60px;" class="form-control" onchange="window.updatePosQty(${index}, this.value)">
@@ -76,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const artId = parseInt(articleSelect.value);
       const article = articlesData.find(a => a.id === artId);
       const size = sizeSelect.value;
+      const color = (colorGroup && colorGroup.style.display !== 'none') ? colorSelect.value : '';
       const qty = parseInt(qtyInput.value) || 1;
 
       if (!article || !size) {
@@ -83,13 +125,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const sizeObj = article.sizes.find(s => s.size === size);
+      const sizeObj = article.sizes.find(s => s.size === size && (color ? s.color === color : true));
       if (!sizeObj || sizeObj.stock < qty) {
-        alert(`Only ${sizeObj ? sizeObj.stock : 0} items available for size ${size}.`);
+        const desc = size + (color ? ` (${color})` : '');
+        alert(`Only ${sizeObj ? sizeObj.stock : 0} items available for ${desc}.`);
         return;
       }
 
-      const existing = posCart.find(i => i.article_id === artId && i.size === size);
+      const existing = posCart.find(i => i.article_id === artId && i.size === size && (i.color || '') === (color || ''));
       if (existing) {
         if (existing.quantity + qty > sizeObj.stock) {
           alert(`Cannot add more than total stock (${sizeObj.stock})`);
@@ -103,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
           category: article.category,
           price: article.price,
           size: size,
+          color: color,
           quantity: qty,
           image: article.image
         });

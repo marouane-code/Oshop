@@ -1,7 +1,7 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
 
-{% block title %}Orders & Sales Telemetry — Wolf Shoes Admin Portal{% endblock %}
+{% block title %}Orders & Sales Telemetry — Mario Clothes Admin Portal{% endblock %}
 
 {% block workspace_header %}
   <span>Sales</span>
@@ -74,8 +74,14 @@
           <td>
             <div style="font-weight:700; color:var(--text-main); font-size:0.9rem;">{{ ord.client_name }}</div>
             <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:0.2rem; display:flex; flex-direction:column; gap:0.15rem;">
-              <span>📞 <a href="https://wa.me/212{{ ord.client_phone|slice:'1:' }}" target="_blank" style="color:var(--emerald-accent); font-weight:700;">{{ ord.client_phone }} ↗</a></span>
-              <span>📍 {{ ord.client_city }}{% if ord.client_address %}, {{ ord.client_address }}{% endif %}</span>
+              <span style="display:flex; align-items:center; gap:0.35rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <a href="https://wa.me/212{{ ord.client_phone|slice:'1:' }}" target="_blank" style="color:var(--emerald-accent); font-weight:700;">{{ ord.client_phone }} ↗</a>
+              </span>
+              <span style="display:flex; align-items:center; gap:0.35rem;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-muted);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ ord.client_city }}{% if ord.client_address %}, {{ ord.client_address }}{% endif %}
+              </span>
             </div>
           </td>
           <td>
@@ -86,6 +92,9 @@
                   <strong>{{ item.quantity }}x</strong>
                   <span style="color:var(--text-main);">{{ item.article_title }}</span>
                   <span style="font-size:0.7rem; font-weight:800; background:var(--admin-bg-elevated); border:1px solid var(--admin-border-gold); color:var(--gold-bright); padding:0.1rem 0.45rem; border-radius:4px;">{{ item.size }}</span>
+                  {% if item.color %}
+                    <span style="font-size:0.7rem; font-weight:800; background:var(--admin-bg-elevated); border:1px solid var(--admin-border-subtle); color:var(--text-main); padding:0.1rem 0.45rem; border-radius:4px;">{{ item.color }}</span>
+                  {% endif %}
                 </div>
               {% endfor %}
             </div>
@@ -103,7 +112,7 @@
             <span style="font-size:0.72rem; color:var(--gold-primary);">{{ ord.created_at|date:"H:i" }}</span>
           </td>
           <td>
-            <select onchange="updateOrderStatus({{ ord.id }}, this.value)" class="form-control" style="padding:0.35rem 0.6rem; font-size:0.78rem; width:135px; background:var(--admin-bg-elevated); font-weight:700;">
+            <select onchange="updateOrderStatus('{{ ord.id }}', this.value)" class="form-control" style="padding:0.35rem 0.6rem; font-size:0.78rem; width:135px; background:var(--admin-bg-elevated); font-weight:700;">
               {% for val, label in status_choices %}
                 <option value="{{ val }}" {% if ord.status == val %}selected{% endif %}>{{ label }}</option>
               {% endfor %}

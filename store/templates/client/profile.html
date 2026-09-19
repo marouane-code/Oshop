@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Profile & Order History — Wolf Shoes{% endblock %}
+{% block title %}My Profile & Order History — Mario Clothes{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width:1100px;">
 
-  <div style="margin-bottom:2.5rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
-    <h1 style="font-size:2.2rem; font-weight:800; letter-spacing:-0.02em;">Client Account Dashboard</h1>
-    <p style="color:var(--text-muted); font-size:0.9rem;">Manage your shipping details and track your nationwide order history</p>
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap; margin-bottom:2.5rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
+    <div>
+      <h1 style="font-size:2.2rem; font-weight:800; letter-spacing:-0.02em;">Client Account Dashboard</h1>
+      <p style="color:var(--text-muted); font-size:0.9rem;">Manage your shipping details and track your nationwide order history</p>
+    </div>
+    <a href="{% url 'store:logout' %}" class="btn btn-dark" style="color:var(--brand-red); border-color:var(--brand-red); font-size:0.78rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;">
+      {{ t.logout }}
+    </a>
   </div>
 
   <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:3rem;">
@@ -73,7 +78,7 @@
                 <div style="display:flex; flex-direction:column; gap:0.4rem; margin-bottom:0.75rem; padding:0.5rem 0; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); font-size:0.85rem;">
                   {% for item in ord.items.all %}
                     <div style="display:flex; justify-content:space-between;">
-                      <span>{{ item.quantity }}x {{ item.article_title }} (Size {{ item.size }})</span>
+                      <span>{{ item.quantity }}x {{ item.article_title }} (Size {{ item.size }}{% if item.color %}, Color {{ item.color }}{% endif %})</span>
                       <span style="color:var(--text-muted);">{{ item.subtotal }} MAD</span>
                     </div>
                   {% endfor %}

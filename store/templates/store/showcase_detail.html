@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ showcase.title }} — Outfit Showcase | Wolf Shoes{% endblock %}
+{% block title %}{{ showcase.title }} — Outfit Showcase | Mario Clothes{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 1200px; margin: 0 auto; padding-bottom: 7rem;">
+<div class="container showcase-page" style="max-width: 1200px; margin: 0 auto; padding-bottom: 7rem;">
+  <style>
+    .showcase-page {
+      --showcase-accent: #047857;
+      --showcase-accent-bright: #059669;
+      --showcase-accent-soft: rgba(5, 150, 105, 0.12);
+      --showcase-warning: #C5221F;
+    }
+    .showcase-page .showcase-accent { color: var(--showcase-accent-bright); }
+    .showcase-page .showcase-size-disabled { opacity: 0.35; cursor: not-allowed; text-decoration: line-through; }
+  </style>
 
   <!-- Breadcrumbs -->
   <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:2rem; letter-spacing:0.05em; text-transform:uppercase; display:flex; align-items:center; gap:0.5rem;">
@@ -12,7 +22,7 @@
     <span>/</span>
     <span style="color:var(--text-muted);">Showcase Outfits</span>
     <span>/</span>
-    <span class="gold-text" style="font-weight:700;">{{ showcase.title }}</span>
+    <span class="showcase-accent" style="font-weight:700;">{{ showcase.title }}</span>
   </div>
 
   <!-- Showcase Hero Banner -->
@@ -30,12 +40,16 @@
     <div style="position:absolute; width:350px; height:350px; background:radial-gradient(circle, rgba(0,0,0,0.04) 0%, transparent 70%); top:-60px; right:-60px; pointer-events:none;"></div>
     <div style="position:absolute; width:250px; height:250px; background:radial-gradient(circle, rgba(0,0,0,0.02) 0%, transparent 70%); bottom:-50px; left:150px; pointer-events:none;"></div>
 
-    <div style="display:grid; grid-template-columns: 1fr {% if showcase.cover_image %}320px{% endif %}; gap:2.5rem; align-items:center; position:relative; z-index:2;">
+    {% if showcase.cover_image %}
+      <div style="display:grid; grid-template-columns:1fr 320px; gap:2.5rem; align-items:center; position:relative; z-index:2;">
+    {% else %}
+      <div style="display:grid; grid-template-columns:1fr; gap:2.5rem; align-items:center; position:relative; z-index:2;">
+    {% endif %}
       <div>
         <!-- Pill Badge -->
         <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(0,0,0,0.05); border:1px solid var(--border-color); padding:0.35rem 1rem; border-radius:20px; margin-bottom:1.25rem;">
-          <span style="width:6px; height:6px; background:var(--gold-bright); border-radius:50%; box-shadow:0 0 8px var(--gold-bright); display:inline-block;"></span>
-          <span style="letter-spacing:0.12em; text-transform:uppercase; font-size:0.72rem; font-weight:800; color:var(--gold-bright);">Curated Outfit Showcase</span>
+          <span style="width:6px; height:6px; background:var(--showcase-accent-bright); border-radius:50%; box-shadow:0 0 8px var(--showcase-accent-bright); display:inline-block;"></span>
+          <span class="showcase-accent" style="letter-spacing:0.12em; text-transform:uppercase; font-size:0.72rem; font-weight:800;">Curated Outfit Showcase</span>
         </div>
 
         <h1 style="font-size:clamp(2.2rem, 4vw, 3.2rem); font-weight:900; letter-spacing:-0.02em; line-height:1.1; margin-bottom:1rem;">
@@ -59,15 +73,16 @@
           <div style="width:1px; height:35px; background:rgba(255,255,255,0.08);"></div>
           <div>
             <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700;">Full Outfit Value</div>
-            <div style="font-size:1.35rem; font-weight:900; color:var(--gold-bright); margin-top:0.2rem;">
+            <div class="showcase-accent" style="font-size:1.35rem; font-weight:900; margin-top:0.2rem;">
               {{ showcase.total_outfit_price }} MAD
             </div>
           </div>
           <div style="width:1px; height:35px; background:rgba(255,255,255,0.08);"></div>
           <div>
             <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); font-weight:700;">Delivery Guarantee</div>
-            <div style="font-size:0.95rem; font-weight:800; color:#10B981; margin-top:0.35rem; display:flex; align-items:center; gap:4px;">
-              ✓ Cash on Delivery (COD)
+            <div class="showcase-accent" style="font-size:0.95rem; font-weight:800; margin-top:0.35rem; display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Cash on Delivery (COD)
             </div>
           </div>
         </div>
@@ -125,7 +140,7 @@
           "
         >
           <!-- Item Number Badge -->
-          <div style="position:absolute; top:12px; left:12px; z-index:4; background:rgba(8,8,16,0.85); backdrop-filter:blur(4px); border:1px solid var(--border-gold); color:var(--gold-bright); font-size:0.72rem; font-weight:900; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+          <div style="position:absolute; top:12px; left:12px; z-index:4; background:rgba(8,8,16,0.85); backdrop-filter:blur(4px); border:1px solid var(--showcase-accent-bright); color:var(--showcase-accent-bright); font-size:0.72rem; font-weight:900; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
             {{ item.display_order|default:forloop.counter }}
           </div>
 
@@ -142,17 +157,18 @@
                 type="checkbox" 
                 class="article-select-checkbox" 
                 checked 
-                onchange="onArticleToggle({{ art.id }}, this.checked)"
-                style="accent-color: var(--gold-bright); width:16px; height:16px; cursor:pointer;"
+                onchange="onArticleToggle(this.dataset.articleId, this.checked)"
+                data-article-id="{{ art.id }}"
+                style="accent-color: var(--showcase-accent-bright); width:16px; height:16px; cursor:pointer;"
               >
-              <span class="checkbox-label-text" style="font-size:0.75rem; font-weight:800; color:var(--gold-bright); letter-spacing:0.04em;">INCLUDE</span>
+              <span class="checkbox-label-text showcase-accent" style="font-size:0.75rem; font-weight:800; letter-spacing:0.04em;">INCLUDE</span>
             </label>
           </div>
 
           <!-- Product Thumbnail -->
           <a href="{% url 'store:product_detail' art.slug %}" target="_blank" class="card-thumb-link" style="display:block; width:100%; aspect-ratio:4/5; background:var(--bg-elevated); position:relative; overflow:hidden;">
             {% if art.primary_image %}
-              <img src="{{ art.primary_image }}" alt="{{ art.title }}" style="width:100%; height:100%; object-fit:cover; transition:transform 0.35s ease;" class="card-art-img" loading="lazy">
+              <img src="{{ art.primary_image }}" alt="{{ art.title }}" style="width:100%; height:100%; object-fit:cover; transition:transform 0.35s ease;" class="card-art-img product-shuffle-image" loading="lazy" data-shuffle-images="{{ art.image_urls|escapejs }}">
             {% else %}
               <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.75rem; text-transform:uppercase;">No Image</div>
             {% endif %}
@@ -161,13 +177,13 @@
           <!-- Product Details -->
           <div style="padding:1.25rem; display:flex; flex-direction:column; flex:1; justify-content:space-between; gap:1rem;">
             <div>
-              <span style="font-size:0.72rem; color:var(--gold-bright); font-weight:800; text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:4px;">
+              <span class="showcase-accent" style="font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:4px;">
                 {{ art.category.name }}
               </span>
               <a href="{% url 'store:product_detail' art.slug %}" target="_blank" style="font-size:1.05rem; font-weight:700; color:var(--text-main); line-height:1.3; text-decoration:none; display:block;">
                 {{ art.title }}
               </a>
-              <div style="font-size:1.2rem; font-weight:900; color:var(--gold-bright); margin-top:0.5rem;">
+              <div class="showcase-accent" style="font-size:1.2rem; font-weight:900; margin-top:0.5rem;">
                 {{ art.price }} MAD
               </div>
             </div>
@@ -178,7 +194,7 @@
                 <label style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin:0;">
                   Size Variant:
                 </label>
-                <span class="selected-size-text gold-text" id="size-label-{{ art.id }}" style="font-size:0.78rem; font-weight:800;">
+                <span class="selected-size-text showcase-accent" id="size-label-{{ art.id }}" style="font-size:0.78rem; font-weight:800;">
                   {% if art.sizes.all|length == 1 and art.sizes.first.stock_quantity > 0 %}
                     {{ art.sizes.first.size }}
                   {% else %}
@@ -192,7 +208,7 @@
                 {% for sz in art.sizes.all %}
                   <button 
                     type="button"
-                    class="btn size-pill-btn {% if sz.stock_quantity == 0 %}disabled-size{% endif %}"
+                    class="btn size-pill-btn {% if sz.stock_quantity == 0 %}disabled-size showcase-size-disabled{% endif %}"
                     id="btn-sz-{{ art.id }}-{{ sz.size|slugify }}"
                     data-article-id="{{ art.id }}"
                     data-size="{{ sz.size }}"
@@ -209,13 +225,12 @@
                       color: var(--text-main);
                       cursor: pointer;
                       transition: all 0.2s;
-                      {% if sz.stock_quantity == 0 %}opacity:0.35; cursor:not-allowed; text-decoration:line-through;{% endif %}
                     "
                     title="{% if sz.stock_quantity > 0 %}{{ sz.stock_quantity }} items left{% else %}Out of stock{% endif %}"
                   >
                     {{ sz.size }}
                     {% if sz.stock_quantity > 0 and sz.stock_quantity <= 3 %}
-                      <span style="font-size:0.6rem; color:#EF4444; display:block; margin-top:1px;">{{ sz.stock_quantity }} left</span>
+                      <span style="font-size:0.6rem; color:var(--showcase-warning); display:block; margin-top:1px;">{{ sz.stock_quantity }} left</span>
                     {% endif %}
                   </button>
                 {% empty %}
@@ -226,7 +241,7 @@
                     data-size="One Size"
                     data-stock="10"
                     onclick="selectCardSize({{ art.id }}, 'One Size', this)"
-                    style="padding:0.4rem 0.75rem; font-size:0.78rem; font-weight:700; border-radius:8px; background:var(--gold-gradient); color:#000; border:none;"
+                    style="padding:0.4rem 0.75rem; font-size:0.78rem; font-weight:700; border-radius:8px; background:var(--showcase-accent); color:#fff; border:none;"
                   >
                     One Size
                   </button>
@@ -245,7 +260,7 @@
     <section style="margin-top:5rem; padding-top:3rem; border-top:1px solid var(--border-color);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.75rem;">
         <div>
-          <span style="font-size:0.75rem; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.15em; font-weight:800;">More Curated Looks</span>
+          <span class="showcase-accent" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.15em; font-weight:800;">More Curated Looks</span>
           <h2 style="font-size:1.6rem; font-weight:800; letter-spacing:-0.01em;">Explore Other Complete Outfits</h2>
         </div>
       </div>
@@ -261,7 +276,7 @@
               {% endif %}
             </a>
             <div class="product-info">
-              <span class="product-category" style="font-size:0.72rem; color:var(--gold-bright);">{{ o_show.items.count }} Complete Pieces</span>
+              <span class="product-category showcase-accent" style="font-size:0.72rem;">{{ o_show.items.count }} Complete Pieces</span>
               <a href="{% url 'store:showcase_detail' o_show.slug %}" class="product-title" style="font-size:1.05rem; font-weight:700;">{{ o_show.title }}</a>
               <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1rem;">
                 <div class="product-price" style="font-size:1.15rem; font-weight:800;">{{ o_show.total_outfit_price }} MAD</div>
@@ -282,10 +297,10 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(10, 10, 18, 0.96);
+  background: rgba(252, 252, 253, 0.96);
   backdrop-filter: blur(12px);
   border-top: 1px solid var(--border-gold);
-  box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 -10px 30px rgba(255, 255, 255, 0.6);
   padding: 1rem 1.5rem;
   z-index: 500;
   transition: transform 0.3s ease;
@@ -295,11 +310,11 @@
     <!-- Left: Selected Count & Live Subtotal -->
     <div style="display:flex; align-items:center; gap:1.5rem;">
       <div style="display:flex; align-items:center; gap:0.6rem;">
-        <span style="width:10px; height:10px; background:var(--gold-bright); border-radius:50%; box-shadow:0 0 10px var(--gold-bright);"></span>
+        <span style="width:10px; height:10px; background:var(--showcase-accent-bright); border-radius:50%; box-shadow:0 0 10px var(--showcase-accent-bright);"></span>
         <div>
           <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); font-weight:700;">Selection</div>
           <div style="font-size:0.95rem; font-weight:800; color:var(--text-main);">
-            <span id="selectedCountDisplay" class="gold-text">0</span> of {{ ordered_items.count }} {{ t.items_selected }}
+            <span id="selectedCountDisplay" class="showcase-accent">0</span> of {{ ordered_items.count }} {{ t.items_selected }}
           </div>
         </div>
       </div>
@@ -308,7 +323,7 @@
 
       <div>
         <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); font-weight:700;">Subtotal</div>
-        <div style="font-size:1.35rem; font-weight:900; color:var(--gold-bright);">
+        <div class="showcase-accent" style="font-size:1.35rem; font-weight:900;">
           <span id="subtotalDisplay">0.00</span> MAD
         </div>
       </div>
@@ -319,7 +334,7 @@
       <button 
         type="button" 
         id="addOutfitBtn" 
-        class="btn btn-gold" 
+        class="btn btn-primary"
         onclick="addSelectedOutfitToCart()"
         style="padding:0.85rem 2rem; font-size:0.92rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase; display:flex; align-items:center; gap:0.6rem; box-shadow:0 4px 20px rgba(0,0,0,0.18);"
       >
@@ -351,8 +366,8 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
   .outfit-item-card.missing-size {
-    border-color: #EF4444 !important;
-    box-shadow: 0 0 15px rgba(239,68,68,0.4) !important;
+    border-color: var(--showcase-warning) !important;
+    box-shadow: 0 0 15px rgba(197,34,31,0.25) !important;
     animation: shake 0.35s ease;
   }
   @keyframes shake {

@@ -1,7 +1,7 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
 
-{% block title %}{{ title }} — Wolf Shoes Admin Portal{% endblock %}
+{% block title %}{{ title }} — Mario Clothes Admin Portal{% endblock %}
 
 {% block workspace_header %}
   <span>Catalog</span>
@@ -85,45 +85,167 @@
       <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.35rem;">First uploaded image will serve as primary product thumbnail.</div>
     </div>
 
-    <!-- Size Stock Matrix Section -->
-    <div style="background:var(--admin-bg-elevated); padding:1.25rem; border-radius:var(--radius-sm); border:1px solid var(--admin-border-gold); margin-bottom:2rem;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-        <label class="form-label" style="color:var(--gold-bright); margin:0;">Stock Quantity Per Size Variant</label>
-        <button type="button" class="btn btn-outline-gold" style="font-size:0.72rem; padding:0.35rem 0.75rem; font-weight:800;" onclick="addSizeRow()">
-          + Add Custom Size
-        </button>
+    <!-- Standard Colors Datalist for 1-click dropdowns -->
+    <datalist id="colorPresets">
+      {% for col in standard_colors %}
+        <option value="{{ col.name }}">{{ col.name }}</option>
+      {% endfor %}
+    </datalist>
+
+    <!-- Size & Color Stock Matrix Section -->
+    <div style="background:var(--admin-bg-elevated); padding:1.5rem; border-radius:var(--radius-sm); border:1px solid var(--admin-border-gold); margin-bottom:2rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <label class="form-label" style="color:var(--gold-bright); margin:0; font-size:1.05rem; font-weight:800;">
+            Stock Quantity Per Variant (Color & Size)
+          </label>
+          <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">
+            Pick colors & sizes with 1 click below, or customize individual rows. Leave Color empty for size-only items.
+          </div>
+        </div>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline-gold" style="font-size:0.75rem; padding:0.4rem 0.85rem; font-weight:800;" onclick="togglePresetBuilder()">
+            🎨 1-Click Color & Size Picker
+          </button>
+          <button type="button" class="btn btn-gold" style="font-size:0.75rem; padding:0.4rem 0.85rem; font-weight:800;" onclick="addVariantRow('', '', 5)">
+            + Add Row
+          </button>
+        </div>
       </div>
 
-      <div id="sizesContainer" style="display:flex; flex-direction:column; gap:0.75rem;">
+      <!-- 1-Click Visual Preset Builder Box -->
+      <div id="presetBuilderBox" style="background:var(--admin-bg-surface); padding:1.25rem; border-radius:var(--radius-xs); border:1.5px solid var(--admin-border-gold); margin-bottom:1.5rem;">
+        
+        <!-- Step 1: Select Colors by clicking chips -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; flex-wrap:wrap; gap:0.5rem;">
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <span style="font-size:0.8rem; font-weight:800; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.06em;">
+                1. Click Colors to Include (No typing needed)
+              </span>
+              <input 
+                type="text" 
+                id="colorFilterInput" 
+                placeholder="🔍 Filter colors..." 
+                oninput="filterColorChips(this.value)"
+                style="padding:0.2rem 0.6rem; font-size:0.75rem; background:var(--admin-bg-elevated); border:1px solid var(--admin-border-subtle); border-radius:12px; color:var(--text-main); width:130px;"
+              >
+            </div>
+            <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.18rem 0.5rem;" onclick="selectQuickColors(['Black', 'White', 'Charcoal', 'Grey', 'Navy'])">⚡ Neutrals</button>
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.18rem 0.5rem;" onclick="selectQuickColors(['Navy', 'Midnight Blue', 'Royal Blue', 'Sky Blue', 'Teal', 'Indigo'])">⚡ Blues</button>
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.18rem 0.5rem;" onclick="selectQuickColors(['Beige', 'Sand', 'Camel', 'Tan', 'Khaki', 'Brown', 'Taupe', 'Cognac'])">⚡ Earth Tones</button>
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.18rem 0.5rem;" onclick="selectQuickColors(['Olive', 'Olive Drab', 'Forest Green', 'Pine Green', 'Sage Green', 'Emerald', 'Mint'])">⚡ Greens</button>
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.18rem 0.5rem;" onclick="selectQuickColors(['Burgundy', 'Bordeaux', 'Wine', 'Red', 'Terracotta', 'Dusty Rose', 'Lavender'])">⚡ Reds & Purples</button>
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.18rem 0.5rem;" onclick="selectAllColors()">⚡ All</button>
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.18rem 0.5rem; color:var(--text-muted);" onclick="clearColors()">Clear</button>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; gap:0.45rem; max-height:220px; overflow-y:auto; padding:0.25rem 0.1rem;" id="presetColorChips">
+            {% for col in standard_colors %}
+              <button 
+                type="button" 
+                class="btn color-chip-btn" 
+                data-color="{{ col.name }}"
+                onclick="toggleColorChip(this)"
+                style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.32rem 0.7rem; font-size:0.78rem; font-weight:700; border-radius:20px; background:var(--admin-bg-elevated); border:1.5px solid var(--admin-border-subtle); color:var(--text-main); cursor:pointer;"
+              >
+                <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:{{ col.hex }}; border:1px solid {{ col.border }}; flex-shrink:0;"></span>
+                <span>{{ col.name }}</span>
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Step 2: Select Sizes by clicking chips -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; flex-wrap:wrap; gap:0.4rem;">
+            <span style="font-size:0.8rem; font-weight:800; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.06em;">
+              2. Click Sizes to Include
+            </span>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.15rem 0.5rem;" onclick="selectQuickSizes(['S', 'M', 'L', 'XL', 'XXL'])">⚡ Clothes (S–XXL)</button>
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.15rem 0.5rem;" onclick="selectQuickSizes(['39', '40', '41', '42', '43', '44', '45'])">⚡ Shoes (39–45)</button>
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.15rem 0.5rem;" onclick="selectQuickSizes(['One Size'])">⚡ One Size</button>
+              <button type="button" class="btn btn-dark" style="font-size:0.68rem; padding:0.15rem 0.5rem; color:var(--text-muted);" onclick="clearSizes()">Clear</button>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; gap:0.45rem;" id="presetSizeChips">
+            {% for sz in standard_sizes %}
+              <button 
+                type="button" 
+                class="btn size-chip-btn" 
+                data-size="{{ sz }}"
+                onclick="toggleSizeChip(this)"
+                style="padding:0.35rem 0.75rem; font-size:0.8rem; font-weight:700; border-radius:6px; background:var(--admin-bg-elevated); border:1.5px solid var(--admin-border-subtle); color:var(--text-main); cursor:pointer;"
+              >
+                {{ sz }}
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Step 3: Default stock & Generate -->
+        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--admin-border-subtle); padding-top:1rem; flex-wrap:wrap; gap:1rem;">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <label class="form-label" style="margin:0; font-size:0.8rem; font-weight:700;">Default Stock Per Variant:</label>
+            <input type="number" id="builderDefaultQty" value="5" min="0" class="form-control" style="width:80px; padding:0.35rem 0.6rem; font-size:0.85rem;">
+          </div>
+
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <button type="button" class="btn btn-gold" style="font-size:0.82rem; padding:0.55rem 1.4rem; font-weight:900; letter-spacing:0.04em;" onclick="applyPresetMatrix()">
+              ⚡ Generate Selected Combinations
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Column Labels -->
+      <div style="display:flex; gap:1rem; font-size:0.75rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem; padding:0 0.2rem;">
+        <span style="flex:1;">Color Variant (Optional — Click to pick from list)</span>
+        <span style="flex:1;">Size *</span>
+        <span style="width:120px;">Stock Qty *</span>
+        <span style="width:65px;"></span>
+      </div>
+
+      <div id="sizesContainer" style="display:flex; flex-direction:column; gap:0.6rem;">
         {% if article.sizes.all %}
           {% for sz in article.sizes.all %}
             <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+              <input type="text" name="color_name" value="{{ sz.color|default:'' }}" list="colorPresets" class="form-control" placeholder="Color (Click for dropdown)" style="flex:1; background:var(--admin-bg-surface);">
               <input type="text" name="size_name" value="{{ sz.size }}" class="form-control" placeholder="Size (e.g. S, M, L, 42)" style="flex:1; background:var(--admin-bg-surface);" required>
-              <input type="number" name="size_stock" value="{{ sz.stock_quantity }}" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
-              <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+              <input type="number" name="size_stock" value="{{ sz.stock_quantity }}" min="0" class="form-control" placeholder="Stock Qty" style="width:120px; background:var(--admin-bg-surface);" required>
+              <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700; width:65px;">✕</button>
             </div>
           {% endfor %}
         {% else %}
-          <!-- Default Size Rows -->
+          <!-- Default Variant Rows -->
           <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+            <input type="text" name="color_name" value="" list="colorPresets" class="form-control" placeholder="Color (Click for dropdown)" style="flex:1; background:var(--admin-bg-surface);">
             <input type="text" name="size_name" value="S" class="form-control" placeholder="Size" style="flex:1; background:var(--admin-bg-surface);" required>
-            <input type="number" name="size_stock" value="5" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
-            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+            <input type="number" name="size_stock" value="5" min="0" class="form-control" placeholder="Stock Qty" style="width:120px; background:var(--admin-bg-surface);" required>
+            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700; width:65px;">✕</button>
           </div>
           <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+            <input type="text" name="color_name" value="" list="colorPresets" class="form-control" placeholder="Color (Click for dropdown)" style="flex:1; background:var(--admin-bg-surface);">
             <input type="text" name="size_name" value="M" class="form-control" placeholder="Size" style="flex:1; background:var(--admin-bg-surface);" required>
-            <input type="number" name="size_stock" value="10" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
-            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+            <input type="number" name="size_stock" value="10" min="0" class="form-control" placeholder="Stock Qty" style="width:120px; background:var(--admin-bg-surface);" required>
+            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700; width:65px;">✕</button>
           </div>
           <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+            <input type="text" name="color_name" value="" list="colorPresets" class="form-control" placeholder="Color (Click for dropdown)" style="flex:1; background:var(--admin-bg-surface);">
             <input type="text" name="size_name" value="L" class="form-control" placeholder="Size" style="flex:1; background:var(--admin-bg-surface);" required>
-            <input type="number" name="size_stock" value="8" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
-            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+            <input type="number" name="size_stock" value="8" min="0" class="form-control" placeholder="Stock Qty" style="width:120px; background:var(--admin-bg-surface);" required>
+            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700; width:65px;">✕</button>
           </div>
           <div class="size-row" style="display:flex; gap:1rem; align-items:center;">
+            <input type="text" name="color_name" value="" list="colorPresets" class="form-control" placeholder="Color (Click for dropdown)" style="flex:1; background:var(--admin-bg-surface);">
             <input type="text" name="size_name" value="XL" class="form-control" placeholder="Size" style="flex:1; background:var(--admin-bg-surface);" required>
-            <input type="number" name="size_stock" value="4" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
-            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+            <input type="number" name="size_stock" value="4" min="0" class="form-control" placeholder="Stock Qty" style="width:120px; background:var(--admin-bg-surface);" required>
+            <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700; width:65px;">✕</button>
           </div>
         {% endif %}
       </div>
@@ -143,17 +265,128 @@
 
 {% block extra_js %}
 <script>
-  function addSizeRow() {
+  function addVariantRow(color = '', size = '', stock = 5) {
     const container = document.getElementById('sizesContainer');
     const row = document.createElement('div');
     row.className = 'size-row';
     row.style.cssText = 'display:flex; gap:1rem; align-items:center;';
     row.innerHTML = `
-      <input type="text" name="size_name" class="form-control" placeholder="Size (e.g. XXL or 42)" style="flex:1; background:var(--admin-bg-surface);" required>
-      <input type="number" name="size_stock" value="0" min="0" class="form-control" placeholder="Stock Qty" style="width:130px; background:var(--admin-bg-surface);" required>
-      <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700;">Remove</button>
+      <input type="text" name="color_name" value="${escapeHtml(color)}" list="colorPresets" class="form-control" placeholder="Color (Click for dropdown)" style="flex:1; background:var(--admin-bg-surface);">
+      <input type="text" name="size_name" value="${escapeHtml(size)}" class="form-control" placeholder="Size (e.g. M, L, 42)" style="flex:1; background:var(--admin-bg-surface);" required>
+      <input type="number" name="size_stock" value="${stock}" min="0" class="form-control" placeholder="Stock Qty" style="width:120px; background:var(--admin-bg-surface);" required>
+      <button type="button" class="btn btn-dark" onclick="this.parentElement.remove()" style="color:var(--danger-accent); font-size:0.78rem; font-weight:700; width:65px;">✕</button>
     `;
     container.appendChild(row);
+  }
+
+  function togglePresetBuilder() {
+    const box = document.getElementById('presetBuilderBox');
+    box.style.display = (box.style.display === 'none' || !box.style.display) ? 'block' : 'none';
+  }
+
+  function toggleColorChip(btn) {
+    btn.classList.toggle('active-chip');
+    if (btn.classList.contains('active-chip')) {
+      btn.style.borderColor = 'var(--gold-bright)';
+      btn.style.background = 'rgba(212, 175, 55, 0.15)';
+      btn.style.color = 'var(--gold-bright)';
+    } else {
+      btn.style.borderColor = 'var(--admin-border-subtle)';
+      btn.style.background = 'var(--admin-bg-elevated)';
+      btn.style.color = 'var(--text-main)';
+    }
+  }
+
+  function toggleSizeChip(btn) {
+    btn.classList.toggle('active-chip');
+    if (btn.classList.contains('active-chip')) {
+      btn.style.borderColor = 'var(--gold-bright)';
+      btn.style.background = 'var(--gold-gradient)';
+      btn.style.color = '#000000';
+    } else {
+      btn.style.borderColor = 'var(--admin-border-subtle)';
+      btn.style.background = 'var(--admin-bg-elevated)';
+      btn.style.color = 'var(--text-main)';
+    }
+  }
+
+  function selectQuickColors(colorList) {
+    document.querySelectorAll('.color-chip-btn').forEach(btn => {
+      const col = btn.getAttribute('data-color');
+      if (colorList.includes(col)) {
+        if (!btn.classList.contains('active-chip')) toggleColorChip(btn);
+      } else {
+        if (btn.classList.contains('active-chip')) toggleColorChip(btn);
+      }
+    });
+  }
+
+  function selectAllColors() {
+    document.querySelectorAll('.color-chip-btn').forEach(btn => {
+      if (btn.style.display !== 'none' && !btn.classList.contains('active-chip')) {
+        toggleColorChip(btn);
+      }
+    });
+  }
+
+  function filterColorChips(query) {
+    const q = (query || '').toLowerCase().trim();
+    document.querySelectorAll('.color-chip-btn').forEach(btn => {
+      const col = (btn.getAttribute('data-color') || '').toLowerCase();
+      if (!q || col.includes(q)) {
+        btn.style.display = 'inline-flex';
+      } else {
+        btn.style.display = 'none';
+      }
+    });
+  }
+
+  function clearColors() {
+    document.querySelectorAll('.color-chip-btn.active-chip').forEach(btn => toggleColorChip(btn));
+  }
+
+  function selectQuickSizes(sizeList) {
+    document.querySelectorAll('.size-chip-btn').forEach(btn => {
+      const sz = btn.getAttribute('data-size');
+      if (sizeList.includes(sz)) {
+        if (!btn.classList.contains('active-chip')) toggleSizeChip(btn);
+      } else {
+        if (btn.classList.contains('active-chip')) toggleSizeChip(btn);
+      }
+    });
+  }
+
+  function clearSizes() {
+    document.querySelectorAll('.size-chip-btn.active-chip').forEach(btn => toggleSizeChip(btn));
+  }
+
+  function applyPresetMatrix() {
+    const selectedColors = Array.from(document.querySelectorAll('.color-chip-btn.active-chip')).map(b => b.getAttribute('data-color'));
+    const selectedSizes = Array.from(document.querySelectorAll('.size-chip-btn.active-chip')).map(b => b.getAttribute('data-size'));
+    const defaultQty = parseInt(document.getElementById('builderDefaultQty').value) || 0;
+
+    if (selectedSizes.length === 0) {
+      alert("Please select at least one size chip.");
+      return;
+    }
+
+    const container = document.getElementById('sizesContainer');
+    container.innerHTML = '';
+
+    const colorsToUse = selectedColors.length > 0 ? selectedColors : [''];
+
+    colorsToUse.forEach(col => {
+      selectedSizes.forEach(sz => {
+        addVariantRow(col, sz, defaultQty);
+      });
+    });
+
+    togglePresetBuilder();
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 </script>
 {% endblock %}

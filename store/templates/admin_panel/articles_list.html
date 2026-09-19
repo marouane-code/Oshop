@@ -1,7 +1,7 @@
 {% extends 'admin_panel/admin_base.html' %}
 {% load static %}
 
-{% block title %}Articles & Inventory Management — Wolf Shoes Admin Portal{% endblock %}
+{% block title %}Articles & Inventory Management — Mario Clothes Admin Portal{% endblock %}
 
 {% block workspace_header %}
   <span>Catalog</span>
@@ -57,11 +57,17 @@
           <td>
             <div style="display:flex; flex-wrap:wrap; gap:0.35rem;">
               {% for sz in art.sizes.all %}
-                <span style="font-size:0.72rem; font-weight:700; background:var(--admin-bg-elevated); border:1px solid {% if sz.stock_quantity > 0 %}var(--admin-border-subtle){% else %}rgba(239, 68, 68, 0.4){% endif %}; padding:0.2rem 0.5rem; border-radius:6px; color:{% if sz.stock_quantity > 0 %}var(--text-main){% else %}var(--danger-accent){% endif %};">
-                  {{ sz.size }}: <strong class="gold-text">{{ sz.stock_quantity }}</strong>
-                </span>
+                {% if sz.stock_quantity > 0 %}
+                  <span style="font-size:0.72rem; font-weight:700; background:var(--admin-bg-elevated); border:1px solid var(--admin-border-subtle); padding:0.2rem 0.5rem; border-radius:6px; color:var(--text-main);">
+                    {% if sz.color %}<span style="color:var(--gold-bright);">{{ sz.color }}</span>/{% endif %}{{ sz.size }}: <strong class="gold-text">{{ sz.stock_quantity }}</strong>
+                  </span>
+                {% else %}
+                  <span style="font-size:0.72rem; font-weight:700; background:var(--admin-bg-elevated); border:1px solid rgba(239, 68, 68, 0.4); padding:0.2rem 0.5rem; border-radius:6px; color:var(--danger-accent);">
+                    {% if sz.color %}<span style="color:var(--gold-bright);">{{ sz.color }}</span>/{% endif %}{{ sz.size }}: <strong class="gold-text">{{ sz.stock_quantity }}</strong>
+                  </span>
+                {% endif %}
               {% empty %}
-                <span style="font-size:0.75rem; color:var(--text-muted);">No size variants</span>
+                <span style="font-size:0.75rem; color:var(--text-muted);">No variants</span>
               {% endfor %}
             </div>
           </td>

@@ -18,6 +18,7 @@ urlpatterns = [
     
     # Storefront Cart APIs
     path('api/cart/add/', storefront.add_to_cart_api, name='api_cart_add'),
+    path('api/cart/contents/', storefront.cart_contents_api, name='api_cart_contents'),
     path('api/cart/add-showcase/', storefront.add_showcase_to_cart_api, name='api_cart_add_showcase'),
     path('api/cart/update/', storefront.update_cart_api, name='api_cart_update'),
     

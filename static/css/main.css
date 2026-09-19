@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 /* ==========================================
-  WOLF SHOES — Minimalist Monochrome Design System
-   Curated Fashion For Every Style
+   MARIO CLOTHES — High-End Men's Fashion
+   Casablanca | Haute Couture Sartoriale
    ========================================== */
 
 :root {
@@ -21,19 +21,21 @@
   --border-gold:  #111827; /* Backward-compatibility alias */
   --border-hover: #000000;
 
-  /* Brand Accents (Pure High-Contrast Monochrome) */
+  /* Brand Accents (White, Black + Refined Mario Red) */
   --brand-black:  #0A0A0A;
   --brand-white:  #FFFFFF;
   --brand-gray:   #4B5563;
   --brand-light:  #F3F4F6;
+  --brand-red:    #C5221F;
+  --brand-red-hover: #A51D1A;
   
   /* Aliases for template compatibility */
   --gold-primary: #0A0A0A;
-  --gold-bright:  #000000;
+  --gold-bright:  #C5221F;
   --gold-light:   #374151;
   --gold-gradient: linear-gradient(135deg, #18181B 0%, #09090B 100%);
-  --gold-gradient-subtle: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
-  --gold-glow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --gold-gradient-subtle: linear-gradient(135deg, rgba(197, 34, 31, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+  --gold-glow: 0 8px 30px rgba(197, 34, 31, 0.12);
 
   --ig-gradient: linear-gradient(45deg, #0A0A0A 0%, #262626 50%, #000000 100%);
 

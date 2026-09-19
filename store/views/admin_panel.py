@@ -10,6 +10,143 @@ import json
 
 from ..models import Category, Article, ArticleImage, ArticleSize, Order, OrderItem, FeaturedShowcase, FeaturedShowcaseItem
 
+STANDARD_SIZES = ['S', 'M', 'L', 'XL', 'XXL', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', 'One Size']
+
+STANDARD_COLORS = [
+    # Neutrals & Monochromes
+    {'name': 'Black', 'hex': '#0A0A0A', 'border': '#333333', 'family': 'Neutrals'},
+    {'name': 'Jet Black', 'hex': '#000000', 'border': '#222222', 'family': 'Neutrals'},
+    {'name': 'Charcoal', 'hex': '#374151', 'border': '#4B5563', 'family': 'Neutrals'},
+    {'name': 'Anthracite', 'hex': '#27272A', 'border': '#3F3F46', 'family': 'Neutrals'},
+    {'name': 'Dark Grey', 'hex': '#4B5563', 'border': '#6B7280', 'family': 'Neutrals'},
+    {'name': 'Slate Grey', 'hex': '#64748B', 'border': '#94A3B8', 'family': 'Neutrals'},
+    {'name': 'Grey', 'hex': '#6B7280', 'border': '#9CA3AF', 'family': 'Neutrals'},
+    {'name': 'Heather Grey', 'hex': '#9CA3AF', 'border': '#CBD5E1', 'family': 'Neutrals'},
+    {'name': 'Light Grey', 'hex': '#D1D5DB', 'border': '#9CA3AF', 'family': 'Neutrals'},
+    {'name': 'Silver', 'hex': '#E2E8F0', 'border': '#CBD5E1', 'family': 'Neutrals'},
+    {'name': 'Ash', 'hex': '#B0BEC5', 'border': '#CFD8DC', 'family': 'Neutrals'},
+    {'name': 'White', 'hex': '#FFFFFF', 'border': '#D1D5DB', 'family': 'Neutrals'},
+    {'name': 'Off-White', 'hex': '#FAF9F6', 'border': '#D1D5DB', 'family': 'Neutrals'},
+    {'name': 'Snow White', 'hex': '#F8FAFC', 'border': '#E2E8F0', 'family': 'Neutrals'},
+    {'name': 'Cream', 'hex': '#FDFBF7', 'border': '#E5E7EB', 'family': 'Neutrals'},
+    {'name': 'Ivory', 'hex': '#FFFFF0', 'border': '#E5E7EB', 'family': 'Neutrals'},
+    {'name': 'Ecru', 'hex': '#F5F5DC', 'border': '#D6D3D1', 'family': 'Neutrals'},
+    {'name': 'Bone', 'hex': '#E5E5E0', 'border': '#D1D5DB', 'family': 'Neutrals'},
+
+    # Blues & Navies
+    {'name': 'Navy', 'hex': '#1E293B', 'border': '#334155', 'family': 'Blues'},
+    {'name': 'Midnight Blue', 'hex': '#0F172A', 'border': '#1E293B', 'family': 'Blues'},
+    {'name': 'Deep Navy', 'hex': '#0A1128', 'border': '#1C2541', 'family': 'Blues'},
+    {'name': 'Indigo', 'hex': '#4338CA', 'border': '#4F46E5', 'family': 'Blues'},
+    {'name': 'Royal Blue', 'hex': '#1D4ED8', 'border': '#2563EB', 'family': 'Blues'},
+    {'name': 'Cobalt', 'hex': '#2563EB', 'border': '#3B82F6', 'family': 'Blues'},
+    {'name': 'Ocean Blue', 'hex': '#0284C7', 'border': '#0EA5E9', 'family': 'Blues'},
+    {'name': 'Denim', 'hex': '#3B82F6', 'border': '#60A5FA', 'family': 'Blues'},
+    {'name': 'Steel Blue', 'hex': '#4682B4', 'border': '#5C93C4', 'family': 'Blues'},
+    {'name': 'Slate Blue', 'hex': '#60A5FA', 'border': '#93C5FD', 'family': 'Blues'},
+    {'name': 'Sky Blue', 'hex': '#7DD3FC', 'border': '#38BDF8', 'family': 'Blues'},
+    {'name': 'Light Blue', 'hex': '#BAE6FD', 'border': '#7DD3FC', 'family': 'Blues'},
+    {'name': 'Baby Blue', 'hex': '#E0F2FE', 'border': '#BAE6FD', 'family': 'Blues'},
+    {'name': 'Teal', 'hex': '#0D9488', 'border': '#14B8A6', 'family': 'Blues'},
+    {'name': 'Turquoise', 'hex': '#06B6D4', 'border': '#22D3EE', 'family': 'Blues'},
+    {'name': 'Cyan', 'hex': '#0891B2', 'border': '#06B6D4', 'family': 'Blues'},
+
+    # Earth, Browns & Warm Neutrals
+    {'name': 'Beige', 'hex': '#D4B996', 'border': '#E5D5C5', 'family': 'Earth Tones'},
+    {'name': 'Sand', 'hex': '#E6D5B8', 'border': '#CBB799', 'family': 'Earth Tones'},
+    {'name': 'Oatmeal', 'hex': '#D6CFC7', 'border': '#C4BCB3', 'family': 'Earth Tones'},
+    {'name': 'Stone', 'hex': '#C4B5A5', 'border': '#A89989', 'family': 'Earth Tones'},
+    {'name': 'Tan', 'hex': '#D2B48C', 'border': '#C4A47C', 'family': 'Earth Tones'},
+    {'name': 'Camel', 'hex': '#C19A6B', 'border': '#D2B48C', 'family': 'Earth Tones'},
+    {'name': 'Taupe', 'hex': '#8B8589', 'border': '#A29D9D', 'family': 'Earth Tones'},
+    {'name': 'Khaki', 'hex': '#656D4A', 'border': '#7F8960', 'family': 'Earth Tones'},
+    {'name': 'Brown', 'hex': '#78350F', 'border': '#92400E', 'family': 'Earth Tones'},
+    {'name': 'Dark Brown', 'hex': '#451A03', 'border': '#78350F', 'family': 'Earth Tones'},
+    {'name': 'Mocha', 'hex': '#6F4E37', 'border': '#855E42', 'family': 'Earth Tones'},
+    {'name': 'Chocolate', 'hex': '#3E2723', 'border': '#5D4037', 'family': 'Earth Tones'},
+    {'name': 'Cognac', 'hex': '#9A3412', 'border': '#C2410C', 'family': 'Earth Tones'},
+    {'name': 'Bronze', 'hex': '#CD7F32', 'border': '#B86F28', 'family': 'Earth Tones'},
+    {'name': 'Rust', 'hex': '#B45309', 'border': '#D97706', 'family': 'Earth Tones'},
+    {'name': 'Amber', 'hex': '#D97706', 'border': '#F59E0B', 'family': 'Earth Tones'},
+    {'name': 'Mustard', 'hex': '#EAB308', 'border': '#FACC15', 'family': 'Earth Tones'},
+    {'name': 'Ochre', 'hex': '#CC7722', 'border': '#E08B38', 'family': 'Earth Tones'},
+    {'name': 'Gold', 'hex': '#D4AF37', 'border': '#F3E5AB', 'family': 'Earth Tones'},
+
+    # Greens & Olives
+    {'name': 'Olive', 'hex': '#556B2F', 'border': '#6B8E23', 'family': 'Greens'},
+    {'name': 'Olive Drab', 'hex': '#4B5320', 'border': '#5E6729', 'family': 'Greens'},
+    {'name': 'Military Green', 'hex': '#3E4E38', 'border': '#52664B', 'family': 'Greens'},
+    {'name': 'Forest Green', 'hex': '#14532D', 'border': '#15803D', 'family': 'Greens'},
+    {'name': 'Pine Green', 'hex': '#064E3B', 'border': '#047857', 'family': 'Greens'},
+    {'name': 'Bottle Green', 'hex': '#0F382A', 'border': '#1A5943', 'family': 'Greens'},
+    {'name': 'Hunter Green', 'hex': '#355E3B', 'border': '#467B4E', 'family': 'Greens'},
+    {'name': 'Sage Green', 'hex': '#9CAF88', 'border': '#7D9B76', 'family': 'Greens'},
+    {'name': 'Moss Green', 'hex': '#8A9A5B', 'border': '#9EB06D', 'family': 'Greens'},
+    {'name': 'Emerald', 'hex': '#047857', 'border': '#059669', 'family': 'Greens'},
+    {'name': 'Mint', 'hex': '#6EE7B7', 'border': '#34D399', 'family': 'Greens'},
+    {'name': 'Seafoam', 'hex': '#A7F3D0', 'border': '#6EE7B7', 'family': 'Greens'},
+    {'name': 'Pistachio', 'hex': '#93C572', 'border': '#7FB35D', 'family': 'Greens'},
+
+    # Reds, Burgundies & Warm Accents
+    {'name': 'Burgundy', 'hex': '#800020', 'border': '#9B111E', 'family': 'Reds'},
+    {'name': 'Bordeaux', 'hex': '#581C87', 'border': '#7E22CE', 'family': 'Reds'},
+    {'name': 'Wine', 'hex': '#722F37', 'border': '#8C3B45', 'family': 'Reds'},
+    {'name': 'Maroon', 'hex': '#800000', 'border': '#9C1C1C', 'family': 'Reds'},
+    {'name': 'Crimson', 'hex': '#991B1B', 'border': '#B91C1C', 'family': 'Reds'},
+    {'name': 'Red', 'hex': '#DC2626', 'border': '#EF4444', 'family': 'Reds'},
+    {'name': 'Ruby', 'hex': '#BE123C', 'border': '#E11D48', 'family': 'Reds'},
+    {'name': 'Brick Red', 'hex': '#B91C1C', 'border': '#DC2626', 'family': 'Reds'},
+    {'name': 'Terracotta', 'hex': '#C2410C', 'border': '#EA580C', 'family': 'Reds'},
+    {'name': 'Coral', 'hex': '#F87171', 'border': '#EF4444', 'family': 'Reds'},
+    {'name': 'Salmon', 'hex': '#FB7185', 'border': '#F43F5E', 'family': 'Reds'},
+    {'name': 'Peach', 'hex': '#FB923C', 'border': '#F97316', 'family': 'Reds'},
+    {'name': 'Orange', 'hex': '#EA580C', 'border': '#F97316', 'family': 'Reds'},
+    {'name': 'Burnt Orange', 'hex': '#C2410C', 'border': '#EA580C', 'family': 'Reds'},
+
+    # Pinks, Purples & Pastels
+    {'name': 'Dusty Rose', 'hex': '#FDA4AF', 'border': '#FB7185', 'family': 'Pinks & Purples'},
+    {'name': 'Blush', 'hex': '#FFE4E6', 'border': '#FDA4AF', 'family': 'Pinks & Purples'},
+    {'name': 'Rose', 'hex': '#F43F5E', 'border': '#FB7185', 'family': 'Pinks & Purples'},
+    {'name': 'Light Pink', 'hex': '#FBCFE8', 'border': '#F472B6', 'family': 'Pinks & Purples'},
+    {'name': 'Magenta', 'hex': '#DB2777', 'border': '#EC4899', 'family': 'Pinks & Purples'},
+    {'name': 'Plum', 'hex': '#4A044E', 'border': '#701A75', 'family': 'Pinks & Purples'},
+    {'name': 'Eggplant', 'hex': '#3B0764', 'border': '#581C87', 'family': 'Pinks & Purples'},
+    {'name': 'Lavender', 'hex': '#C084FC', 'border': '#A855F7', 'family': 'Pinks & Purples'},
+    {'name': 'Lilac', 'hex': '#E9D5FF', 'border': '#C084FC', 'family': 'Pinks & Purples'},
+    {'name': 'Violet', 'hex': '#7C3AED', 'border': '#8B5CF6', 'family': 'Pinks & Purples'},
+    {'name': 'Mauve', 'hex': '#B784A7', 'border': '#C99EBC', 'family': 'Pinks & Purples'},
+]
+
+
+def _parse_variant_rows(request):
+    sizes_data = request.POST.getlist('size_name')
+    colors_data = request.POST.getlist('color_name')
+    stock_data = request.POST.getlist('size_stock')
+
+    if len(colors_data) < len(sizes_data):
+        colors_data += [''] * (len(sizes_data) - len(colors_data))
+
+    variants = []
+    for index, (size, color, stock) in enumerate(zip(sizes_data, colors_data, stock_data), start=1):
+        size_clean = (size or '').strip()
+        color_clean = (color or '').strip()
+        stock_clean = (stock or '').strip()
+
+        if not size_clean:
+            continue
+        try:
+            stock_quantity = int(stock_clean)
+        except (TypeError, ValueError):
+            raise ValueError(
+                f'Variant {index} ({color_clean or size_clean}) must have a whole-number stock quantity.'
+            )
+        if stock_quantity < 0:
+            raise ValueError(f'Variant {index} ({color_clean or size_clean}) cannot have negative stock.')
+
+        variants.append((size_clean, color_clean, stock_quantity))
+
+    return variants
+
 @staff_member_required
 def dashboard_view(request):
     time_filter = request.GET.get('filter', 'all') # 'today', 'week', 'month', 'all'
@@ -92,7 +229,12 @@ def pos_sale_view(request):
             'category': art.category.name,
             'price': float(art.price),
             'image': art.primary_image or '',
-            'sizes': [{'size': s.size, 'stock': s.stock_quantity} for s in art.sizes.all()]
+            'has_colors': art.has_colors,
+            'colors': art.available_colors,
+            'sizes': [
+                {'size': s.size, 'color': s.color or '', 'stock': s.stock_quantity}
+                for s in art.sizes.all()
+            ]
         })
         
     context = {
@@ -132,13 +274,33 @@ def process_pos_sale_api(request):
             for item in items:
                 article_id = item['article_id']
                 size_label = item['size']
-                quantity = int(item['quantity'])
+                color_label = item.get('color', '').strip()
+                try:
+                    quantity = int(item.get('quantity', 1))
+                except (TypeError, ValueError):
+                    return JsonResponse({
+                        'success': False,
+                        'message': 'Quantity must be a whole number. Color values must be sent in the color field.'
+                    }, status=400)
+                if quantity < 1:
+                    return JsonResponse({
+                        'success': False,
+                        'message': 'Quantity must be at least 1.'
+                    }, status=400)
                 
                 article = Article.objects.select_for_update().get(id=article_id)
-                size_obj = ArticleSize.objects.select_for_update().get(article=article, size=size_label)
+                if color_label:
+                    size_obj = ArticleSize.objects.select_for_update().filter(article=article, size=size_label, color=color_label).first()
+                else:
+                    size_obj = ArticleSize.objects.select_for_update().filter(article=article, size=size_label).first()
                 
+                if not size_obj:
+                    variant_desc = f"Size {size_label}" + (f" / Color {color_label}" if color_label else "")
+                    raise Exception(f"Variant {variant_desc} not found for {article.title}")
+                    
                 if size_obj.stock_quantity < quantity:
-                    raise Exception(f"Insufficient stock for {article.title} (Size {size_label}). Available stock: {size_obj.stock_quantity}")
+                    variant_desc = f"Size {size_label}" + (f" / Color {color_label}" if color_label else "")
+                    raise Exception(f"Insufficient stock for {article.title} ({variant_desc}). Available stock: {size_obj.stock_quantity}")
                     
                 # Decrement stock
                 size_obj.stock_quantity -= quantity
@@ -152,6 +314,7 @@ def process_pos_sale_api(request):
                     article=article,
                     article_title=article.title,
                     size=size_label,
+                    color=color_label,
                     quantity=quantity,
                     unit_price=article.price,
                     subtotal=subtotal
@@ -285,7 +448,6 @@ def articles_list_view(request):
 @staff_member_required
 def article_create_view(request):
     categories = Category.objects.all()
-    standard_sizes = ['S', 'M', 'L', 'XL', 'XXL', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45']
     
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -296,6 +458,16 @@ def article_create_view(request):
         is_featured = request.POST.get('is_featured') == 'on'
         
         category = get_object_or_404(Category, id=category_id)
+        try:
+            variants = _parse_variant_rows(request)
+        except ValueError as error:
+            messages.error(request, str(error))
+            return render(request, 'admin_panel/article_form.html', {
+                'categories': categories,
+                'standard_sizes': STANDARD_SIZES,
+                'standard_colors': STANDARD_COLORS,
+                'title': 'Add New Article',
+            })
         
         with transaction.atomic():
             article = Article.objects.create(
@@ -316,24 +488,22 @@ def article_create_view(request):
                     is_primary=(index == 0)
                 )
                 
-            # Handle stock sizes
-            sizes_data = request.POST.getlist('size_name')
-            stock_data = request.POST.getlist('size_stock')
-            
-            for sz, qty in zip(sizes_data, stock_data):
-                if sz and qty and int(qty) >= 0:
-                    ArticleSize.objects.create(
-                        article=article,
-                        size=sz.strip(),
-                        stock_quantity=int(qty)
-                    )
+            # Handle stock sizes & colors
+            for size, color, stock_quantity in variants:
+                ArticleSize.objects.create(
+                    article=article,
+                    size=size,
+                    color=color,
+                    stock_quantity=stock_quantity
+                )
                     
             messages.success(request, f"Article '{article.title}' created successfully.")
             return redirect('store:admin_articles')
             
     context = {
         'categories': categories,
-        'standard_sizes': standard_sizes,
+        'standard_sizes': STANDARD_SIZES,
+        'standard_colors': STANDARD_COLORS,
         'title': 'Add New Article',
     }
     return render(request, 'admin_panel/article_form.html', context)
@@ -343,9 +513,21 @@ def article_create_view(request):
 def article_edit_view(request, article_id):
     article = get_object_or_404(Article.objects.prefetch_related('sizes', 'images'), id=article_id)
     categories = Category.objects.all()
-    standard_sizes = ['S', 'M', 'L', 'XL', 'XXL', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45']
+    pass
     
     if request.method == 'POST':
+        try:
+            variants = _parse_variant_rows(request)
+        except ValueError as error:
+            messages.error(request, str(error))
+            return render(request, 'admin_panel/article_form.html', {
+                'article': article,
+                'categories': categories,
+                'standard_sizes': STANDARD_SIZES,
+                'standard_colors': STANDARD_COLORS,
+                'title': f'Edit Article: {article.title}',
+            })
+
         article.title = request.POST.get('title')
         article.category = get_object_or_404(Category, id=request.POST.get('category'))
         article.price = request.POST.get('price')
@@ -364,18 +546,15 @@ def article_edit_view(request, article_id):
                 is_primary=(not has_primary and index == 0)
             )
             
-        # Update sizes
+        # Update sizes & colors
         article.sizes.all().delete()
-        sizes_data = request.POST.getlist('size_name')
-        stock_data = request.POST.getlist('size_stock')
-        
-        for sz, qty in zip(sizes_data, stock_data):
-            if sz and qty and int(qty) >= 0:
-                ArticleSize.objects.create(
-                    article=article,
-                    size=sz.strip(),
-                    stock_quantity=int(qty)
-                )
+        for size, color, stock_quantity in variants:
+            ArticleSize.objects.create(
+                article=article,
+                size=size,
+                color=color,
+                stock_quantity=stock_quantity
+            )
                 
         messages.success(request, f"Article '{article.title}' updated.")
         return redirect('store:admin_articles')
@@ -383,7 +562,8 @@ def article_edit_view(request, article_id):
     context = {
         'article': article,
         'categories': categories,
-        'standard_sizes': standard_sizes,
+        'standard_sizes': STANDARD_SIZES,
+        'standard_colors': STANDARD_COLORS,
         'title': f'Edit Article: {article.title}',
     }
     return render(request, 'admin_panel/article_form.html', context)
@@ -517,7 +697,7 @@ def showcase_edit_view(request, showcase_id):
                 messages.success(request, f"Showcase '{showcase.title}' updated successfully.")
                 return redirect('store:admin_showcases')
 
-    selected_items = showcase.items.select_related('article__category').prefetch_related('article__images').all()
+    selected_items = showcase.items.select_related('article__category').prefetch_related('article__images', 'article__sizes').all()
     context = {
         'title': f"Edit Showcase: {showcase.title}",
         'showcase': showcase,

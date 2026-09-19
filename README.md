@@ -1,6 +1,6 @@
-# Wolf Shoes
+# Mario Clothes Ⓜ
 
-Wolf Shoes is a Django-based espadrille store and stock-management platform for men and women in Casablanca, Morocco. It combines a customer storefront, shopping cart, checkout flow, and an admin dashboard for managing products, categories, orders, and in-store POS sales.
+Mario Clothes is a Django-based high-end men's fashion boutique and stock-management platform in Casablanca city center, Bab Marrakech, Morocco. It features a full-bleed hero carousel with transparent overlay navigation, customer storefront, session shopping cart, COD checkout, WhatsApp order confirmation, and a staff admin portal for managing suits, shirts, blazers, shoes, categories, orders, and in-store POS sales.
 
 This project is designed to be simple, practical, and easy to extend. The core logic lives in the `store` app, and the app uses Django's session-based cart, relational models, and a staff-only admin interface.
 

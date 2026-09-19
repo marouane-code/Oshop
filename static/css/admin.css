@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 /* ==========================================
-  WOLF SHOES Admin Portal Design System
+   MARIO CLOTHES Admin Portal Design System
+   High-End Men's Fashion Casablanca
    ========================================== */
 
 :root {
-  /* Surface & Canvas — Wolf Shoes Light Monochrome */
+  /* Surface & Canvas — Mario Clothes Light Canvas */
   --admin-bg-base:    #F8F9FA;
   --admin-bg-sidebar: #FFFFFF;
   --admin-bg-surface: #FFFFFF;
@@ -19,9 +20,10 @@
   --admin-border-gold-bright: #334155;
 
   --gold-primary: #0F172A;
-  --gold-bright: #0F172A;
+  --gold-bright:  #C5221F;
+  --mario-red:    #C5221F;
   --gold-gradient: linear-gradient(135deg, #0F172A 0%, #334155 100%);
-  --gold-glow: 0 0 20px rgba(0, 0, 0, 0.05);
+  --gold-glow: 0 0 20px rgba(197, 34, 31, 0.1);
   
   --emerald-accent: #059669;
   --emerald-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);

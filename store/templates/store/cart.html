@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mon Panier — Mario Clothes{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width:1050px; padding: 3rem 1.5rem 6rem;">
+
+  <div style="margin-bottom:2.5rem; border-bottom:1.5px solid var(--border-color); padding-bottom:1rem;">
+    <h1 style="font-family:'Outfit', sans-serif; font-size:2.2rem; font-weight:900; letter-spacing:-0.02em; color:#0A0A0A;">
+      {{ t.shopping_bag }}
+    </h1>
+    <p style="color:var(--text-muted); font-size:0.9rem;">Vérifiez vos articles avant de finaliser votre commande</p>
+  </div>
+
+  {% if cart_items %}
+    <div style="display:grid; grid-template-columns: 1.8fr 1fr; gap:3rem; align-items:start;">
+      
+      <!-- Cart Items List -->
+      <div style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:12px; padding:1.75rem; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+          {% for item in cart_items %}
+            <div style="display:flex; gap:1.25rem; align-items:center; padding-bottom:1.5rem; border-bottom:1px solid var(--border-color);">
+              <div style="width:75px; height:90px; border-radius:8px; overflow:hidden; background:#F3F4F6; flex-shrink:0;">
+                {% if item.article.primary_image %}
+                  <img src="{{ item.article.primary_image }}" alt="{{ item.article.title }}" style="width:100%; height:100%; object-fit:cover;">
+                {% else %}
+                  <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--text-muted);">Mario</div>
+                {% endif %}
+              </div>
+
+              <div style="flex:1;">
+                <span style="font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); font-weight:700;">{{ item.article.category.name }}</span>
+                <h3 style="font-family:'Outfit', sans-serif; font-size:1.1rem; font-weight:800; margin:0.2rem 0 0.4rem;">
+                  <a href="{% url 'store:product_detail' item.article.slug %}" style="color:#0A0A0A; text-decoration:none;">{{ item.article.title }}</a>
+                </h3>
+                <div style="font-size:0.85rem; color:var(--text-secondary);">
+                  Taille : <strong style="color:#0A0A0A;">{{ item.size }}</strong>{% if item.color %} &nbsp;|&nbsp; {{ t.color }} : <strong style="color:#0A0A0A;">{{ item.color }}</strong>{% endif %} &nbsp;|&nbsp; Qté : <strong style="color:#0A0A0A;">{{ item.quantity }}</strong>
+                </div>
+              </div>
+
+              <div style="text-align:right;">
+                <div style="font-size:1.15rem; font-weight:900; color:#0A0A0A;">{{ item.subtotal }} MAD</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">{{ item.article.price }} MAD / unité</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div style="margin-top:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+          <a href="{% url 'store:home' %}#catalog" class="btn btn-outline-gold" style="font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:800;">
+            &larr; Continuer mes achats
+          </a>
+        </div>
+      </div>
+
+      <!-- Order Summary Card -->
+      <div style="background:#F9FAFB; border:1.5px solid var(--border-color); border-radius:12px; padding:2rem; position:sticky; top:100px;">
+        <h3 style="font-family:'Outfit', sans-serif; font-size:1.2rem; font-weight:900; margin-bottom:1.25rem; color:#0A0A0A; letter-spacing:0.04em; text-transform:uppercase;">
+          {{ t.order_summary }}
+        </h3>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--text-secondary); margin-bottom:0.75rem;">
+          <span>{{ t.subtotal }}</span>
+          <span style="font-weight:700; color:#0A0A0A;">{{ total_price }} MAD</span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+          <span>Livraison (Maroc)</span>
+          <span style="font-weight:700; color:#10B981;">Gratuite / Inclus</span>
+        </div>
+
+        <div style="border-top:1.5px dashed var(--border-color); padding-top:1.25rem; margin-top:1.25rem; display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.75rem;">
+          <span style="font-size:1.05rem; font-weight:900; color:#0A0A0A;">{{ t.total_payable }}</span>
+          <span style="font-size:1.5rem; font-weight:900; color:#0A0A0A;">{{ total_price }} MAD</span>
+        </div>
+
+        <a href="{% url 'store:checkout' %}" class="btn btn-gold" style="display:block; text-align:center; padding:1rem; font-size:0.88rem; font-weight:900; letter-spacing:0.08em; text-transform:uppercase;">
+          Passer à la Caisse (COD) &rarr;
+        </a>
+      </div>
+
+    </div>
+  {% else %}
+    <div style="text-align:center; padding:6rem 2rem; background:#F8F9FA; border-radius:16px; border:1px dashed var(--border-color);">
+      <div style="display:flex; justify-content:center; margin-bottom:1.2rem; color:var(--text-muted);">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </div>
+      <h2 style="font-family:'Outfit', sans-serif; font-size:1.6rem; font-weight:900; color:#0A0A0A;">Votre panier est vide</h2>
+      <p style="color:var(--text-muted); max-width:420px; margin:0.5rem auto 1.8rem; line-height:1.6;">Découvrez nos collections sartoriales Mario Clothes et sélectionnez vos pièces préférées.</p>
+      <a href="{% url 'store:home' %}#catalog" class="btn btn-gold" style="font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:800; padding:0.9rem 2rem;">
+        Explorer la Boutique
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

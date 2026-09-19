@@ -1,37 +1,43 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="{{ current_lang|default:'en' }}" dir="{{ dir_attr|default:'ltr' }}">
+<html lang="{{ current_lang|default:'fr' }}" dir="{{ dir_attr|default:'ltr' }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#FFFFFF">
-  <title>{% block title %}Wolf Shoes — Espadrilles for Men & Women | Casablanca, Morocco{% endblock %}</title>
-  <meta name="description" content="Wolf Shoes — Espadrilles for men and women in Casablanca, Morocco. Home delivery nationwide. Cash on delivery available.">
+  <title>{% block title %}Mario Clothes — Vêtements Homme Haut de Gamme | Casablanca, Maroc{% endblock %}</title>
+  <meta name="description" content="Mario Clothes — Boutique de prêt-à-porter masculin haut de gamme à Casablanca centre-ville, Bab Marrakech. Costumes, blazers, chemises et souliers de prestige. Livraison partout au Maroc.">
   
-  <link rel="icon" type="image/jpeg" href="{% static 'images/wolfshoes-logo.svg.jpg' %}">
+  <link rel="icon" type="image/png" href="{% static 'images/marioclothes-logo.png' %}">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=4.0">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=6.0">
 
   <style>
     /* =========================================================
-      WOLF SHOES — Clean Monochrome Embedded Styles
+       MARIO CLOTHES — Luxury White, Black & Red Palette
        ========================================================= */
     :root {
       --bg-primary: #FFFFFF;
       --bg-secondary: #F8F9FA;
       --bg-elevated: #F1F3F5;
-      --bg-glass: rgba(255, 255, 255, 0.96);
+      --bg-card: #FFFFFF;
       --border-subtle: #E5E7EB;
       --border-dark: #111827;
+      
       --brand-black: #0A0A0A;
+      --brand-red: #C5221F;
+      --brand-red-hover: #A51D1A;
+      --brand-red-subtle: rgba(197, 34, 31, 0.08);
+      
       --text-main: #0A0A0A;
       --text-secondary: #374151;
       --text-muted: #6B7280;
+      --header-height: 72px;
     }
 
     body {
@@ -41,84 +47,88 @@
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ---- 1. Top Announcement Bar ---- */
-    .top-announcement {
-      background: #0A0A0A;
-      border-bottom: 1px solid #1F2937;
-      padding: 7px 20px;
-      font-size: 11px;
-      letter-spacing: 0.06em;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      z-index: 600;
-      position: relative;
-    }
-    .top-announcement-content {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #F3F4F6;
-      font-weight: 700;
-      text-transform: uppercase;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-    .top-announcement-pulse {
-      width: 6px;
-      height: 6px;
-      background: #10B981;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #10B981;
-      flex-shrink: 0;
-    }
-    .top-lang-switch {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-shrink: 0;
-    }
-    .top-lang-btn {
-      color: #9CA3AF;
-      text-decoration: none;
-      font-weight: 800;
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-    }
-    .top-lang-btn:hover {
-      color: #FFFFFF;
-    }
-    .top-lang-btn.active {
-      color: #0A0A0A;
-      background: #FFFFFF;
-    }
-    .top-lang-divider {
-      color: #4B5563;
-      font-size: 10px;
-    }
-
-    /* ---- 2. Main Header ---- */
+    /* ---- Master Navigation Header ---- */
     .site-nav-wrapper {
       position: sticky;
       top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
       z-index: 550;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: #FFFFFF;
       border-bottom: 1px solid var(--border-subtle);
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
+    /* Transparent Overlay Header on Homepage */
+    {% if is_homepage %}
+    .site-nav-wrapper {
+      position: absolute;
+      top: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.15) 75%, transparent 100%);
+      border-bottom: none;
+    }
+    .site-nav-wrapper.nav-scrolled {
+      position: fixed;
+      top: 0;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+    .site-nav-wrapper.nav-scrolled .nav-brand-title {
+      color: #0A0A0A;
+      text-shadow: none;
+    }
+    .site-nav-wrapper.nav-scrolled .nav-brand-tagline {
+      color: var(--text-muted);
+    }
+    .site-nav-wrapper.nav-scrolled .nav-center-link {
+      color: #0A0A0A;
+      text-shadow: none;
+    }
+    .site-nav-wrapper.nav-scrolled .nav-center-link:hover {
+      color: var(--brand-red);
+    }
+    .site-nav-wrapper.nav-scrolled .nav-center-link::after {
+      background: var(--brand-red);
+    }
+    .site-nav-wrapper.nav-scrolled .nav-icon-btn {
+      background: var(--bg-secondary);
+      border-color: var(--border-subtle);
+      color: #0A0A0A;
+    }
+    .site-nav-wrapper.nav-scrolled .nav-icon-btn:hover {
+      border-color: #0A0A0A;
+      background: #E5E7EB;
+    }
+    .site-nav-wrapper.nav-scrolled .nav-lang-pill {
+      background: var(--bg-secondary);
+      border-color: var(--border-subtle);
+    }
+    .site-nav-wrapper.nav-scrolled .nav-lang-pill a {
+      color: var(--text-secondary);
+    }
+    .site-nav-wrapper.nav-scrolled .nav-lang-pill a.active {
+      background: #0A0A0A;
+      color: #FFFFFF;
+    }
+    .site-nav-wrapper.nav-scrolled .mobile-hamburger-btn {
+      background: var(--bg-secondary);
+      border-color: var(--border-subtle);
+      color: #0A0A0A;
+    }
+    {% endif %}
+
     .main-nav-bar {
-      max-width: 1300px;
+      max-width: 1400px;
       margin: 0 auto;
-      height: 70px;
-      padding: 0 20px;
+      height: var(--header-height);
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -129,309 +139,373 @@
     .nav-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       text-decoration: none;
       flex-shrink: 0;
     }
     .nav-logo-badge {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: #0A0A0A;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #FFFFFF;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
       flex-shrink: 0;
-      transition: transform 0.2s ease;
+      padding: 2px;
+      border: 1px solid var(--border-subtle);
+      transition: transform 0.25s ease;
+      overflow: hidden;
     }
     .nav-logo {
-      width: 42px;
-      height: 42px;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       display: block;
-      flex-shrink: 0;
     }
     .nav-brand:hover .nav-logo-badge {
-      transform: scale(1.05);
+      transform: scale(1.06);
     }
     .nav-brand-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: 0.12em;
-      color: #0A0A0A;
+      color: {% if is_homepage %}#FFFFFF{% else %}#0A0A0A{% endif %};
       line-height: 1;
       margin: 0;
+      transition: color 0.3s ease;
     }
     .nav-brand-tagline {
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: {% if is_homepage %}rgba(255, 255, 255, 0.75){% else %}var(--text-muted){% endif %};
       margin-top: 3px;
+      transition: color 0.3s ease;
     }
 
-    /* Search Bar */
-    .nav-search-box {
-      flex: 1;
-      max-width: 440px;
-      position: relative;
-    }
-    .nav-search-form-el {
+    /* Centered Nav Links (Desktop) */
+    .nav-center-menu {
       display: flex;
       align-items: center;
+      gap: 28px;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-center-link {
+      color: {% if is_homepage %}#FFFFFF{% else %}#0A0A0A{% endif %};
+      text-decoration: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      position: relative;
+      padding: 6px 0;
+      transition: color 0.2s ease, opacity 0.2s ease;
+    }
+    .nav-center-link:hover {
+      color: var(--brand-red);
+    }
+    .nav-center-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--brand-red);
+      transition: width 0.25s ease;
+    }
+    .nav-center-link:hover::after {
+      width: 100%;
+    }
+
+    /* Right Action Row */
+    .nav-right-icons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .nav-icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: {% if is_homepage %}rgba(255, 255, 255, 0.15){% else %}var(--bg-secondary){% endif %};
+      border: 1px solid {% if is_homepage %}rgba(255, 255, 255, 0.3){% else %}var(--border-subtle){% endif %};
+      color: {% if is_homepage %}#FFFFFF{% else %}#0A0A0A{% endif %};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-icon-btn:hover {
+      border-color: var(--brand-red);
+      color: var(--brand-red);
+      transform: translateY(-1px);
+    }
+    .nav-cart-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--brand-red);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 900;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    /* Language Switcher Pill in Top Bar */
+    .nav-lang-pill {
+      display: flex;
+      align-items: center;
+      background: {% if is_homepage %}rgba(255, 255, 255, 0.15){% else %}var(--bg-secondary){% endif %};
+      border: 1px solid {% if is_homepage %}rgba(255, 255, 255, 0.3){% else %}var(--border-subtle){% endif %};
+      border-radius: 20px;
+      padding: 3px 5px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .nav-lang-pill a {
+      color: {% if is_homepage %}rgba(255, 255, 255, 0.8){% else %}var(--text-secondary){% endif %};
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 6px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+    .nav-lang-pill a:hover {
+      color: var(--brand-red);
+    }
+    .nav-lang-pill a.active {
+      color: #FFFFFF;
+      background: #0A0A0A;
+    }
+
+    /* Mobile Hamburger */
+    .mobile-hamburger-btn {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: {% if is_homepage %}rgba(255, 255, 255, 0.15){% else %}var(--bg-secondary){% endif %};
+      border: 1px solid {% if is_homepage %}rgba(255, 255, 255, 0.3){% else %}var(--border-subtle){% endif %};
+      color: {% if is_homepage %}#FFFFFF{% else %}#0A0A0A{% endif %};
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    /* Search Dropdown Overlay */
+    .site-search-overlay {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 16px 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      z-index: 540;
+    }
+    .site-search-overlay.is-active {
+      display: block;
+      animation: fadeInSearch 0.2s ease;
+    }
+    @keyframes fadeInSearch {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .search-inner-form {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       background: var(--bg-secondary);
       border: 1.5px solid var(--border-subtle);
       border-radius: 50px;
-      padding: 4px 6px 4px 16px;
-      transition: all 0.2s ease;
+      padding: 6px 8px 6px 18px;
+      transition: border-color 0.2s ease;
     }
-    .nav-search-form-el:focus-within {
+    .search-inner-form:focus-within {
       border-color: #0A0A0A;
-      box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.08);
       background: #FFFFFF;
     }
-    .nav-search-input-el {
+    .search-inner-input {
       flex: 1;
       background: transparent;
       border: none;
       outline: none;
-      color: var(--text-main);
-      font-size: 13.5px;
+      color: #0A0A0A;
+      font-size: 14px;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .nav-search-input-el::placeholder {
-      color: #9CA3AF;
+    .search-inner-input::placeholder {
+      color: var(--text-muted);
     }
-    .nav-search-submit-btn {
-      width: 34px;
-      height: 34px;
+    .search-inner-submit {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       background: #0A0A0A;
       border: none;
-      border-radius: 50%;
       color: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      flex-shrink: 0;
-      transition: transform 0.2s ease;
+      transition: background 0.2s ease;
     }
-    .nav-search-submit-btn:hover {
-      transform: scale(1.05);
-    }
-
-    /* Desktop Actions */
-    .nav-action-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-    }
-    .nav-pill-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      cursor: pointer;
-      border: 1.5px solid transparent;
-    }
-    .nav-pill-gold {
-      background: #0A0A0A;
-      color: #FFFFFF;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-    }
-    .nav-pill-gold:hover {
-      background: #262626;
-      transform: translateY(-1px);
-    }
-    .nav-pill-outline {
-      background: transparent;
-      color: var(--text-main);
-      border-color: var(--border-subtle);
-    }
-    .nav-pill-outline:hover {
-      background: var(--bg-secondary);
-      border-color: #0A0A0A;
-      color: #0A0A0A;
-    }
-    .nav-cart-btn {
-      position: relative;
-      background: #0A0A0A;
-      border: 1.5px solid #0A0A0A;
-      color: #FFFFFF;
-      padding: 8px 18px;
-    }
-    .nav-cart-btn:hover {
-      background: #262626;
-      border-color: #262626;
-    }
-    .nav-cart-count-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: #DC2626;
-      color: #FFFFFF;
-      font-size: 10px;
-      font-weight: 900;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    .search-inner-submit:hover {
+      background: var(--brand-red);
     }
 
-    /* ---- 3. Category Scrolling Sub-Bar ---- */
-    .nav-categories-bar {
-      background: #FFFFFF;
-      border-top: 1px solid var(--border-subtle);
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .nav-categories-bar::-webkit-scrollbar {
-      display: none;
-    }
-    .nav-categories-inner {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 0 20px;
-      height: 46px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-    }
-    .cat-tab {
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: all 0.2s ease;
-      border: 1px solid transparent;
-      flex-shrink: 0;
-    }
-    .cat-tab:hover {
-      color: #0A0A0A;
-      background: var(--bg-secondary);
-    }
-    .cat-tab.active {
-      color: #FFFFFF;
-      background: #0A0A0A;
-      border-color: #0A0A0A;
-    }
-
-    /* ---- 4. Mobile Controls & Drawer ---- */
-    .nav-mobile-buttons {
-      display: none;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-icon-action-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s ease;
-    }
-    .nav-icon-action-btn:hover, .nav-icon-action-btn.active {
-      background: #E5E7EB;
-      border-color: #0A0A0A;
-      color: #0A0A0A;
-    }
-
-    /* Collapsible Mobile Search Overlay */
-    .mobile-search-panel {
-      display: none;
-      background: #FFFFFF;
-      border-top: 1px solid var(--border-subtle);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 12px 16px;
-    }
-    .mobile-search-panel.is-active {
-      display: block;
-    }
-
-    /* Collapsible Mobile Navigation Drawer */
+    /* Mobile Navigation Drawer */
     .mobile-menu-drawer {
       display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: #FFFFFF;
-      border-top: 1px solid var(--border-subtle);
-      box-shadow: 0 16px 36px rgba(0,0,0,0.1);
-      max-height: 80vh;
+      z-index: 9999;
       overflow-y: auto;
+      padding: 24px;
+      color: #0A0A0A;
     }
     .mobile-menu-drawer.is-active {
       display: block;
+      animation: fadeInDrawer 0.2s ease;
     }
-    .mobile-menu-section {
-      padding: 12px 16px;
-      border-bottom: 1px solid #F3F4F6;
+    @keyframes fadeInDrawer {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .mobile-menu-heading {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
+    .mobile-drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
     }
-    .mobile-nav-link-row {
+    .mobile-nav-link {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 11px 12px;
+      padding: 12px 14px;
       border-radius: 8px;
-      color: var(--text-secondary);
+      color: var(--text-main);
       text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.2s ease;
+      font-size: 15px;
+      font-weight: 700;
       margin-bottom: 4px;
+      transition: all 0.2s ease;
     }
-    .mobile-nav-link-row:hover, .mobile-nav-link-row.active {
+    .mobile-nav-link:hover, .mobile-nav-link.active {
       background: var(--bg-secondary);
-      color: #0A0A0A;
+      color: var(--brand-red);
     }
-    .mobile-nav-link-row.gold-accent {
+    .mobile-nav-link.accent-btn {
       background: #0A0A0A;
-      border: 1px solid #0A0A0A;
+      color: #FFFFFF;
+      margin-top: 10px;
+    }
+    .mobile-nav-link.accent-btn:hover {
+      background: var(--brand-red);
       color: #FFFFFF;
     }
 
-    /* Responsive Breakpoints */
+    /* Responsive Mobile Layout Fixes */
     @media (max-width: 900px) {
-      .nav-search-box { display: none !important; }
-      .nav-action-group { display: none !important; }
-      .nav-mobile-buttons { display: flex !important; }
-      .main-nav-bar { height: 62px; padding: 0 15px; }
-      .nav-brand-title { font-size: 19px; }
-      .nav-brand-tagline { display: none; }
-      .top-announcement { padding: 6px 12px; font-size: 10px; }
+      .nav-center-menu { display: none !important; }
+      .mobile-hamburger-btn { display: flex !important; }
+      .main-nav-bar {
+        height: 62px;
+        padding: 0 14px;
+        gap: 8px;
+      }
+      .nav-brand-title {
+        font-size: 17px;
+        letter-spacing: 0.08em;
+      }
+      .nav-brand-tagline {
+        display: none;
+      }
+      .nav-logo-badge {
+        width: 36px;
+        height: 36px;
+      }
+      .nav-right-icons {
+        gap: 6px;
+      }
+      .nav-icon-btn {
+        width: 36px;
+        height: 36px;
+      }
+      .nav-lang-pill {
+        padding: 2px 4px;
+      }
+      .nav-lang-pill a {
+        font-size: 10px;
+        padding: 2px 4px;
+      }
+    }
+
+    /* Footer Styling (Clean, Luxury Dark Slate / Black with White Text) */
+    .site-footer {
+      background: #0A0A0A;
+      color: #E5E7EB;
+      border-top: 1px solid #1F2937;
+      padding: 4rem 1.5rem 2.5rem;
+    }
+    .footer-grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1.2fr 1.2fr;
+      gap: 3rem;
+    }
+    @media (max-width: 850px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+    }
+    .footer-bottom {
+      max-width: 1300px;
+      margin: 3rem auto 0;
+      padding-top: 2rem;
+      border-top: 1px solid #1F2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: #9CA3AF;
     }
   </style>
 
@@ -439,246 +513,205 @@
 </head>
 <body>
 
-  <!-- 1. Top Announcement Bar -->
-  <div class="top-announcement">
-    <div class="top-announcement-content">
-      <span class="top-announcement-pulse"></span>
-      <span>{{ t.announcement }}</span>
-    </div>
-    <div class="top-lang-switch">
-      <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
-      <span class="top-lang-divider">/</span>
-      <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}">FR</a>
-      <span class="top-lang-divider">/</span>
-      <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="font-family:sans-serif;">العربية</a>
-    </div>
-  </div>
-
-  <!-- 2. Sticky Master Navigation -->
-  <div class="site-nav-wrapper">
+  <!-- Master Navigation Header (Starts Directly at Logo Row, No Top Bar) -->
+  <div class="site-nav-wrapper" id="masterNavWrapper">
     <header class="main-nav-bar">
       
-      <!-- Brand Logo -->
+      <!-- Brand Logo Top-Left -->
       <a href="{% url 'store:home' %}" class="nav-brand">
-        <img src="{% static 'images/wolfshoes-logo.svg.jpg' %}" alt="Wolf Shoes" class="nav-logo">
+        <div class="nav-logo-badge">
+          <img src="{% static 'images/marioclothes-logo.png' %}" alt="Mario Clothes" class="nav-logo">
+        </div>
         <div>
-          <h1 class="nav-brand-title">WOLF SHOES</h1>
+          <h1 class="nav-brand-title">MARIO CLOTHES</h1>
           <div class="nav-brand-tagline">{{ t.tagline }}</div>
         </div>
       </a>
 
-      <!-- Desktop Search Bar -->
-      <div class="nav-search-box">
-        <form action="{% url 'store:home' %}" method="GET" class="nav-search-form-el">
-          <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="{{ t.search_placeholder }}" class="nav-search-input-el">
-          <button type="submit" class="nav-search-submit-btn" aria-label="Search">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          </button>
-        </form>
-      </div>
+      <!-- Centered Nav Links (Desktop) -->
+      <nav class="nav-center-menu" aria-label="Main Navigation">
+        <a href="{% url 'store:home' %}" class="nav-center-link">Accueil</a>
+        <a href="{% url 'store:home' %}#catalog" class="nav-center-link">Boutique</a>
+        {% if showcases %}
+          <a href="{% url 'store:home' %}#showcases" class="nav-center-link">Looks</a>
+        {% endif %}
+        <a href="{% url 'store:home' %}#about" class="nav-center-link">À propos</a>
+        <a href="https://wa.me/212772379035" target="_blank" rel="noopener" class="nav-center-link" style="color:#25D366;">WhatsApp</a>
+      </nav>
 
-      <!-- Desktop User Actions -->
-      <div class="nav-action-group">
+      <!-- Top-Right Action Row (Desktop & Mobile) -->
+      <div class="nav-right-icons">
+        
+        <!-- Search Toggle -->
+        <button type="button" class="nav-icon-btn" id="toggleSearchBtn" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+
+        <!-- Cart Trigger -->
+        <button type="button" class="nav-icon-btn trigger-cart" aria-label="Shopping Cart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="nav-cart-badge cart-badge-count">{{ cart_count|default:0 }}</span>
+        </button>
+
+        <!-- Account / Sign In -->
         {% if user.is_authenticated %}
           {% if user.is_staff %}
-            <a href="{% url 'store:admin_dashboard' %}" class="nav-pill-btn nav-pill-gold">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-              {{ t.admin_dashboard }}
+            <a href="{% url 'store:admin_dashboard' %}" class="nav-icon-btn" title="{{ t.admin_dashboard }}" style="background:#0A0A0A; color:#FFFFFF;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
             </a>
           {% else %}
-            <a href="{% url 'store:profile' %}" class="nav-pill-btn nav-pill-outline">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              {{ user.first_name|default:user.username }}
+            <a href="{% url 'store:profile' %}" class="nav-icon-btn" title="{{ user.first_name|default:user.username }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </a>
           {% endif %}
-          <a href="{% url 'store:logout' %}" class="nav-pill-btn nav-pill-outline" style="color:var(--text-muted); padding:8px 12px;">{{ t.logout }}</a>
         {% else %}
-          <a href="{% url 'store:login' %}" class="nav-pill-btn nav-pill-outline">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-            {{ t.sign_in }}
+          <a href="{% url 'store:login' %}" class="nav-icon-btn" title="{{ t.sign_in }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </a>
         {% endif %}
 
-        <!-- Cart Button -->
-        <button class="nav-pill-btn nav-cart-btn trigger-cart" aria-label="Shopping Cart">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          {{ t.cart }}
-          <span class="nav-cart-count-badge cart-badge-count">{{ cart_count|default:0 }}</span>
-        </button>
-      </div>
+        <!-- Language Selector -->
+        <div class="nav-lang-pill">
+          <a href="{% url 'store:set_language' %}?lang=fr" class="{% if current_lang == 'fr' %}active{% endif %}">FR</a>
+          <a href="{% url 'store:set_language' %}?lang=ar" class="{% if current_lang == 'ar' %}active{% endif %}">AR</a>
+          <a href="{% url 'store:set_language' %}?lang=en" class="{% if current_lang == 'en' %}active{% endif %}">EN</a>
+        </div>
 
-      <!-- Mobile Right Controls -->
-      <div class="nav-mobile-buttons">
-        <button id="toggleMobileSearch" class="nav-icon-action-btn" aria-label="Search">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <!-- Mobile Hamburger -->
+        <button type="button" class="mobile-hamburger-btn" id="openMobileDrawer" aria-label="Open Menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
         </button>
-        <button class="nav-icon-action-btn trigger-cart" aria-label="Cart">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span class="nav-cart-count-badge cart-badge-count">{{ cart_count|default:0 }}</span>
-        </button>
-        <button id="toggleMobileMenu" class="nav-icon-action-btn" aria-label="Menu" aria-expanded="false">
-          <svg id="burgerSvg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
-          <svg id="closeSvg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display:none;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
+
       </div>
 
     </header>
 
-    <!-- Mobile Slide-Down Search -->
-    <div id="mobileSearchContainer" class="mobile-search-panel">
-      <form action="{% url 'store:home' %}" method="GET" class="nav-search-form-el" style="background:#F8F9FA;">
-        <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="{{ t.search_placeholder }}" class="nav-search-input-el">
-        <button type="submit" class="nav-search-submit-btn" aria-label="Search">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <!-- Slide-Down Search Overlay -->
+    <div class="site-search-overlay" id="siteSearchOverlay">
+      <form action="{% url 'store:home' %}#catalog" method="GET" class="search-inner-form">
+        <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="{{ t.search_placeholder }}" class="search-inner-input" autocomplete="off">
+        <button type="submit" class="search-inner-submit" aria-label="Submit Search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </button>
       </form>
     </div>
-
-    <!-- Mobile Navigation Drawer -->
-    <div id="mobileMenuContainer" class="mobile-menu-drawer">
-      <!-- Account Links -->
-      <div class="mobile-menu-section">
-        {% if user.is_authenticated %}
-          {% if user.is_staff %}
-            <a href="{% url 'store:admin_dashboard' %}" class="mobile-nav-link-row gold-accent">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-              {{ t.admin_dashboard }}
-            </a>
-          {% else %}
-            <a href="{% url 'store:profile' %}" class="mobile-nav-link-row">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              {{ t.account }}: {{ user.first_name|default:user.username }}
-            </a>
-          {% endif %}
-          <a href="{% url 'store:logout' %}" class="mobile-nav-link-row" style="color:var(--danger, #DC2626);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            {{ t.logout }}
-          </a>
-        {% else %}
-          <a href="{% url 'store:login' %}" class="mobile-nav-link-row gold-accent">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-            {{ t.sign_in }} / {{ t.create_account }}
-          </a>
-        {% endif %}
-      </div>
-
-      <!-- Categories -->
-      <div class="mobile-menu-section">
-        <div class="mobile-menu-heading">{{ t.all_collection }}</div>
-        <a href="{% url 'store:home' %}" class="mobile-nav-link-row {% if not selected_category_slug %}active{% endif %}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          All Items
-        </a>
-        {% for cat in nav_categories %}
-          <a href="{% url 'store:home' %}?category={{ cat.slug }}" class="mobile-nav-link-row {% if selected_category_slug == cat.slug %}active{% endif %}">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            {{ cat.name }}
-          </a>
-        {% endfor %}
-      </div>
-
-      <!-- Language Selector -->
-      <div class="mobile-menu-section">
-        <div class="mobile-menu-heading">Language / Langue</div>
-        <div style="display:flex; gap:8px;">
-          <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1.5px solid var(--border-subtle); border-radius:6px; color:#0A0A0A;">English</a>
-          <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1.5px solid var(--border-subtle); border-radius:6px; color:#0A0A0A;">Français</a>
-          <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="flex:1; text-align:center; padding:8px; border:1.5px solid var(--border-subtle); border-radius:6px; color:#0A0A0A; font-family:sans-serif;">العربية</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. Category Horizontal Pills -->
-    <nav class="nav-categories-bar">
-      <div class="nav-categories-inner">
-        <a href="{% url 'store:home' %}" class="cat-tab {% if not selected_category_slug %}active{% endif %}">
-          {{ t.all_collection }}
-        </a>
-        {% for cat in nav_categories %}
-          <a href="{% url 'store:home' %}?category={{ cat.slug }}" class="cat-tab {% if selected_category_slug == cat.slug %}active{% endif %}">
-            {{ cat.name }}
-          </a>
-        {% endfor %}
-      </div>
-    </nav>
   </div>
 
-  <!-- Flash Messages -->
-  {% if messages %}
-    <div class="container" style="padding-bottom:0;">
-      {% for message in messages %}
-        <div class="alert-toast" style="margin-top:1rem;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          {{ message }}
-        </div>
+  <!-- Mobile Fullscreen Navigation Drawer -->
+  <div class="mobile-menu-drawer" id="mobileMenuDrawer">
+    <div class="mobile-drawer-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <img src="{% static 'images/marioclothes-logo.png' %}" alt="Mario Clothes" style="width:34px; height:34px; border-radius:50%; background:#fff; padding:2px; border:1px solid var(--border-subtle);">
+        <span style="font-family:'Outfit', sans-serif; font-size:1.1rem; font-weight:900; letter-spacing:0.08em; color:#0A0A0A;">MARIO CLOTHES</span>
+      </div>
+      <button type="button" id="closeMobileDrawer" style="background:none; border:none; color:#0A0A0A; font-size:1.6rem; cursor:pointer; line-height:1;">&times;</button>
+    </div>
+
+    <!-- Navigation Links -->
+    <div style="margin-bottom:1.5rem;">
+      <a href="{% url 'store:home' %}" class="mobile-nav-link active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Accueil
+      </a>
+      <a href="{% url 'store:home' %}#catalog" class="mobile-nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Boutique & Catalog
+      </a>
+      {% if showcases %}
+        <a href="{% url 'store:home' %}#showcases" class="mobile-nav-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Outfits & Looks Sartoriaux
+        </a>
+      {% endif %}
+      <a href="{% url 'store:home' %}#about" class="mobile-nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        À Propos & Boutique Bab Marrakech
+      </a>
+      <a href="https://wa.me/212772379035" target="_blank" rel="noopener" class="mobile-nav-link" style="color:#25D366;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        WhatsApp Direct (0772379035)
+      </a>
+    </div>
+
+    <!-- Categories List -->
+    <div style="margin-bottom:1.5rem; border-top:1px solid var(--border-subtle); padding-top:1.25rem;">
+      <div style="font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.75rem; font-weight:800;">Catégories Mario Clothes</div>
+      <a href="{% url 'store:home' %}#catalog" class="mobile-nav-link">Tous les articles</a>
+      {% for cat in nav_categories %}
+        <a href="{% url 'store:home' %}?category={{ cat.slug }}#catalog" class="mobile-nav-link">
+          {{ cat.name }}
+        </a>
       {% endfor %}
     </div>
-  {% endif %}
+
+    <!-- Account / Admin Links -->
+    <div style="border-top:1px solid var(--border-subtle); padding-top:1.25rem;">
+      {% if user.is_authenticated %}
+        {% if user.is_staff %}
+          <a href="{% url 'store:admin_dashboard' %}" class="mobile-nav-link accent-btn">
+            Console Admin
+          </a>
+        {% else %}
+          <a href="{% url 'store:profile' %}" class="mobile-nav-link accent-btn">
+            Mon Compte ({{ user.first_name|default:user.username }})
+          </a>
+        {% endif %}
+        <a href="{% url 'store:logout' %}" class="mobile-nav-link" style="color:var(--brand-red); margin-top:0.5rem;">
+          {{ t.logout }}
+        </a>
+      {% else %}
+        <a href="{% url 'store:login' %}" class="mobile-nav-link accent-btn">
+          {{ t.sign_in }} / {{ t.create_account }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
 
   <!-- Main Content -->
-  <main class="main-content">
+  <main class="site-main">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Slide-Over Cart Drawer -->
-  <div class="cart-overlay" id="cartOverlay"></div>
-  <div class="cart-drawer" id="cartDrawer">
-    <div class="cart-header">
-      <h3 style="font-size:1.1rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase; color:#0A0A0A;">{{ t.shopping_bag }}</h3>
-      <button id="cartClose" class="btn btn-dark btn-sm">✕ Close</button>
-    </div>
-    <div class="cart-body">
-      {% if request.session.cart %}
-        {% for key, item in request.session.cart.items %}
-          <div class="cart-item">
-            {% if item.image %}
-              <img src="{{ item.image }}" class="cart-item-img" alt="{{ item.title }}" loading="lazy">
-            {% else %}
-              <div class="cart-item-img" style="display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.05em;">No Image</div>
-            {% endif %}
-            <div style="flex:1; min-width:0;">
-              <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:0.2rem; line-height:1.3; color:#0A0A0A;">{{ item.title }}</h4>
-              <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.3rem;">Size: <strong style="color:#0A0A0A;">{{ item.size }}</strong></div>
-              <div style="font-weight:800; color:#0A0A0A; font-size:0.95rem; margin-bottom:0.6rem;">{{ item.price }} MAD</div>
-              <div style="display:flex; align-items:center; gap:0.4rem;">
-                <button class="btn btn-dark btn-sm" onclick="updateCartItem('{{ key }}', 'decrease')" style="padding:0.25rem 0.6rem; font-size:0.9rem;">−</button>
-                <span style="font-size:0.9rem; font-weight:800; min-width:20px; text-align:center;">{{ item.quantity }}</span>
-                <button class="btn btn-dark btn-sm" onclick="updateCartItem('{{ key }}', 'increase')" style="padding:0.25rem 0.6rem; font-size:0.9rem;">+</button>
-                <button class="btn btn-sm" onclick="updateCartItem('{{ key }}', 'remove')" style="margin-left:auto; color:var(--danger, #DC2626); background:#FEE2E2; border:1px solid #FCA5A5; padding:0.25rem 0.65rem; font-size:0.72rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;">Remove</button>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <div style="text-align:center; padding:4rem 1rem; color:var(--text-muted);">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 1rem; opacity:0.4;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <p style="font-size:0.9rem; margin-bottom:1.25rem;">Your shopping bag is currently empty.</p>
-          <a href="{% url 'store:home' %}" class="btn btn-gold btn-sm">{{ t.explore_shop }}</a>
+  <!-- Slide-Out Shopping Bag Drawer -->
+  <div id="cartDrawer" class="cart-drawer-backdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9998; backdrop-filter:blur(4px);">
+    <div style="position:absolute; top:0; right:0; width:min(100vw, 420px); height:100%; background:#FFFFFF; box-shadow:-4px 0 25px rgba(0,0,0,0.15); display:flex; flex-direction:column; z-index:9999;">
+      <div style="padding:1.5rem; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:space-between; background:#0A0A0A; color:#FFFFFF;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span style="font-weight:800; letter-spacing:0.08em; text-transform:uppercase; font-size:0.95rem;">{{ t.shopping_bag }}</span>
         </div>
-      {% endif %}
-    </div>
-    {% if request.session.cart %}
-      <div class="cart-footer">
-        <a href="{% url 'store:checkout' %}" class="btn btn-gold" style="width:100%; justify-content:center; padding:0.9rem; font-size:0.88rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase;">
-          {{ t.complete_order }} →
+        <button type="button" id="closeCartDrawerBtn" style="background:none; border:none; color:#FFFFFF; font-size:1.6rem; cursor:pointer; line-height:1;">&times;</button>
+      </div>
+
+      <div id="cartDrawerItems" style="flex:1; overflow-y:auto; padding:1.5rem;">
+        <!-- Loaded via JS -->
+      </div>
+
+      <div style="padding:1.5rem; border-top:1px solid var(--border-subtle); background:var(--bg-secondary);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+          <span style="font-weight:700; color:var(--text-secondary); text-transform:uppercase; font-size:0.85rem;">{{ t.subtotal }}</span>
+          <span id="cartDrawerSubtotal" style="font-size:1.35rem; font-weight:900; color:#0A0A0A;">0.00 MAD</span>
+        </div>
+        <a href="{% url 'store:checkout' %}" class="btn btn-primary" style="display:block; text-align:center; width:100%; padding:0.9rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; font-size:0.88rem; background:#0A0A0A; color:#FFFFFF; border-radius:8px;">
+          {{ t.complete_order }}
         </a>
       </div>
-    {% endif %}
+    </div>
   </div>
 
   <!-- Mobile Bottom Sticky Navigation Bar -->
   <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
     <a href="{% url 'store:home' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'home' and not selected_category_slug %}active{% endif %}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span>Home</span>
+      <span>Accueil</span>
     </a>
-    <button type="button" id="mobileBottomNavCategories" class="mobile-bottom-item" style="background:none; border:none; cursor:pointer;">
+    <a href="{% url 'store:home' %}#catalog" class="mobile-bottom-item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-      <span>Browse</span>
-    </button>
+      <span>Boutique</span>
+    </a>
     <button type="button" class="mobile-bottom-item trigger-cart" style="background:none; border:none; cursor:pointer;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-      <span>Bag</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span>Panier</span>
       <span class="mobile-bottom-badge cart-badge-count">{{ cart_count|default:0 }}</span>
     </button>
     {% if user.is_authenticated %}
@@ -690,114 +723,175 @@
       {% else %}
         <a href="{% url 'store:profile' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Account</span>
+          <span>Compte</span>
         </a>
       {% endif %}
     {% else %}
       <a href="{% url 'store:login' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Sign In</span>
+        <span>Connexion</span>
       </a>
     {% endif %}
   </nav>
 
-  <!-- Footer -->
-  <footer class="site-footer">
+  <!-- Footer (Clean, Professional Dark Footer Without Any Emojis) -->
+  <footer class="site-footer" id="about">
     <div class="footer-grid">
       <div>
-        <div style="display:flex; align-items:center; gap:0.65rem; margin-bottom:1rem;">
-          <img src="{% static 'images/wolfshoes-logo.svg.jpg' %}" alt="Wolf Shoes" style="width:34px; height:34px; object-fit:contain;">
-          <span style="font-family:'Outfit', sans-serif; font-size:1.35rem; font-weight:900; letter-spacing:0.12em; color:#0A0A0A;">WOLF SHOES</span>
+        <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
+          <img src="{% static 'images/marioclothes-logo.png' %}" alt="Mario Clothes" style="width:38px; height:38px; object-fit:contain; border-radius:50%; background:#fff; padding:2px; border:1px solid #374151;">
+          <span style="font-family:'Outfit', sans-serif; font-size:1.35rem; font-weight:900; letter-spacing:0.12em; color:#FFFFFF;">MARIO CLOTHES</span>
         </div>
-        <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.7; margin-bottom:1rem; max-width:320px;">{{ t.hero_desc }}</p>
-        <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.9;">
-          <div><strong style="color:#0A0A0A;">Location:</strong> Casablanca, Morocco 📍</div>
-          <div><strong style="color:#0A0A0A;">Phone:</strong> 07 14 32 50 39 ☎️</div>
-          <div><strong style="color:#0A0A0A;">Delivery:</strong> Home delivery 🚚 🇲🇦</div>
+        <p style="color:#9CA3AF; font-size:0.875rem; line-height:1.7; margin-bottom:1.25rem; max-width:360px;">{{ t.hero_desc }}</p>
+        <div style="font-size:0.85rem; color:#D1D5DB; line-height:2.1;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span><strong style="color:#FFFFFF;">Adresse :</strong> Casablanca centre-ville, Bab Marrakech</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span><strong style="color:#FFFFFF;">Téléphone / WhatsApp :</strong> <a href="https://wa.me/212772379035" target="_blank" style="color:#25D366; font-weight:700; text-decoration:none;">0772379035</a></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span><strong style="color:#FFFFFF;">Horaires :</strong> 10h – 21h30</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            <span><strong style="color:#FFFFFF;">Livraison :</strong> Partout au Maroc (Paiement à la livraison)</span>
+          </div>
         </div>
       </div>
+
       <div>
-        <h4 style="margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase; color:#0A0A0A;">Instagram Community</h4>
-        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:0.9rem; line-height:1.6;">Follow @wolf.shoes7 for new espadrille drops and restocks.</p>
-        <a href="https://instagram.com/wolf.shoes7" target="_blank" rel="noopener" class="btn btn-outline-gold btn-sm" style="display:inline-flex;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          @wolf.shoes7
+        <h4 style="margin-bottom:1.2rem; font-size:0.85rem; letter-spacing:0.12em; text-transform:uppercase; color:#FFFFFF; font-weight:800;">Communauté Instagram</h4>
+        <p style="color:#9CA3AF; font-size:0.85rem; margin-bottom:1rem; line-height:1.6;">Suivez @_marioclothes_ pour découvrir nos nouveaux arrivages et looks sartoriaux exclusifs.</p>
+        <a href="https://instagram.com/_marioclothes_" target="_blank" rel="noopener" class="btn btn-dark btn-sm" style="display:inline-flex; align-items:center; gap:8px; border-color:#374151; color:#FFFFFF; background:rgba(255,255,255,0.06); border-radius:6px; padding:0.6rem 1.2rem;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          @_marioclothes_
         </a>
       </div>
+
       <div>
-        <h4 style="margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase; color:#0A0A0A;">{{ t.customer_services }}</h4>
-        <ul style="list-style:none; font-size:0.84rem; color:var(--text-muted); display:flex; flex-direction:column; gap:0.6rem; line-height:1.5;">
-          <li>✓ WhatsApp Direct Order Support</li>
-          <li>✓ Cash on Delivery (Paiement à la livraison)</li>
-          <li>✓ Fast Shipping Across All Morocco Cities</li>
-          <li>✓ Curated Quality & Modern Silhouettes</li>
+        <h4 style="margin-bottom:1.2rem; font-size:0.85rem; letter-spacing:0.12em; text-transform:uppercase; color:#FFFFFF; font-weight:800;">{{ t.customer_services }}</h4>
+        <ul style="list-style:none; font-size:0.85rem; color:#9CA3AF; display:flex; flex-direction:column; gap:0.75rem; line-height:1.5; padding:0;">
+          <li style="display:flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Confirmation directe sur WhatsApp (0772379035)</span>
+          </li>
+          <li style="display:flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Paiement à la livraison (Cash on Delivery)</span>
+          </li>
+          <li style="display:flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Expédition rapide dans toutes les villes du Maroc</span>
+          </li>
+          <li style="display:flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Prêt-à-porter homme haut de gamme garanti</span>
+          </li>
         </ul>
       </div>
     </div>
+
     <div class="footer-bottom">
       <span>{{ t.rights_reserved }}</span>
       <div style="display:flex; gap:0.75rem;">
-        <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}" style="color:#0A0A0A;">EN</a>
-        <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}" style="color:#0A0A0A;">FR</a>
-        <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="color:#0A0A0A; font-family:sans-serif;">العربية</a>
+        <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}" style="color:#FFFFFF;">FR</a>
+        <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="color:#FFFFFF; font-family:sans-serif;">العربية</a>
+        <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}" style="color:#FFFFFF;">EN</a>
       </div>
     </div>
   </footer>
 
-  <script src="{% static 'js/cart.js' %}"></script>
+  <script src="{% static 'js/cart.js' %}?v=3"></script>
   <script>
-    // Mobile Drawer & Search Toggles
-    const menuBtn = document.getElementById('toggleMobileMenu');
-    const menuContainer = document.getElementById('mobileMenuContainer');
-    const searchBtn = document.getElementById('toggleMobileSearch');
-    const searchContainer = document.getElementById('mobileSearchContainer');
-    const burgerSvg = document.getElementById('burgerSvg');
-    const closeSvg = document.getElementById('closeSvg');
-    const bottomBrowseBtn = document.getElementById('mobileBottomNavCategories');
+    document.querySelectorAll('.product-shuffle-image').forEach((image) => {
+      let imageUrls;
+      try {
+        imageUrls = JSON.parse(image.dataset.shuffleImages || '[]');
+      } catch (error) {
+        imageUrls = [];
+      }
 
-    if (menuBtn) {
-      menuBtn.addEventListener('click', function() {
-        const isOpen = menuContainer.classList.toggle('is-active');
-        burgerSvg.style.display = isOpen ? 'none' : 'block';
-        closeSvg.style.display = isOpen ? 'block' : 'none';
-        menuBtn.classList.toggle('active', isOpen);
-        if (isOpen && searchContainer) {
-          searchContainer.classList.remove('is-active');
-          searchBtn.classList.remove('active');
+      if (imageUrls.length < 2) return;
+
+      imageUrls = imageUrls.sort(() => Math.random() - 0.5);
+      let imageIndex = 0;
+      image.src = imageUrls[imageIndex];
+
+      window.setInterval(() => {
+        imageIndex = (imageIndex + 1) % imageUrls.length;
+        image.style.opacity = '0.35';
+        window.setTimeout(() => {
+          image.src = imageUrls[imageIndex];
+          image.style.opacity = '1';
+        }, 180);
+      }, 2800 + Math.random() * 1200);
+    });
+  </script>
+  <script>
+    // Header Scroll & Drawer Behavior
+    const navWrapper = document.getElementById('masterNavWrapper');
+    const openDrawerBtn = document.getElementById('openMobileDrawer');
+    const closeDrawerBtn = document.getElementById('closeMobileDrawer');
+    const mobileDrawer = document.getElementById('mobileMenuDrawer');
+    const searchToggleBtn = document.getElementById('toggleSearchBtn');
+    const searchOverlay = document.getElementById('siteSearchOverlay');
+
+    // Sticky / Scrolled class on scroll
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        navWrapper.classList.add('nav-scrolled');
+      } else {
+        navWrapper.classList.remove('nav-scrolled');
+      }
+    });
+
+    // Mobile Drawer Open / Close
+    if (openDrawerBtn && mobileDrawer) {
+      openDrawerBtn.addEventListener('click', () => {
+        mobileDrawer.classList.add('is-active');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+    if (closeDrawerBtn && mobileDrawer) {
+      closeDrawerBtn.addEventListener('click', () => {
+        mobileDrawer.classList.remove('is-active');
+        document.body.style.overflow = '';
+      });
+    }
+
+    // Search Toggle
+    if (searchToggleBtn && searchOverlay) {
+      searchToggleBtn.addEventListener('click', () => {
+        searchOverlay.classList.toggle('is-active');
+        if (searchOverlay.classList.contains('is-active')) {
+          const input = searchOverlay.querySelector('input');
+          if (input) input.focus();
         }
       });
     }
 
-    if (bottomBrowseBtn) {
-      bottomBrowseBtn.addEventListener('click', function() {
-        if (menuContainer) {
-          const isOpen = menuContainer.classList.toggle('is-active');
-          if (burgerSvg && closeSvg) {
-            burgerSvg.style.display = isOpen ? 'none' : 'block';
-            closeSvg.style.display = isOpen ? 'block' : 'none';
-          }
-          if (menuBtn) menuBtn.classList.toggle('active', isOpen);
-          if (isOpen) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
+    // Cart Drawer Toggle
+    const cartDrawer = document.getElementById('cartDrawer');
+    const closeCartDrawerBtn = document.getElementById('closeCartDrawerBtn');
+    document.querySelectorAll('.trigger-cart').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (cartDrawer) {
+          cartDrawer.style.display = 'block';
+          if (window.loadCartDrawer) window.loadCartDrawer();
         }
       });
-    }
-
-    if (searchBtn) {
-      searchBtn.addEventListener('click', function() {
-        const isOpen = searchContainer.classList.toggle('is-active');
-        searchBtn.classList.toggle('active', isOpen);
-        if (isOpen) {
-          if (menuContainer) {
-            menuContainer.classList.remove('is-active');
-            if (burgerSvg) burgerSvg.style.display = 'block';
-            if (closeSvg) closeSvg.style.display = 'none';
-            if (menuBtn) menuBtn.classList.remove('active');
-          }
-          const inp = searchContainer.querySelector('input');
-          if (inp) setTimeout(() => inp.focus(), 100);
-        }
+    });
+    if (closeCartDrawerBtn && cartDrawer) {
+      closeCartDrawerBtn.addEventListener('click', () => {
+        cartDrawer.style.display = 'none';
+      });
+      cartDrawer.addEventListener('click', (e) => {
+        if (e.target === cartDrawer) cartDrawer.style.display = 'none';
       });
     }
   </script>
