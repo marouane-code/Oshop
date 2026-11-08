@@ -4,23 +4,23 @@
 {% block title %}My Profile & Order History — Mario Clothes{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:1100px;">
+<div class="container" style="max-width:1100px; padding-top:2rem; padding-bottom:5rem;">
 
-  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap; margin-bottom:2.5rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap; margin-bottom:2rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
     <div>
-      <h1 style="font-size:2.2rem; font-weight:800; letter-spacing:-0.02em;">Client Account Dashboard</h1>
-      <p style="color:var(--text-muted); font-size:0.9rem;">Manage your shipping details and track your nationwide order history</p>
+      <h1 style="font-size:clamp(1.5rem, 4vw, 2.2rem); font-weight:800; letter-spacing:-0.02em;">Client Account Dashboard</h1>
+      <p style="color:var(--text-muted); font-size:0.88rem;">Manage your shipping details and track your nationwide order history</p>
     </div>
     <a href="{% url 'store:logout' %}" class="btn btn-dark" style="color:var(--brand-red); border-color:var(--brand-red); font-size:0.78rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;">
       {{ t.logout }}
     </a>
   </div>
 
-  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:3rem;">
+  <div class="profile-grid">
     
     <!-- Profile Edit Column -->
     <div>
-      <div style="background:var(--bg-secondary); padding:2rem; border-radius:var(--radius-md); border:1px solid var(--border-gold);">
+      <div class="profile-card profile-card-gold">
         <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">
           Personal Information
         </h3>
@@ -54,8 +54,8 @@
     </div>
 
     <!-- Order History Column -->
-    <div style="grid-column: span 2;">
-      <div style="background:var(--bg-secondary); padding:2rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+    <div class="profile-history-col">
+      <div class="profile-card">
         <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">
           Order History ({{ orders.count }})
         </h3>

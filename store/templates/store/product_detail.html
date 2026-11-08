@@ -4,20 +4,20 @@
 {% block title %}{{ article.title }} — Mario Clothes{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container product-detail-container">
 
   <!-- Breadcrumb -->
-  <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:2rem; letter-spacing:0.05em; text-transform:uppercase;">
+  <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1.5rem; letter-spacing:0.05em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
     <a href="{% url 'store:home' %}">Home</a> &nbsp;/&nbsp; 
     <a href="{% url 'store:home' %}?category={{ article.category.slug }}">{{ article.category.name }}</a> &nbsp;/&nbsp; 
     <span style="font-weight:700; color:#0A0A0A;">{{ article.title }}</span>
   </div>
 
-  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:3.5rem; margin-bottom:5rem;">
+  <div class="product-detail-grid">
     
     <!-- Product Images Gallery -->
-    <div>
-      <div style="width:100%; aspect-ratio:4/5; background:var(--bg-secondary); border-radius:var(--radius-md); border:1.5px solid var(--border-color); overflow:hidden; margin-bottom:1rem;">
+    <div class="product-detail-gallery">
+      <div class="product-detail-main-img-box">
         {% if article.primary_image %}
           <img id="mainProductImg" src="{{ article.primary_image }}" alt="{{ article.title }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy" class="product-shuffle-image" data-shuffle-images="{{ article.image_urls|escapejs }}">
         {% else %}
@@ -36,16 +36,16 @@
     </div>
 
     <!-- Article Info & Size Picker -->
-    <div style="display:flex; flex-direction:column; justify-content:center;">
+    <div class="product-detail-info">
       <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.12em; font-weight:800;">
         {{ article.category.name }}
       </span>
 
-      <h1 style="font-size:2.4rem; margin-top:0.3rem; margin-bottom:0.75rem; line-height:1.15; font-weight:900; letter-spacing:-0.02em; color:#0A0A0A;">
+      <h1 class="product-detail-title">
         {{ article.title }}
       </h1>
 
-      <div style="font-size:2.2rem; font-weight:900; color:#0A0A0A; margin-bottom:1.75rem;">
+      <div class="product-detail-price">
         {{ article.price }} MAD
       </div>
 
@@ -171,7 +171,7 @@
       <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ article.title }}</div>
       <div style="font-size:1.1rem; font-weight:900; color:#0A0A0A;">{{ article.price }} MAD</div>
     </div>
-    <button type="button" id="mobileAddCartBtn" class="btn btn-gold" style="padding:0.75rem 1.4rem; font-size:0.85rem; font-weight:800; flex-shrink:0;" onclick="triggerAddCart()">
+    <button type="button" id="mobileAddCartBtn" class="btn btn-gold" style="padding:0.65rem 1rem; font-size:0.8rem; font-weight:800; flex-shrink:0; max-width:55%; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;" onclick="triggerAddCart()">
       {% if article.has_colors %}{{ t.please_choose }}{% else %}{{ t.add_to_bag }}{% endif %}
     </button>
   </div>

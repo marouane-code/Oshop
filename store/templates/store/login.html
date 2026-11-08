@@ -4,16 +4,16 @@
 {% block title %}Sign In / Register — Mario Clothes{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 520px; padding-top: 3rem; padding-bottom: 5rem;">
-  <div class="card" style="background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: var(--shadow-sm);">
+<div class="container" style="max-width: 520px; padding-top: 2rem; padding-bottom: 5rem;">
+  <div class="card login-card">
     
     <!-- Header -->
-    <div style="text-align: center; margin-bottom: 2rem;">
-      <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: var(--bg-secondary); border: 1.5px solid var(--border-color); margin-bottom: 1rem; color: #0A0A0A;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    <div style="text-align: center; margin-bottom: 1.75rem;">
+      <div style="display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; background: var(--bg-secondary); border: 1.5px solid var(--border-color); margin-bottom: 0.85rem; color: #0A0A0A;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </div>
-      <h2 style="font-size: 1.6rem; font-weight: 900; letter-spacing: -0.01em; color: #0A0A0A;">Account Access</h2>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem;">Sign in to your client profile or manager dashboard</p>
+      <h2 style="font-size: clamp(1.3rem, 3.5vw, 1.6rem); font-weight: 900; letter-spacing: -0.01em; color: #0A0A0A;">Account Access</h2>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Sign in to your client profile or manager dashboard</p>
     </div>
 
     <!-- Auth Toggle Tabs -->
@@ -69,7 +69,7 @@
         <input type="text" name="reg_phone" id="regPhone" class="form-control" placeholder="0661234567" style="width: 100%; padding: 0.8rem 1rem;">
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+      <div class="form-row-2col" style="margin-bottom: 1.25rem;">
         <div>
           <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">City</label>
           <input type="text" name="reg_city" id="regCity" class="form-control" placeholder="Casablanca" style="width: 100%; padding: 0.8rem 1rem;">
@@ -83,6 +83,7 @@
       <div style="margin-bottom: 1.5rem;">
         <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Create Password</label>
         <input type="password" name="reg_password" id="regPassword" class="form-control" placeholder="••••••••" style="width: 100%; padding: 0.8rem 1rem;">
+      </div>
       </div>
 
       <button type="submit" class="btn btn-gold" style="width: 100%; padding: 0.9rem; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;">

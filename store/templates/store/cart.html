@@ -4,24 +4,24 @@
 {% block title %}Mon Panier — Mario Clothes{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:1050px; padding: 3rem 1.5rem 6rem;">
+<div class="container" style="max-width:1050px; padding-top: 2rem; padding-bottom: 5rem;">
 
-  <div style="margin-bottom:2.5rem; border-bottom:1.5px solid var(--border-color); padding-bottom:1rem;">
-    <h1 style="font-family:'Outfit', sans-serif; font-size:2.2rem; font-weight:900; letter-spacing:-0.02em; color:#0A0A0A;">
+  <div style="margin-bottom:2rem; border-bottom:1.5px solid var(--border-color); padding-bottom:1rem;">
+    <h1 style="font-family:'Outfit', sans-serif; font-size:clamp(1.6rem, 4vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; color:#0A0A0A;">
       {{ t.shopping_bag }}
     </h1>
-    <p style="color:var(--text-muted); font-size:0.9rem;">Vérifiez vos articles avant de finaliser votre commande</p>
+    <p style="color:var(--text-muted); font-size:0.88rem;">Vérifiez vos articles avant de finaliser votre commande</p>
   </div>
 
   {% if cart_items %}
-    <div style="display:grid; grid-template-columns: 1.8fr 1fr; gap:3rem; align-items:start;">
+    <div class="cart-page-layout">
       
       <!-- Cart Items List -->
-      <div style="background:#FFFFFF; border:1px solid var(--border-color); border-radius:12px; padding:1.75rem; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+      <div class="cart-page-box">
+        <div style="display:flex; flex-direction:column; gap:1.25rem;">
           {% for item in cart_items %}
-            <div style="display:flex; gap:1.25rem; align-items:center; padding-bottom:1.5rem; border-bottom:1px solid var(--border-color);">
-              <div style="width:75px; height:90px; border-radius:8px; overflow:hidden; background:#F3F4F6; flex-shrink:0;">
+            <div class="cart-page-item">
+              <div class="cart-page-item-img">
                 {% if item.article.primary_image %}
                   <img src="{{ item.article.primary_image }}" alt="{{ item.article.title }}" style="width:100%; height:100%; object-fit:cover;">
                 {% else %}
@@ -29,19 +29,19 @@
                 {% endif %}
               </div>
 
-              <div style="flex:1;">
+              <div class="cart-page-item-info">
                 <span style="font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); font-weight:700;">{{ item.article.category.name }}</span>
-                <h3 style="font-family:'Outfit', sans-serif; font-size:1.1rem; font-weight:800; margin:0.2rem 0 0.4rem;">
+                <h3 style="font-family:'Outfit', sans-serif; font-size:1.05rem; font-weight:800; margin:0.2rem 0 0.35rem; line-height:1.25;">
                   <a href="{% url 'store:product_detail' item.article.slug %}" style="color:#0A0A0A; text-decoration:none;">{{ item.article.title }}</a>
                 </h3>
-                <div style="font-size:0.85rem; color:var(--text-secondary);">
+                <div style="font-size:0.85rem; color:var(--text-secondary); line-height:1.4;">
                   Taille : <strong style="color:#0A0A0A;">{{ item.size }}</strong>{% if item.color %} &nbsp;|&nbsp; {{ t.color }} : <strong style="color:#0A0A0A;">{{ item.color }}</strong>{% endif %} &nbsp;|&nbsp; Qté : <strong style="color:#0A0A0A;">{{ item.quantity }}</strong>
                 </div>
               </div>
 
-              <div style="text-align:right;">
-                <div style="font-size:1.15rem; font-weight:900; color:#0A0A0A;">{{ item.subtotal }} MAD</div>
-                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">{{ item.article.price }} MAD / unité</div>
+              <div class="cart-page-item-pricing">
+                <div style="font-size:1.15rem; font-weight:900; color:#0A0A0A; white-space:nowrap;">{{ item.subtotal }} MAD</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px; white-space:nowrap;">{{ item.article.price }} MAD / u.</div>
               </div>
             </div>
           {% endfor %}
@@ -55,8 +55,8 @@
       </div>
 
       <!-- Order Summary Card -->
-      <div style="background:#F9FAFB; border:1.5px solid var(--border-color); border-radius:12px; padding:2rem; position:sticky; top:100px;">
-        <h3 style="font-family:'Outfit', sans-serif; font-size:1.2rem; font-weight:900; margin-bottom:1.25rem; color:#0A0A0A; letter-spacing:0.04em; text-transform:uppercase;">
+      <div class="cart-page-summary">
+        <h3 style="font-family:'Outfit', sans-serif; font-size:1.15rem; font-weight:900; margin-bottom:1.25rem; color:#0A0A0A; letter-spacing:0.04em; text-transform:uppercase;">
           {{ t.order_summary }}
         </h3>
 
@@ -72,10 +72,10 @@
 
         <div style="border-top:1.5px dashed var(--border-color); padding-top:1.25rem; margin-top:1.25rem; display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.75rem;">
           <span style="font-size:1.05rem; font-weight:900; color:#0A0A0A;">{{ t.total_payable }}</span>
-          <span style="font-size:1.5rem; font-weight:900; color:#0A0A0A;">{{ total_price }} MAD</span>
+          <span style="font-size:1.45rem; font-weight:900; color:#0A0A0A;">{{ total_price }} MAD</span>
         </div>
 
-        <a href="{% url 'store:checkout' %}" class="btn btn-gold" style="display:block; text-align:center; padding:1rem; font-size:0.88rem; font-weight:900; letter-spacing:0.08em; text-transform:uppercase;">
+        <a href="{% url 'store:checkout' %}" class="btn btn-gold" style="display:block; text-align:center; padding:0.95rem; font-size:0.88rem; font-weight:900; letter-spacing:0.08em; text-transform:uppercase; width:100%;">
           Passer à la Caisse (COD) &rarr;
         </a>
       </div>

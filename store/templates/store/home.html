@@ -115,15 +115,18 @@
 <style>
   .mario-hero-carousel {
     position: relative;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    min-height: 92vh;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    min-height: 88vh;
+    min-height: 88dvh;
     max-height: 960px;
     background: #0A0A0A;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-sizing: border-box;
   }
 
   /* Slide layers */
@@ -175,7 +178,8 @@
     flex-direction: column;
     justify-content: space-between;
     flex: 1;
-    min-height: 92vh;
+    min-height: 88vh;
+    min-height: 88dvh;
   }
 
   .hero-nav-spacer {
@@ -194,6 +198,8 @@
     padding: 6px 14px;
     border-radius: 30px;
     margin-bottom: 1.25rem;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .hero-eyebrow-dot {
     width: 7px;
@@ -201,6 +207,7 @@
     border-radius: 50%;
     background: var(--brand-red, #C5221F);
     display: inline-block;
+    flex-shrink: 0;
   }
   .hero-eyebrow-text {
     font-family: 'Outfit', sans-serif;
@@ -214,15 +221,17 @@
   /* Headline */
   .hero-headline {
     font-family: 'Outfit', sans-serif;
-    font-size: clamp(2.3rem, 5.5vw, 4.6rem);
+    font-size: clamp(1.85rem, 5.8vw, 4.4rem);
     font-weight: 900;
-    line-height: 1.06;
+    line-height: 1.08;
     letter-spacing: -0.02em;
     color: #FFFFFF;
     text-transform: uppercase;
-    margin: 0 0 1.25rem 0;
+    margin: 0 0 1rem 0;
     max-width: 950px;
     text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .hero-headline-accent {
     color: #FFFFFF;
@@ -230,31 +239,37 @@
   }
 
   .hero-subtitle {
-    font-size: clamp(0.92rem, 1.3vw, 1.1rem);
-    color: rgba(255, 255, 255, 0.85);
+    font-size: clamp(0.85rem, 2vw, 1.05rem);
+    color: rgba(255, 255, 255, 0.88);
     max-width: 560px;
-    line-height: 1.7;
-    margin-bottom: 2rem;
+    line-height: 1.6;
+    margin-bottom: 1.6rem;
     text-shadow: 0 1px 10px rgba(0,0,0,0.4);
+    overflow-wrap: break-word;
   }
 
   .hero-actions-row {
     display: flex;
-    gap: 1rem;
+    gap: 0.85rem;
     flex-wrap: wrap;
     align-items: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .hero-cta-btn {
     background: var(--brand-red, #C5221F);
     color: #FFFFFF;
     border: 1.5px solid var(--brand-red, #C5221F);
     font-size: 0.82rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: 800;
-    padding: 0.95rem 2.2rem;
+    padding: 0.85rem 1.8rem;
     border-radius: 50px;
     box-shadow: 0 4px 15px rgba(197, 34, 31, 0.35);
+    box-sizing: border-box;
+    text-align: center;
   }
   .hero-cta-btn:hover {
     background: #A51D1A;
@@ -267,12 +282,17 @@
     border: 1.5px solid rgba(255, 255, 255, 0.35);
     color: #FFFFFF;
     font-size: 0.82rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: 700;
-    padding: 0.95rem 1.8rem;
+    padding: 0.85rem 1.5rem;
     border-radius: 50px;
     backdrop-filter: blur(8px);
+    box-sizing: border-box;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
   .hero-secondary-btn:hover {
     background: #FFFFFF;
@@ -287,11 +307,12 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 2rem 0 1.75rem 0;
+    padding: 1.5rem 0 1.5rem 0;
     margin-top: auto;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1rem;
+    box-sizing: border-box;
   }
 
   /* Bottom-Left: Faites Défiler */
@@ -341,6 +362,8 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     max-width: 100%;
+    box-sizing: border-box;
+    scrollbar-width: none;
   }
   .hero-num-btn {
     background: none;
@@ -382,30 +405,49 @@
   /* Mobile scale */
   @media (max-width: 768px) {
     .mario-hero-carousel {
-      min-height: 86vh;
+      min-height: 80vh;
+      min-height: 80dvh;
     }
     .hero-content-container {
-      min-height: 86vh;
+      min-height: 80vh;
+      min-height: 80dvh;
       padding: 0 16px;
     }
+    .hero-nav-spacer {
+      height: calc(var(--header-height, 60px) + 12px);
+    }
     .hero-headline {
-      font-size: clamp(1.9rem, 7.5vw, 2.5rem);
+      font-size: clamp(1.65rem, 7vw, 2.3rem);
       line-height: 1.1;
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.75rem;
     }
     .hero-subtitle {
-      font-size: 0.88rem;
-      margin-bottom: 1.4rem;
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
     }
     .hero-bottom-bar {
-      padding: 1.25rem 0 1rem 0;
+      padding: 1rem 0 0.85rem 0;
       flex-direction: column;
       align-items: flex-start;
-      gap: 0.85rem;
+      gap: 0.75rem;
     }
     .hero-slide-nav-numbered {
       width: 100%;
       justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-actions-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.65rem;
+    }
+    .hero-cta-btn, .hero-secondary-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 0.8rem 1rem;
+      font-size: 0.8rem;
     }
   }
 </style>
@@ -482,7 +524,7 @@
 <!-- =========================================================
      2. STOREFRONT CATALOG & SECTIONS
      ========================================================= -->
-<div class="container" style="max-width: 1300px; margin: 3rem auto 5rem; padding: 0 20px; box-sizing: border-box; width: 100%;">
+<div class="container" style="max-width: 1300px; margin: 2rem auto 4rem; box-sizing: border-box; width: 100%;">
 
   <!-- Featured Outfit Showcases (Lookbook) -->
   {% if showcases %}
@@ -697,7 +739,7 @@
      ========================================================= */
   .grid-showcases {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
     gap: 1.75rem;
     width: 100%;
     box-sizing: border-box;
@@ -711,6 +753,8 @@
     flex-direction: column;
     position: relative;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
   }
   .showcase-card:hover {
     transform: translateY(-3px);
@@ -741,6 +785,7 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
+    display: block;
   }
   .showcase-card:hover .showcase-thumb img {
     transform: scale(1.04);
@@ -750,6 +795,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    box-sizing: border-box;
   }
   .showcase-title {
     font-family: 'Outfit', sans-serif;
@@ -758,6 +804,8 @@
     color: #0A0A0A;
     text-decoration: none;
     line-height: 1.3;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .btn-look-cta {
     background: #0A0A0A;
@@ -771,6 +819,9 @@
     padding: 0.55rem 1.1rem;
     border-radius: 6px;
     transition: background 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
   }
   .btn-look-cta:hover {
     background: var(--brand-red, #C5221F);
@@ -821,12 +872,14 @@
     background: #F8F9FA;
     overflow: hidden;
     display: block;
+    position: relative;
   }
   .mario-card-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
+    display: block;
   }
   .mario-product-card:hover .mario-card-thumb img {
     transform: scale(1.04);
@@ -853,6 +906,8 @@
     text-decoration: none;
     margin-top: 0.2rem;
     line-height: 1.35;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .mario-card-sizes {
     display: flex;
@@ -867,6 +922,7 @@
     background: var(--bg-secondary, #F8F9FA);
     border: 1px solid var(--border-subtle, #E5E7EB);
     color: var(--text-secondary);
+    font-weight: 600;
   }
   .mario-size-chip.is-instock {
     color: #0A0A0A;
@@ -876,9 +932,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 1.2rem;
+    margin-top: auto;
     padding-top: 0.85rem;
     border-top: 1px solid var(--border-subtle, #E5E7EB);
+    gap: 0.5rem;
   }
   .mario-card-price {
     font-size: 1.15rem;
@@ -899,6 +956,10 @@
     border: 1.5px solid #0A0A0A;
     text-decoration: none;
     transition: all 0.2s ease;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
   .mario-card-btn:hover {
     background: var(--brand-red, #C5221F);
@@ -906,25 +967,99 @@
     color: #FFFFFF;
   }
 
-  /* Mobile Overrides: Strict 1 Column, 100% Width, No Horizontal Clipping */
+  /* Responsive Grid Adjustments */
+  @media (max-width: 1024px) {
+    .mario-catalog-grid {
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  /* Mobile: 2 Columns on Standard Smartphones (360px–768px) */
   @media (max-width: 768px) {
     .container {
-      padding: 0 14px !important;
-      margin-top: 2rem !important;
+      padding: 0 12px !important;
+      margin-top: 1.5rem !important;
     }
     .grid-showcases {
       grid-template-columns: 1fr !important;
       gap: 1.25rem !important;
     }
+    .showcase-info {
+      padding: 1rem !important;
+    }
     .mario-catalog-grid {
-      grid-template-columns: 1fr !important;
-      gap: 1.25rem !important;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 0.75rem !important;
     }
     .mario-product-card {
       width: 100% !important;
+      border-radius: 10px;
     }
     .mario-card-thumb {
-      aspect-ratio: 4/5 !important;
+      aspect-ratio: 3/4 !important;
+    }
+    .mario-card-body {
+      padding: 0.75rem 0.65rem 0.85rem !important;
+      gap: 0.25rem;
+    }
+    .mario-card-category {
+      font-size: 0.62rem !important;
+      letter-spacing: 0.06em !important;
+    }
+    .mario-card-title {
+      font-size: 0.85rem !important;
+      line-height: 1.28 !important;
+      min-height: 2.2em;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .mario-card-sizes {
+      margin-top: 0.35rem !important;
+      gap: 3px !important;
+    }
+    .mario-size-chip {
+      font-size: 0.62rem !important;
+      padding: 1px 4px !important;
+    }
+    /* Stack Price & Button on 2-Column Mobile Cards so button fits 100% */
+    .mario-card-footer {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 6px !important;
+      margin-top: 0.75rem !important;
+      padding-top: 0.55rem !important;
+    }
+    .mario-card-price {
+      font-size: 0.98rem !important;
+      text-align: left;
+    }
+    .mario-card-btn {
+      width: 100% !important;
+      text-align: center !important;
+      padding: 0.45rem 0.4rem !important;
+      font-size: 0.68rem !important;
+      letter-spacing: 0.04em !important;
+      box-sizing: border-box !important;
+    }
+  }
+
+  /* Ultra-compact phones (≤350px) */
+  @media (max-width: 350px) {
+    .mario-catalog-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1.1rem !important;
+    }
+    .mario-card-footer {
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+    }
+    .mario-card-btn {
+      width: auto !important;
+      padding: 0.45rem 0.85rem !important;
     }
   }
 </style>
