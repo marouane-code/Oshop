@@ -93,7 +93,8 @@
           <td>
             <button 
               type="button" 
-              onclick="toggleShowcaseStatus({{ showcase.id }}, this)" 
+              data-showcase-id="{{ showcase.id }}"
+              onclick="toggleShowcaseStatus(this.dataset.showcaseId, this)" 
               class="btn btn-dark" 
               style="padding:0.3rem 0.75rem; font-size:0.75rem; border-radius:50px; cursor:pointer;"
             >
@@ -146,7 +147,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': '{{ csrf_token }}'
+          'X-CSRFToken': window.getCsrfToken ? window.getCsrfToken() : ''
         }
       });
       const data = await response.json();

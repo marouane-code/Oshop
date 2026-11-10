@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/cart/contents/', storefront.cart_contents_api, name='api_cart_contents'),
     path('api/cart/add-showcase/', storefront.add_showcase_to_cart_api, name='api_cart_add_showcase'),
     path('api/cart/update/', storefront.update_cart_api, name='api_cart_update'),
+    path('api/hero-slides/', storefront.hero_slides_api, name='api_hero_slides'),
     
     # Client Profile & Orders
     path('profile/', client_profile.profile_view, name='profile'),

@@ -1,16 +1,30 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Mon Panier — Mario Clothes{% endblock %}
+{% block title %}Mon Panier — Mario Clothes Casablanca{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:1050px; padding-top: 2rem; padding-bottom: 5rem;">
+<div class="container" style="max-width:1150px; padding-top: 2rem; padding-bottom: 6rem;">
 
-  <div style="margin-bottom:2rem; border-bottom:1.5px solid var(--border-color); padding-bottom:1rem;">
-    <h1 style="font-family:'Outfit', sans-serif; font-size:clamp(1.6rem, 4vw, 2.2rem); font-weight:900; letter-spacing:-0.02em; color:#0A0A0A;">
-      {{ t.shopping_bag }}
-    </h1>
-    <p style="color:var(--text-muted); font-size:0.88rem;">Vérifiez vos articles avant de finaliser votre commande</p>
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb" style="font-size:0.78rem; color:var(--warm-500); margin-bottom:1.5rem; letter-spacing:0.08em; text-transform:uppercase; display:flex; align-items:center; gap:0.5rem;">
+    <a href="{% url 'store:home' %}" style="color:var(--warm-700); text-decoration:none;">{{ t.home|default:"Accueil" }}</a>
+    <span style="opacity:0.4;">/</span>
+    <span style="font-weight:700; color:var(--ink);">{{ t.shopping_bag|default:"Panier" }}</span>
+  </nav>
+
+  <div style="margin-bottom:2.5rem; border-bottom:1px solid var(--warm-100); padding-bottom:1.5rem; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem;">
+    <div>
+      <span class="section-eyebrow">Sélection d'Articles</span>
+      <h1 style="font-family:var(--font-display); font-size:clamp(2rem, 4vw, 2.8rem); font-weight:900; letter-spacing:-0.02em; color:var(--ink); margin:0;">
+        {{ t.shopping_bag }}
+      </h1>
+    </div>
+    {% if cart_items %}
+      <span style="font-size:0.82rem; font-weight:700; color:var(--warm-600); background:var(--warm-50); border:1px solid var(--warm-200); padding:4px 12px; border-radius:var(--r-full);">
+        {{ cart_items|length }} article{% if cart_items|length > 1 %}s{% endif %}
+      </span>
+    {% endif %}
   </div>
 
   {% if cart_items %}
@@ -18,37 +32,78 @@
       
       <!-- Cart Items List -->
       <div class="cart-page-box">
-        <div style="display:flex; flex-direction:column; gap:1.25rem;">
+        <div style="display:flex; flex-direction:column;">
           {% for item in cart_items %}
-            <div class="cart-page-item">
+            <div class="cart-page-item" id="cart-row-{{ item.key }}">
               <div class="cart-page-item-img">
                 {% if item.article.primary_image %}
                   <img src="{{ item.article.primary_image }}" alt="{{ item.article.title }}" style="width:100%; height:100%; object-fit:cover;">
                 {% else %}
-                  <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--text-muted);">Mario</div>
+                  <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--warm-400); background:var(--warm-100);">Mario</div>
                 {% endif %}
               </div>
 
               <div class="cart-page-item-info">
-                <span style="font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); font-weight:700;">{{ item.article.category.name }}</span>
-                <h3 style="font-family:'Outfit', sans-serif; font-size:1.05rem; font-weight:800; margin:0.2rem 0 0.35rem; line-height:1.25;">
-                  <a href="{% url 'store:product_detail' item.article.slug %}" style="color:#0A0A0A; text-decoration:none;">{{ item.article.title }}</a>
+                <span style="font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--warm-500); font-weight:800;">
+                  {{ item.article.category.name }}
+                </span>
+                
+                <h3 style="font-family:var(--font-ui); font-size:1.05rem; font-weight:800; margin:0.25rem 0 0.5rem; line-height:1.3;">
+                  <a href="{% url 'store:product_detail' item.article.slug %}" style="color:var(--ink); text-decoration:none;">{{ item.article.title }}</a>
                 </h3>
-                <div style="font-size:0.85rem; color:var(--text-secondary); line-height:1.4;">
-                  Taille : <strong style="color:#0A0A0A;">{{ item.size }}</strong>{% if item.color %} &nbsp;|&nbsp; {{ t.color }} : <strong style="color:#0A0A0A;">{{ item.color }}</strong>{% endif %} &nbsp;|&nbsp; Qté : <strong style="color:#0A0A0A;">{{ item.quantity }}</strong>
+                
+                <div style="display:flex; flex-wrap:wrap; gap:8px; font-size:0.78rem; color:var(--warm-700); margin-bottom:0.75rem;">
+                  <span style="background:var(--warm-50); border:1px solid var(--warm-200); padding:2px 8px; border-radius:var(--r-sm);">
+                    Taille : <strong style="color:var(--ink);">{{ item.size }}</strong>
+                  </span>
+                  {% if item.color %}
+                    <span style="background:var(--warm-50); border:1px solid var(--warm-200); padding:2px 8px; border-radius:var(--r-sm);">
+                      Couleur : <strong style="color:var(--ink);">{{ item.color }}</strong>
+                    </span>
+                  {% endif %}
+                </div>
+
+                <!-- Quantity Controls & Remove -->
+                <div style="display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap;">
+                  <div style="display:inline-flex; align-items:center; background:var(--warm-50); border:1px solid var(--warm-200); border-radius:var(--r-sm); padding:2px;">
+                    <button 
+                      type="button" 
+                      class="btn btn-ghost" 
+                      style="padding:0.2rem 0.6rem; font-weight:700; font-size:0.95rem; min-width:28px; height:28px; border:none;" 
+                      onclick="updatePageCart('{{ item.key }}', 'decrease')"
+                      aria-label="Diminuer"
+                    >−</button>
+                    <span style="width:32px; text-align:center; font-weight:800; font-size:0.88rem; color:var(--ink);">{{ item.quantity }}</span>
+                    <button 
+                      type="button" 
+                      class="btn btn-ghost" 
+                      style="padding:0.2rem 0.6rem; font-weight:700; font-size:0.95rem; min-width:28px; height:28px; border:none;" 
+                      onclick="updatePageCart('{{ item.key }}', 'increase')"
+                      aria-label="Augmenter"
+                    >+</button>
+                  </div>
+
+                  <button 
+                    type="button" 
+                    onclick="updatePageCart('{{ item.key }}', 'remove')"
+                    style="background:none; border:none; color:var(--warm-500); font-size:0.75rem; text-decoration:underline; cursor:pointer; padding:0; display:inline-flex; align-items:center; gap:4px;"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    Supprimer
+                  </button>
                 </div>
               </div>
 
               <div class="cart-page-item-pricing">
-                <div style="font-size:1.15rem; font-weight:900; color:#0A0A0A; white-space:nowrap;">{{ item.subtotal }} MAD</div>
-                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px; white-space:nowrap;">{{ item.article.price }} MAD / u.</div>
+                <div style="font-size:1.2rem; font-weight:900; color:var(--ink); white-space:nowrap;">{{ item.subtotal }} MAD</div>
+                <div style="font-size:0.75rem; color:var(--warm-500); margin-top:2px; white-space:nowrap;">{{ item.article.price }} MAD / u.</div>
               </div>
             </div>
           {% endfor %}
         </div>
 
-        <div style="margin-top:1.5rem; display:flex; justify-content:space-between; align-items:center;">
-          <a href="{% url 'store:home' %}#catalog" class="btn btn-outline-gold" style="font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:800;">
+        <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--warm-100); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <a href="{% url 'store:home' %}#catalog" class="btn btn-outline" style="font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:700;">
             &larr; Continuer mes achats
           </a>
         </div>
@@ -56,43 +111,116 @@
 
       <!-- Order Summary Card -->
       <div class="cart-page-summary">
-        <h3 style="font-family:'Outfit', sans-serif; font-size:1.15rem; font-weight:900; margin-bottom:1.25rem; color:#0A0A0A; letter-spacing:0.04em; text-transform:uppercase;">
+        <h2 style="font-family:var(--font-display); font-size:1.3rem; font-weight:900; margin-bottom:1.25rem; color:var(--ink); letter-spacing:-0.01em;">
           {{ t.order_summary }}
-        </h3>
+        </h2>
 
-        <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--text-secondary); margin-bottom:0.75rem;">
+        <!-- Free Delivery Progress -->
+        <div style="background:var(--white); border:1px solid var(--warm-200); border-radius:var(--r-md); padding:12px; margin-bottom:1.5rem;">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; margin-bottom:6px;">
+            <span style="color:var(--ink);">Livraison Gratuite (Maroc)</span>
+            <span style="color:#15803D;">Offerte</span>
+          </div>
+          <div style="height:4px; background:var(--warm-200); border-radius:var(--r-full); overflow:hidden;">
+            <div style="width:100%; height:100%; background:#16A34A; border-radius:var(--r-full);"></div>
+          </div>
+          <span style="font-size:0.68rem; color:var(--warm-600); display:block; margin-top:6px;">
+            Félicitations ! Vous bénéficiez de la livraison express offerte partout au Maroc.
+          </span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.88rem; color:var(--warm-700); margin-bottom:0.75rem;">
           <span>{{ t.subtotal }}</span>
-          <span style="font-weight:700; color:#0A0A0A;">{{ total_price }} MAD</span>
+          <span style="font-weight:700; color:var(--ink);">{{ total_price }} MAD</span>
         </div>
 
-        <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.25rem;">
-          <span>Livraison (Maroc)</span>
-          <span style="font-weight:700; color:#10B981;">Gratuite / Inclus</span>
+        <div style="display:flex; justify-content:space-between; font-size:0.88rem; color:var(--warm-700); margin-bottom:1.25rem;">
+          <span>Livraison à Domicile</span>
+          <span style="font-weight:700; color:#15803D;">Gratuit (COD)</span>
         </div>
 
-        <div style="border-top:1.5px dashed var(--border-color); padding-top:1.25rem; margin-top:1.25rem; display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.75rem;">
-          <span style="font-size:1.05rem; font-weight:900; color:#0A0A0A;">{{ t.total_payable }}</span>
-          <span style="font-size:1.45rem; font-weight:900; color:#0A0A0A;">{{ total_price }} MAD</span>
+        <div style="border-top:1px dashed var(--warm-300); padding-top:1.25rem; margin-top:1.25rem; display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.75rem;">
+          <span style="font-size:1.05rem; font-weight:900; color:var(--ink);">{{ t.total_payable }}</span>
+          <span style="font-family:var(--font-display); font-size:1.6rem; font-weight:900; color:var(--red);">{{ total_price }} MAD</span>
         </div>
 
-        <a href="{% url 'store:checkout' %}" class="btn btn-gold" style="display:block; text-align:center; padding:0.95rem; font-size:0.88rem; font-weight:900; letter-spacing:0.08em; text-transform:uppercase; width:100%;">
-          Passer à la Caisse (COD) &rarr;
-        </a>
+        <!-- Checkout Buttons -->
+        <div style="display:flex; flex-direction:column; gap:0.75rem;">
+          <a href="{% url 'store:checkout' %}" class="btn btn-red" style="display:block; text-align:center; padding:1.05rem; font-size:0.88rem; font-weight:900; letter-spacing:0.06em; text-transform:uppercase; width:100%; box-shadow:var(--shadow-md);">
+            Commander (Paiement à la livraison) &rarr;
+          </a>
+
+          <a 
+            href="https://wa.me/212620000000?text=Bonjour%20Mario%20Clothes%2C%20je%20souhaite%20finaliser%20mon%20panier%20de%20{{ total_price }}%20MAD%20par%20WhatsApp."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-outline"
+            style="display:flex; align-items:center; justify-content:center; gap:8px; padding:0.85rem; font-size:0.82rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; width:100%;"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Commander via WhatsApp
+          </a>
+        </div>
+
+        <!-- Guarantees list -->
+        <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--warm-200); font-size:0.75rem; color:var(--warm-600); display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#15803D;"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Paiement en espèces à la livraison (COD)</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#15803D;"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Livraison 24h Casablanca / 48h Maroc</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#15803D;"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Échanges & retours sous 7 jours</span>
+          </div>
+        </div>
+
       </div>
 
     </div>
   {% else %}
-    <div style="text-align:center; padding:6rem 2rem; background:#F8F9FA; border-radius:16px; border:1px dashed var(--border-color);">
-      <div style="display:flex; justify-content:center; margin-bottom:1.2rem; color:var(--text-muted);">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    <!-- Empty Cart State -->
+    <div style="text-align:center; padding:6rem 2rem; background:var(--white); border-radius:var(--r-xl); border:1px solid var(--warm-100); box-shadow:var(--shadow-sm);">
+      <div style="width:72px; height:72px; border-radius:50%; background:var(--warm-50); border:1px solid var(--warm-200); display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; color:var(--warm-400);">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
       </div>
-      <h2 style="font-family:'Outfit', sans-serif; font-size:1.6rem; font-weight:900; color:#0A0A0A;">Votre panier est vide</h2>
-      <p style="color:var(--text-muted); max-width:420px; margin:0.5rem auto 1.8rem; line-height:1.6;">Découvrez nos collections sartoriales Mario Clothes et sélectionnez vos pièces préférées.</p>
-      <a href="{% url 'store:home' %}#catalog" class="btn btn-gold" style="font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:800; padding:0.9rem 2rem;">
-        Explorer la Boutique
+      <h2 style="font-family:var(--font-display); font-size:1.8rem; font-weight:900; color:var(--ink); margin-bottom:0.5rem;">Votre panier est vide</h2>
+      <p style="color:var(--warm-600); max-width:440px; margin:0 auto 2rem; line-height:1.6; font-size:0.92rem;">
+        Explorez nos collections sartoriales Mario Clothes et sélectionnez vos pièces préférées confectionnées avec soin.
+      </p>
+      <a href="{% url 'store:home' %}#catalog" class="btn btn-red" style="font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; font-weight:800; padding:1rem 2.2rem; box-shadow:var(--shadow-md);">
+        Explorer la Collection
       </a>
     </div>
   {% endif %}
 
 </div>
+
+<script>
+  async function updatePageCart(key, action) {
+    try {
+      const response = await fetch('/api/cart/update/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': (window.getCsrfToken ? window.getCsrfToken() : '{{ csrf_token }}')
+        },
+        body: JSON.stringify({ key, action })
+      });
+      const data = await response.json();
+      if (data.success) {
+        // Reload to recalculate server-side totals & shipping rules cleanly
+        window.location.reload();
+      } else {
+        alert(data.message || "Impossible de mettre à jour l'article.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Une erreur réseau est survenue.");
+    }
+  }
+</script>
 {% endblock %}

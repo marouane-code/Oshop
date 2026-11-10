@@ -139,7 +139,7 @@
                 </div>
               </td>
               <td style="text-align:center;">
-                <button type="button" class="btn btn-dark" onclick="removeArticleFromOutfit({{ item.article.id }})" style="padding:0.3rem 0.65rem; font-size:0.75rem; color:var(--danger-accent);">
+                <button type="button" class="btn btn-dark" data-article-id="{{ item.article.id }}" onclick="removeArticleFromOutfit(this.dataset.articleId)" style="padding:0.3rem 0.65rem; font-size:0.75rem; color:var(--danger-accent);">
                   Remove
                 </button>
               </td>
@@ -149,7 +149,7 @@
       </table>
 
       <!-- Empty State inside list -->
-      <div id="noArticlesAlert" style="text-align:center; padding:3rem 1rem; color:var(--text-muted); {% if selected_items %}display:none;{% endif %}">
+      <div id="noArticlesAlert" {% if selected_items %}hidden{% endif %} style="text-align:center; padding:3rem 1rem; color:var(--text-muted);">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 0.75rem; opacity:0.3;"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         <p style="font-size:0.9rem; margin-bottom:0.75rem;">No articles added to this showcase outfit yet.</p>
         <button type="button" class="btn btn-outline-gold" onclick="openArticlePickerModal()" style="font-size:0.78rem; padding:0.4rem 1rem;">
@@ -195,6 +195,8 @@
           data-id="{{ art.id }}"
           data-title="{{ art.title|lower }}"
           data-category="{{ art.category.name|lower }}"
+          data-display-title="{{ art.title }}"
+          data-display-category="{{ art.category.name }}"
           data-price="{{ art.price }}"
           data-image="{{ art.primary_image|default:'' }}"
           data-sizes="{% for s in art.sizes.all %}{{ s.size }}:{{ s.stock_quantity }}{% if not forloop.last %},{% endif %}{% endfor %}"
@@ -220,7 +222,7 @@
             <button 
               type="button" 
               class="btn btn-outline-gold add-art-btn" 
-              onclick="addArticleToOutfit({{ art.id }}, '{{ art.title|escapejs }}', '{{ art.category.name|escapejs }}', '{{ art.price }}', '{{ art.primary_image|default:''|escapejs }}', '{{ art.sizes.all|length }}')"
+              onclick="addArticleFromCard(this)"
               style="font-size:0.72rem; padding:0.3rem 0.65rem; font-weight:800;"
             >
               + Add
@@ -309,6 +311,20 @@
     if (noAlert) {
       noAlert.style.display = (existingIds.length === 0) ? 'block' : 'none';
     }
+  }
+
+  function addArticleFromCard(button) {
+    const card = button.closest('.modal-article-card');
+    if (!card) return;
+
+    addArticleToOutfit(
+      card.dataset.id,
+    card.dataset.displayTitle || '',
+    card.dataset.displayCategory || '',
+      card.dataset.price || '0',
+      card.dataset.image || '',
+      card.dataset.sizes ? card.dataset.sizes.split(',').length : '0'
+    );
   }
 
   function addArticleToOutfit(id, title, category, price, primaryImg, sizeCount) {

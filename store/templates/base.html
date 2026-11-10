@@ -4,778 +4,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#FFFFFF">
+  <meta name="theme-color" content="#FAF8F5">
   <title>{% block title %}Mario Clothes — Vêtements Homme Haut de Gamme | Casablanca, Maroc{% endblock %}</title>
-  <meta name="description" content="Mario Clothes — Boutique de prêt-à-porter masculin haut de gamme à Casablanca centre-ville, Bab Marrakech. Costumes, blazers, chemises et souliers de prestige. Livraison partout au Maroc.">
-  
+  <meta name="description" content="Mario Clothes — Boutique de prêt-à-porter masculin haut de gamme à Casablanca, Bab Marrakech. Costumes, blazers, chemises et souliers de prestige. Livraison partout au Maroc.">
+
   <link rel="icon" type="image/png" href="{% static 'images/marioclothes-logo.png' %}">
 
-  <!-- Google Fonts -->
+  <!-- Preconnect to font providers -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=7.0">
 
-  <style>
-    /* =========================================================
-       MARIO CLOTHES — Luxury White, Black & Red Palette
-       ========================================================= */
-    :root {
-      --bg-primary: #FFFFFF;
-      --bg-secondary: #F8F9FA;
-      --bg-elevated: #F1F3F5;
-      --bg-card: #FFFFFF;
-      --border-subtle: #E5E7EB;
-      --border-dark: #111827;
-      
-      --brand-black: #0A0A0A;
-      --brand-red: #C5221F;
-      --brand-red-hover: #A51D1A;
-      --brand-red-subtle: rgba(197, 34, 31, 0.08);
-      
-      --text-main: #0A0A0A;
-      --text-secondary: #374151;
-      --text-muted: #6B7280;
-      --header-height: 72px;
-    }
+  <!-- Fonts: Playfair Display (display) + Inter Tight (UI) + Cairo (Arabic) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Inter+Tight:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg-primary);
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ---- Master Navigation Header ---- */
-    .site-nav-wrapper {
-      position: sticky;
-      top: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      z-index: 550;
-      background: #FFFFFF;
-      border-bottom: 1px solid var(--border-subtle);
-      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    /* Transparent Overlay Header on Homepage */
-    {% if is_homepage %}
-    .site-nav-wrapper {
-      position: absolute;
-      top: 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.15) 75%, transparent 100%);
-      border-bottom: none;
-    }
-    .site-nav-wrapper.nav-scrolled {
-      position: fixed;
-      top: 0;
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-subtle);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    }
-    .site-nav-wrapper.nav-scrolled .nav-brand-title {
-      color: #0A0A0A;
-      text-shadow: none;
-    }
-    .site-nav-wrapper.nav-scrolled .nav-brand-tagline {
-      color: var(--text-muted);
-    }
-    .site-nav-wrapper.nav-scrolled .nav-center-link {
-      color: #0A0A0A;
-      text-shadow: none;
-    }
-    .site-nav-wrapper.nav-scrolled .nav-center-link:hover {
-      color: var(--brand-red);
-    }
-    .site-nav-wrapper.nav-scrolled .nav-center-link::after {
-      background: var(--brand-red);
-    }
-    .site-nav-wrapper.nav-scrolled .nav-icon-btn {
-      background: var(--bg-secondary);
-      border-color: var(--border-subtle);
-      color: #0A0A0A;
-    }
-    .site-nav-wrapper.nav-scrolled .nav-icon-btn:hover {
-      border-color: #0A0A0A;
-      background: #E5E7EB;
-    }
-    .site-nav-wrapper.nav-scrolled .nav-lang-pill {
-      background: var(--bg-secondary);
-      border-color: var(--border-subtle);
-    }
-    .site-nav-wrapper.nav-scrolled .nav-lang-pill a {
-      color: var(--text-secondary);
-    }
-    .site-nav-wrapper.nav-scrolled .nav-lang-pill a.active {
-      background: #0A0A0A;
-      color: #FFFFFF;
-    }
-    .site-nav-wrapper.nav-scrolled .mobile-hamburger-btn {
-      background: var(--bg-secondary);
-      border-color: var(--border-subtle);
-      color: #0A0A0A;
-    }
-    .site-nav-wrapper.nav-scrolled .nav-lang-compact {
-      background: var(--bg-secondary);
-      border-color: var(--border-subtle);
-    }
-    .site-nav-wrapper.nav-scrolled .nav-lang-compact select {
-      color: #0A0A0A;
-    }
-    .site-nav-wrapper.nav-scrolled .nav-lang-compact-caret {
-      color: var(--text-muted);
-    }
-    {% endif %}
-
-    .main-nav-bar {
-      max-width: 1400px;
-      width: 100%;
-      box-sizing: border-box;
-      margin: 0 auto;
-      height: var(--header-height);
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    /* Brand Logo */
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      flex-shrink: 1;
-      min-width: 0;
-    }
-    .nav-logo-badge {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: #FFFFFF;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-      flex-shrink: 0;
-      padding: 2px;
-      border: 1px solid var(--border-subtle);
-      transition: transform 0.25s ease;
-      overflow: hidden;
-    }
-    .nav-logo {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-    .nav-brand:hover .nav-logo-badge {
-      transform: scale(1.06);
-    }
-    .nav-brand-text {
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    .nav-brand-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      color: {% if is_homepage %}#FFFFFF{% else %}#0A0A0A{% endif %};
-      line-height: 1;
-      margin: 0;
-      transition: color 0.3s ease;
-      white-space: nowrap;
-    }
-    .nav-brand-tagline {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: {% if is_homepage %}rgba(255, 255, 255, 0.75){% else %}var(--text-muted){% endif %};
-      margin-top: 3px;
-      transition: color 0.3s ease;
-      white-space: nowrap;
-    }
-
-    /* Centered Nav Links (Desktop) */
-    .nav-center-menu {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      margin: 0;
-      padding: 0;
-    }
-    .nav-center-link {
-      color: {% if is_homepage %}#FFFFFF{% else %}#0A0A0A{% endif %};
-      text-decoration: none;
-      font-family: 'Outfit', sans-serif;
-      font-size: 13.5px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      position: relative;
-      padding: 6px 0;
-      transition: color 0.2s ease, opacity 0.2s ease;
-    }
-    .nav-center-link:hover {
-      color: var(--brand-red);
-    }
-    .nav-center-link::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--brand-red);
-      transition: width 0.25s ease;
-    }
-    .nav-center-link:hover::after {
-      width: 100%;
-    }
-
-    /* Right Action Row */
-    .nav-right-icons {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      justify-content: flex-end;
-    }
-    .nav-icon-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: {% if is_homepage %}rgba(255, 255, 255, 0.15){% else %}var(--bg-secondary){% endif %};
-      border: 1px solid {% if is_homepage %}rgba(255, 255, 255, 0.3){% else %}var(--border-subtle){% endif %};
-      color: {% if is_homepage %}#FFFFFF{% else %}#0A0A0A{% endif %};
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      flex-shrink: 0;
-    }
-    .nav-icon-btn:hover {
-      border-color: var(--brand-red);
-      color: var(--brand-red);
-      transform: translateY(-1px);
-    }
-    .nav-cart-badge {
-      position: absolute;
-      top: -3px;
-      right: -3px;
-      background: var(--brand-red);
-      color: #FFFFFF;
-      font-size: 10px;
-      font-weight: 900;
-      width: 19px;
-      height: 19px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #FFFFFF;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    /* Language Switcher Pill in Top Bar */
-    .nav-lang-pill {
-      display: flex;
-      align-items: center;
-      background: {% if is_homepage %}rgba(255, 255, 255, 0.15){% else %}var(--bg-secondary){% endif %};
-      border: 1px solid {% if is_homepage %}rgba(255, 255, 255, 0.3){% else %}var(--border-subtle){% endif %};
-      border-radius: 20px;
-      padding: 3px 5px;
-      gap: 2px;
-      flex-shrink: 0;
-    }
-    .nav-lang-pill a {
-      color: {% if is_homepage %}rgba(255, 255, 255, 0.8){% else %}var(--text-secondary){% endif %};
-      text-decoration: none;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 6px;
-      border-radius: 12px;
-      transition: all 0.2s ease;
-    }
-    .nav-lang-pill a:hover {
-      color: var(--brand-red);
-    }
-    .nav-lang-pill a.active {
-      color: #FFFFFF;
-      background: #0A0A0A;
-    }
-
-    /* Compact Language Dropdown for Mobile Header (≤520px) */
-    .nav-lang-compact {
-      display: none;
-      position: relative;
-      align-items: center;
-      background: {% if is_homepage %}rgba(255, 255, 255, 0.15){% else %}var(--bg-secondary){% endif %};
-      border: 1px solid {% if is_homepage %}rgba(255, 255, 255, 0.3){% else %}var(--border-subtle){% endif %};
-      border-radius: 16px;
-      height: 34px;
-      padding: 0 4px 0 7px;
-      flex-shrink: 0;
-      box-sizing: border-box;
-      transition: all 0.2s ease;
-    }
-    .nav-lang-compact select {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background: transparent;
-      border: none;
-      font-family: 'Outfit', sans-serif;
-      font-size: 11px;
-      font-weight: 800;
-      color: {% if is_homepage %}#FFFFFF{% else %}#0A0A0A{% endif %};
-      cursor: pointer;
-      padding-right: 14px;
-      outline: none;
-      line-height: 1;
-    }
-    .nav-lang-compact select option {
-      color: #0A0A0A;
-      background: #FFFFFF;
-      font-weight: 700;
-    }
-    .nav-lang-compact-caret {
-      position: absolute;
-      right: 5px;
-      pointer-events: none;
-      color: {% if is_homepage %}#FFFFFF{% else %}var(--text-muted){% endif %};
-    }
-
-    .mobile-lang-btn {
-      flex: 1;
-      text-align: center;
-      padding: 8px 6px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      border: 1.5px solid var(--border-subtle);
-      color: var(--text-main);
-      background: var(--bg-secondary);
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .mobile-lang-btn.active {
-      background: #0A0A0A;
-      color: #FFFFFF;
-      border-color: #0A0A0A;
-    }
-
-    /* Mobile Hamburger */
-    .mobile-hamburger-btn {
-      display: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: {% if is_homepage %}rgba(255, 255, 255, 0.15){% else %}var(--bg-secondary){% endif %};
-      border: 1px solid {% if is_homepage %}rgba(255, 255, 255, 0.3){% else %}var(--border-subtle){% endif %};
-      color: {% if is_homepage %}#FFFFFF{% else %}#0A0A0A{% endif %};
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    /* Search Dropdown Overlay */
-    .site-search-overlay {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: #FFFFFF;
-      border-top: 1px solid var(--border-subtle);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 16px 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      z-index: 540;
-    }
-    .site-search-overlay.is-active {
-      display: block;
-      animation: fadeInSearch 0.2s ease;
-    }
-    @keyframes fadeInSearch {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .search-inner-form {
-      max-width: 720px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--bg-secondary);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: 50px;
-      padding: 6px 8px 6px 18px;
-      transition: border-color 0.2s ease;
-    }
-    .search-inner-form:focus-within {
-      border-color: #0A0A0A;
-      background: #FFFFFF;
-    }
-    .search-inner-input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #0A0A0A;
-      font-size: 14px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .search-inner-input::placeholder {
-      color: var(--text-muted);
-    }
-    .search-inner-submit {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #0A0A0A;
-      border: none;
-      color: #FFFFFF;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    .search-inner-submit:hover {
-      background: var(--brand-red);
-    }
-
-    /* Mobile Navigation Drawer */
-    .mobile-menu-drawer {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #FFFFFF;
-      z-index: 9999;
-      overflow-y: auto;
-      padding: 24px;
-      color: #0A0A0A;
-    }
-    .mobile-menu-drawer.is-active {
-      display: block;
-      animation: fadeInDrawer 0.2s ease;
-    }
-    @keyframes fadeInDrawer {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .mobile-drawer-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-    .mobile-nav-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 8px;
-      color: var(--text-main);
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      transition: all 0.2s ease;
-    }
-    .mobile-nav-link:hover, .mobile-nav-link.active {
-      background: var(--bg-secondary);
-      color: var(--brand-red);
-    }
-    .mobile-nav-link.accent-btn {
-      background: #0A0A0A;
-      color: #FFFFFF;
-      margin-top: 10px;
-    }
-    .mobile-nav-link.accent-btn:hover {
-      background: var(--brand-red);
-      color: #FFFFFF;
-    }
-
-    /* Responsive Mobile Layout Fixes */
-    @media (max-width: 900px) {
-      .nav-center-menu { display: none !important; }
-      .mobile-hamburger-btn { display: flex !important; }
-      .main-nav-bar {
-        height: 60px;
-        padding: 0 14px;
-        gap: 8px;
-      }
-      .nav-brand {
-        gap: 8px;
-      }
-      .nav-brand-title {
-        font-size: 16px;
-        letter-spacing: 0.06em;
-      }
-      .nav-brand-tagline {
-        display: none;
-      }
-      .nav-logo-badge {
-        width: 36px;
-        height: 36px;
-      }
-      .nav-right-icons {
-        gap: 6px;
-      }
-      .nav-icon-btn, .mobile-hamburger-btn {
-        width: 36px;
-        height: 36px;
-      }
-      .nav-lang-pill {
-        padding: 2px 4px;
-        gap: 1px;
-      }
-      .nav-lang-pill a {
-        font-size: 10px;
-        padding: 2px 4px;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .nav-lang-pill {
-        display: none !important;
-      }
-      .nav-lang-compact {
-        display: inline-flex !important;
-      }
-      .main-nav-bar {
-        height: 56px;
-        padding: 0 10px;
-        gap: 6px;
-      }
-      .nav-brand {
-        gap: 6px;
-      }
-      .nav-logo-badge {
-        width: 32px;
-        height: 32px;
-      }
-      .nav-brand-title {
-        font-size: clamp(13px, 3.8vw, 15px);
-        letter-spacing: 0.04em;
-      }
-      .nav-right-icons {
-        gap: 4px;
-      }
-      .nav-icon-btn, .mobile-hamburger-btn {
-        width: 32px;
-        height: 32px;
-      }
-      .nav-icon-btn svg, .mobile-hamburger-btn svg {
-        width: 15px;
-        height: 15px;
-      }
-      .nav-cart-badge {
-        width: 16px;
-        height: 16px;
-        font-size: 9px;
-        top: -2px;
-        right: -2px;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .main-nav-bar {
-        padding: 0 6px;
-        gap: 4px;
-      }
-      .nav-brand {
-        gap: 4px;
-      }
-      .nav-logo-badge {
-        width: 28px;
-        height: 28px;
-      }
-      .nav-brand-title {
-        font-size: 12.5px;
-        letter-spacing: 0.02em;
-      }
-      .nav-right-icons {
-        gap: 3px;
-      }
-      .nav-icon-btn, .mobile-hamburger-btn {
-        width: 30px;
-        height: 30px;
-      }
-      .nav-lang-compact {
-        height: 30px;
-        padding: 0 2px 0 5px;
-      }
-    }
-
-    /* Footer Styling (Clean, Luxury Dark Slate / Black with White Text) */
-    .site-footer {
-      background: #0A0A0A;
-      color: #E5E7EB;
-      border-top: 1px solid #1F2937;
-      padding: 4rem 1.5rem 2.5rem;
-    }
-    .footer-grid {
-      max-width: 1300px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr 1.2fr 1.2fr;
-      gap: 3rem;
-    }
-    @media (max-width: 850px) {
-      .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 2.5rem;
-      }
-    }
-    .footer-bottom {
-      max-width: 1300px;
-      margin: 3rem auto 0;
-      padding-top: 2rem;
-      border-top: 1px solid #1F2937;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      font-size: 0.85rem;
-      color: #9CA3AF;
-    }
-  </style>
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/main.css' %}?v=8.1">
 
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-  <!-- Master Navigation Header (Starts Directly at Logo Row, No Top Bar) -->
-  <div class="site-nav-wrapper" id="masterNavWrapper">
-    <header class="main-nav-bar">
-      
-      <!-- Brand Logo Top-Left -->
-      <a href="{% url 'store:home' %}" class="nav-brand">
+  <!-- =========================================================
+       MASTER NAVIGATION HEADER
+       Transparent on homepage hero, glassmorphic on scroll
+       ========================================================= -->
+  <div class="site-nav-wrapper{% if is_homepage %} hero-mode{% endif %}" id="masterNavWrapper">
+    <header class="main-nav-bar" role="banner">
+
+      <!-- Brand Logo -->
+      <a href="{% url 'store:home' %}" class="nav-brand" aria-label="Mario Clothes — Accueil">
         <div class="nav-logo-badge">
-          <img src="{% static 'images/marioclothes-logo.png' %}" alt="Mario Clothes" class="nav-logo">
+          <img src="{% static 'images/marioclothes-logo.png' %}" alt="Mario Clothes" class="nav-logo" width="40" height="40">
         </div>
         <div class="nav-brand-text">
-          <h1 class="nav-brand-title">MARIO CLOTHES</h1>
-          <div class="nav-brand-tagline">{{ t.tagline }}</div>
+          <span class="nav-brand-title">MARIO CLOTHES</span>
+          <span class="nav-brand-tagline">{{ t.tagline }}</span>
         </div>
       </a>
 
-      <!-- Centered Nav Links (Desktop) -->
-      <nav class="nav-center-menu" aria-label="Main Navigation">
-        <a href="{% url 'store:home' %}" class="nav-center-link">Accueil</a>
-        <a href="{% url 'store:home' %}#catalog" class="nav-center-link">Boutique</a>
+      <!-- Desktop Nav Links -->
+      <nav class="nav-center-menu" aria-label="Navigation principale">
+        <a href="{% url 'store:home' %}" class="nav-center-link">{{ t.home|default:"Accueil" }}</a>
+        <a href="{% url 'store:home' %}#catalog" class="nav-center-link">{{ t.all_collection|default:"Boutique" }}</a>
         {% if showcases %}
-          <a href="{% url 'store:home' %}#showcases" class="nav-center-link">Looks</a>
+          <a href="{% url 'store:home' %}#showcases" class="nav-center-link">{{ t.showcases_label|default:"Looks" }}</a>
         {% endif %}
-        <a href="{% url 'store:home' %}#about" class="nav-center-link">À propos</a>
-        <a href="https://wa.me/212772379035" target="_blank" rel="noopener" class="nav-center-link" style="color:#25D366;">WhatsApp</a>
+        <a href="{% url 'store:home' %}#about" class="nav-center-link">{{ t.about|default:"À propos" }}</a>
+        <a href="https://wa.me/212772379035" target="_blank" rel="noopener noreferrer" class="nav-center-link" style="color:#25D366;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          WhatsApp
+        </a>
       </nav>
 
-      <!-- Top-Right Action Row (Desktop & Mobile) -->
+      <!-- Right-side Actions -->
       <div class="nav-right-icons">
-        
-        <!-- Search Toggle -->
-        <button type="button" class="nav-icon-btn" id="toggleSearchBtn" aria-label="Search">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+
+        <!-- Search toggle -->
+        <button type="button" class="nav-icon-btn" id="toggleSearchBtn" aria-label="Rechercher" aria-expanded="false" aria-controls="siteSearchOverlay">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </button>
 
-        <!-- Cart Trigger -->
-        <button type="button" class="nav-icon-btn trigger-cart" aria-label="Shopping Cart">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span class="nav-cart-badge cart-badge-count">{{ cart_count|default:0 }}</span>
+        <!-- Cart trigger -->
+        <button type="button" class="nav-icon-btn trigger-cart" aria-label="{{ t.shopping_bag }} ({{ cart_count|default:0 }} articles)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          {% if cart_count > 0 %}
+            <span class="nav-cart-badge cart-badge-count" aria-label="{{ cart_count }} articles au panier">{{ cart_count }}</span>
+          {% else %}
+            <span class="nav-cart-badge cart-badge-count" style="display:none;" aria-hidden="true">0</span>
+          {% endif %}
         </button>
 
-        <!-- Account / Sign In -->
+        <!-- Account -->
         {% if user.is_authenticated %}
           {% if user.is_staff %}
-            <a href="{% url 'store:admin_dashboard' %}" class="nav-icon-btn" title="{{ t.admin_dashboard }}" style="background:#0A0A0A; color:#FFFFFF;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+            <a href="{% url 'store:admin_dashboard' %}" class="nav-icon-btn" title="{{ t.admin_dashboard }}" style="background:var(--ink); color:#FFFFFF; border-color:var(--ink);" aria-label="{{ t.admin_dashboard }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
             </a>
           {% else %}
-            <a href="{% url 'store:profile' %}" class="nav-icon-btn" title="{{ user.first_name|default:user.username }}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <a href="{% url 'store:profile' %}" class="nav-icon-btn" title="{{ user.first_name|default:user.username }}" aria-label="Mon compte">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </a>
           {% endif %}
         {% else %}
-          <a href="{% url 'store:login' %}" class="nav-icon-btn" title="{{ t.sign_in }}">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <a href="{% url 'store:login' %}" class="nav-icon-btn" title="{{ t.sign_in }}" aria-label="{{ t.sign_in }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </a>
         {% endif %}
 
-        <!-- Language Selector (Desktop Pill) -->
-        <div class="nav-lang-pill">
-          <a href="{% url 'store:set_language' %}?lang=fr" class="{% if current_lang == 'fr' %}active{% endif %}">FR</a>
-          <a href="{% url 'store:set_language' %}?lang=ar" class="{% if current_lang == 'ar' %}active{% endif %}">AR</a>
-          <a href="{% url 'store:set_language' %}?lang=en" class="{% if current_lang == 'en' %}active{% endif %}">EN</a>
+        <!-- Language Switcher — Desktop Pill -->
+        <div class="nav-lang-pill" role="navigation" aria-label="Sélecteur de langue">
+          <a href="{% url 'store:set_language' %}?lang=fr"
+             class="{% if current_lang == 'fr' %}active{% endif %}"
+             hreflang="fr"
+             aria-current="{% if current_lang == 'fr' %}true{% endif %}">FR</a>
+          <a href="{% url 'store:set_language' %}?lang=ar"
+             class="{% if current_lang == 'ar' %}active{% endif %}"
+             hreflang="ar"
+             aria-current="{% if current_lang == 'ar' %}true{% endif %}">AR</a>
+          <a href="{% url 'store:set_language' %}?lang=en"
+             class="{% if current_lang == 'en' %}active{% endif %}"
+             hreflang="en"
+             aria-current="{% if current_lang == 'en' %}true{% endif %}">EN</a>
         </div>
 
-        <!-- Language Selector (Mobile Compact Dropdown) -->
+        <!-- Language Switcher — Mobile Compact -->
         <div class="nav-lang-compact" aria-label="Langue">
-          <select onchange="if(this.value) window.location.href=this.value;" aria-label="Select Language">
+          <select onchange="if(this.value) window.location.href=this.value;" aria-label="Sélectionner la langue">
             <option value="{% url 'store:set_language' %}?lang=fr" {% if current_lang == 'fr' %}selected{% endif %}>FR</option>
             <option value="{% url 'store:set_language' %}?lang=ar" {% if current_lang == 'ar' %}selected{% endif %}>AR</option>
             <option value="{% url 'store:set_language' %}?lang=en" {% if current_lang == 'en' %}selected{% endif %}>EN</option>
           </select>
-          <svg class="nav-lang-compact-caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+          <svg class="nav-lang-compact-caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </div>
 
-        <!-- Mobile Hamburger -->
-        <button type="button" class="mobile-hamburger-btn" id="openMobileDrawer" aria-label="Open Menu">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+        <!-- Hamburger -->
+        <button type="button" class="mobile-hamburger-btn" id="openMobileDrawer" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenuDrawer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <line x1="3" y1="7" x2="21" y2="7"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="17" x2="21" y2="17"/>
+          </svg>
         </button>
 
       </div>
-
     </header>
 
     <!-- Slide-Down Search Overlay -->
-    <div class="site-search-overlay" id="siteSearchOverlay">
+    <div class="site-search-overlay" id="siteSearchOverlay" role="search" aria-label="Recherche produits">
       <form action="{% url 'store:home' %}#catalog" method="GET" class="search-inner-form">
-        <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="{{ t.search_placeholder }}" class="search-inner-input" autocomplete="off">
-        <button type="submit" class="search-inner-submit" aria-label="Submit Search">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--warm-500); flex-shrink:0;" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input
+          type="text"
+          name="q"
+          value="{{ search_query|default:'' }}"
+          placeholder="{{ t.search_placeholder }}"
+          class="search-inner-input"
+          autocomplete="off"
+          aria-label="{{ t.search_placeholder }}"
+          id="searchInput"
+        >
+        <button type="submit" class="search-inner-submit" aria-label="Lancer la recherche">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </button>
       </form>
     </div>
-  </div>
+  </div><!-- /site-nav-wrapper -->
 
-  <!-- Mobile Fullscreen Navigation Drawer -->
-  <div class="mobile-menu-drawer" id="mobileMenuDrawer">
+  <!-- =========================================================
+       MOBILE FULL-SCREEN DRAWER
+       ========================================================= -->
+  <div class="mobile-menu-drawer" id="mobileMenuDrawer" role="dialog" aria-modal="true" aria-label="Menu principal">
+
+    <!-- Drawer Header -->
     <div class="mobile-drawer-header">
       <div style="display:flex; align-items:center; gap:10px;">
-        <img src="{% static 'images/marioclothes-logo.png' %}" alt="Mario Clothes" style="width:34px; height:34px; border-radius:50%; background:#fff; padding:2px; border:1px solid var(--border-subtle);">
-        <span style="font-family:'Outfit', sans-serif; font-size:1.1rem; font-weight:900; letter-spacing:0.08em; color:#0A0A0A;">MARIO CLOTHES</span>
+        <img src="{% static 'images/marioclothes-logo.png' %}" alt="Mario Clothes" style="width:34px; height:34px; border-radius:50%; border:1px solid var(--warm-100); padding:2px; background:var(--white);">
+        <span style="font-size:1rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink);">MARIO CLOTHES</span>
       </div>
-      <button type="button" id="closeMobileDrawer" style="background:none; border:none; color:#0A0A0A; font-size:1.6rem; cursor:pointer; line-height:1;">&times;</button>
+      <button type="button" id="closeMobileDrawer" style="background:none; border:none; color:var(--ink); font-size:1.6rem; cursor:pointer; line-height:1; padding:4px;" aria-label="Fermer le menu">&times;</button>
     </div>
 
-    <!-- Mobile Language Selector in Drawer -->
+    <!-- Language Selector -->
     <div style="margin-bottom:1.25rem;">
-      <div style="font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.6rem; font-weight:800;">Langue / Language / اللغة</div>
+      <div class="label-caps" style="color:var(--warm-500); margin-bottom:8px;">Langue / Language / اللغة</div>
       <div style="display:flex; gap:8px;">
         <a href="{% url 'store:set_language' %}?lang=fr" class="mobile-lang-btn {% if current_lang == 'fr' %}active{% endif %}">Français</a>
         <a href="{% url 'store:set_language' %}?lang=ar" class="mobile-lang-btn {% if current_lang == 'ar' %}active{% endif %}">العربية</a>
@@ -783,278 +174,381 @@
       </div>
     </div>
 
-    <!-- Navigation Links -->
-    <div style="margin-bottom:1.5rem; border-top:1px solid var(--border-subtle); padding-top:1.25rem;">
-      <a href="{% url 'store:home' %}" class="mobile-nav-link active">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <!-- Main Nav Links -->
+    <div style="border-top:1px solid var(--warm-100); padding-top:1.25rem; margin-bottom:1.5rem;">
+      <a href="{% url 'store:home' %}" class="mobile-nav-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Accueil
       </a>
       <a href="{% url 'store:home' %}#catalog" class="mobile-nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Boutique & Catalog
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Boutique &amp; Collection
       </a>
       {% if showcases %}
         <a href="{% url 'store:home' %}#showcases" class="mobile-nav-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          Outfits & Looks Sartoriaux
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Looks &amp; Outfits
         </a>
       {% endif %}
       <a href="{% url 'store:home' %}#about" class="mobile-nav-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        À Propos & Boutique Bab Marrakech
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        À propos — Bab Marrakech
       </a>
-      <a href="https://wa.me/212772379035" target="_blank" rel="noopener" class="mobile-nav-link" style="color:#25D366;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        WhatsApp Direct (0772379035)
+      <a href="https://wa.me/212772379035" target="_blank" rel="noopener noreferrer" class="mobile-nav-link" style="color:#25D366;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        WhatsApp : 0772379035
       </a>
     </div>
 
-    <!-- Categories List -->
-    <div style="margin-bottom:1.5rem; border-top:1px solid var(--border-subtle); padding-top:1.25rem;">
-      <div style="font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.75rem; font-weight:800;">Catégories Mario Clothes</div>
-      <a href="{% url 'store:home' %}#catalog" class="mobile-nav-link">Tous les articles</a>
+    <!-- Categories -->
+    <div style="border-top:1px solid var(--warm-100); padding-top:1.25rem; margin-bottom:1.5rem;">
+      <div class="label-caps" style="color:var(--warm-500); margin-bottom:8px;">Catégories</div>
+      <a href="{% url 'store:home' %}#catalog" class="mobile-nav-link" style="font-size:0.9rem;">Tous les articles</a>
       {% for cat in nav_categories %}
-        <a href="{% url 'store:home' %}?category={{ cat.slug }}#catalog" class="mobile-nav-link">
-          {{ cat.name }}
-        </a>
+        <a href="{% url 'store:home' %}?category={{ cat.slug }}#catalog" class="mobile-nav-link" style="font-size:0.9rem;">{{ cat.name }}</a>
       {% endfor %}
     </div>
 
-    <!-- Account / Admin Links -->
-    <div style="border-top:1px solid var(--border-subtle); padding-top:1.25rem;">
+    <!-- Account -->
+    <div style="border-top:1px solid var(--warm-100); padding-top:1.25rem;">
       {% if user.is_authenticated %}
         {% if user.is_staff %}
-          <a href="{% url 'store:admin_dashboard' %}" class="mobile-nav-link accent-btn">
-            Console Admin
-          </a>
+          <a href="{% url 'store:admin_dashboard' %}" class="mobile-nav-link accent-btn">Console Admin</a>
         {% else %}
-          <a href="{% url 'store:profile' %}" class="mobile-nav-link accent-btn">
-            Mon Compte ({{ user.first_name|default:user.username }})
-          </a>
+          <a href="{% url 'store:profile' %}" class="mobile-nav-link accent-btn">Mon Compte — {{ user.first_name|default:user.username }}</a>
         {% endif %}
-        <a href="{% url 'store:logout' %}" class="mobile-nav-link" style="color:var(--brand-red); margin-top:0.5rem;">
-          {{ t.logout }}
-        </a>
+        <a href="{% url 'store:logout' %}" class="mobile-nav-link" style="color:var(--red); margin-top:4px;">{{ t.logout }}</a>
       {% else %}
-        <a href="{% url 'store:login' %}" class="mobile-nav-link accent-btn">
-          {{ t.sign_in }} / {{ t.create_account }}
-        </a>
+        <a href="{% url 'store:login' %}" class="mobile-nav-link accent-btn">{{ t.sign_in }} / {{ t.create_account }}</a>
       {% endif %}
     </div>
-  </div>
 
-  <!-- Main Content -->
-  <main class="site-main">
+  </div><!-- /mobile-menu-drawer -->
+
+  <!-- =========================================================
+       MAIN CONTENT
+       ========================================================= -->
+  <main class="site-main" id="main-content">
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Slide-Out Shopping Bag Drawer -->
-  <div id="cartDrawer" class="cart-drawer-backdrop" style="display:none;">
+  <!-- =========================================================
+       SLIDE-OUT CART DRAWER
+       ========================================================= -->
+  <div id="cartDrawer" class="cart-drawer-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-label="{{ t.shopping_bag }}">
     <div class="cart-drawer-panel">
+
+      <!-- Drawer Header -->
       <div class="cart-drawer-header">
         <div style="display:flex; align-items:center; gap:8px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span style="font-weight:800; letter-spacing:0.08em; text-transform:uppercase; font-size:0.95rem;">{{ t.shopping_bag }}</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span style="font-weight:800; letter-spacing:0.1em; text-transform:uppercase; font-size:0.9rem;">{{ t.shopping_bag }}</span>
         </div>
-        <button type="button" id="closeCartDrawerBtn" style="background:none; border:none; color:#FFFFFF; font-size:1.6rem; cursor:pointer; line-height:1;" aria-label="Close cart">&times;</button>
+        <button type="button" id="closeCartDrawerBtn" style="background:none; border:none; color:#FFFFFF; font-size:1.5rem; cursor:pointer; line-height:1; padding:4px;" aria-label="Fermer le panier">&times;</button>
       </div>
 
-      <div id="cartDrawerItems" class="cart-drawer-items">
-        <!-- Loaded via JS -->
+      <!-- Free Delivery Progress -->
+      <div style="padding:14px 20px 0; background:var(--canvas);">
+        <div class="free-delivery-bar-wrap">
+          <div class="free-delivery-label">
+            <span>Livraison gratuite au Maroc</span>
+            <span style="color:var(--warm-500);" id="deliveryProgressLabel">Incluse</span>
+          </div>
+          <div class="free-delivery-bar-track">
+            <div class="free-delivery-bar-fill" id="deliveryProgressFill" style="width:100%;"></div>
+          </div>
+        </div>
       </div>
 
+      <!-- Items -->
+      <div id="cartDrawerItems" class="cart-drawer-items" aria-live="polite">
+        <!-- Loaded via cart.js -->
+      </div>
+
+      <!-- Footer -->
       <div class="cart-drawer-footer">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.1rem;">
-          <span style="font-weight:700; color:var(--text-secondary); text-transform:uppercase; font-size:0.85rem;">{{ t.subtotal }}</span>
-          <span id="cartDrawerSubtotal" style="font-size:1.35rem; font-weight:900; color:#0A0A0A;">0.00 MAD</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <span style="font-weight:700; color:var(--warm-700); text-transform:uppercase; font-size:0.82rem; letter-spacing:0.06em;">{{ t.subtotal }}</span>
+          <span id="cartDrawerSubtotal" style="font-size:1.3rem; font-weight:900; color:var(--ink); font-variant-numeric:tabular-nums;">0.00 MAD</span>
         </div>
-        <a href="{% url 'store:checkout' %}" class="btn btn-primary" style="display:block; text-align:center; width:100%; padding:0.9rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; font-size:0.88rem; background:#0A0A0A; color:#FFFFFF; border-radius:8px; box-sizing:border-box;">
-          {{ t.complete_order }}
+        <!-- WhatsApp checkout option -->
+        <a href="https://wa.me/212772379035" target="_blank" rel="noopener noreferrer"
+           style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px; border-radius:var(--r-sm); background:#25D366; color:#FFFFFF; font-weight:700; font-size:0.82rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:10px; box-sizing:border-box; text-decoration:none; transition:background 0.15s ease;"
+           onmouseover="this.style.background='#1EBE57'" onmouseout="this.style.background='#25D366'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Commander via WhatsApp
+        </a>
+        <a href="{% url 'store:checkout' %}"
+           style="display:block; text-align:center; width:100%; padding:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; font-size:0.85rem; background:var(--ink); color:#FFFFFF; border-radius:var(--r-sm); box-sizing:border-box; text-decoration:none; transition:background 0.15s ease;"
+           onmouseover="this.style.background='#2A2A2B'" onmouseout="this.style.background='var(--ink)'">
+          {{ t.complete_order }} →
         </a>
       </div>
-    </div>
-  </div>
 
-  <!-- Mobile Bottom Sticky Navigation Bar -->
-  <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
-    <a href="{% url 'store:home' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'home' and not selected_category_slug %}active{% endif %}">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+  </div><!-- /cartDrawer -->
+
+  <!-- =========================================================
+       MOBILE BOTTOM NAVIGATION TAB BAR
+       ========================================================= -->
+  <nav class="mobile-bottom-nav" aria-label="Navigation mobile">
+
+    <a href="{% url 'store:home' %}"
+       class="mobile-bottom-item {% if request.resolver_match.url_name == 'home' and not request.GET.category %}active{% endif %}"
+       aria-label="Accueil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>Accueil</span>
     </a>
-    <a href="{% url 'store:home' %}#catalog" class="mobile-bottom-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+
+    <a href="{% url 'store:home' %}#catalog" class="mobile-bottom-item" aria-label="Boutique">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
       <span>Boutique</span>
     </a>
-    <button type="button" class="mobile-bottom-item trigger-cart" style="background:none; border:none; cursor:pointer;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+
+    <button type="button" class="mobile-bottom-item trigger-cart" aria-label="{{ t.shopping_bag }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
       <span>Panier</span>
-      <span class="mobile-bottom-badge cart-badge-count">{{ cart_count|default:0 }}</span>
+      <span class="mobile-bottom-badge cart-badge-count" aria-label="{{ cart_count|default:0 }} articles" {% if cart_count == 0 %}hidden{% endif %}>{{ cart_count|default:0 }}</span>
     </button>
+
     {% if user.is_authenticated %}
       {% if user.is_staff %}
-        <a href="{% url 'store:admin_dashboard' %}" class="mobile-bottom-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <a href="{% url 'store:admin_dashboard' %}" class="mobile-bottom-item" aria-label="Admin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
           <span>Admin</span>
         </a>
       {% else %}
-        <a href="{% url 'store:profile' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <a href="{% url 'store:profile' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" aria-label="Mon compte">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           <span>Compte</span>
         </a>
       {% endif %}
     {% else %}
-      <a href="{% url 'store:login' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <a href="{% url 'store:login' %}" class="mobile-bottom-item {% if request.resolver_match.url_name == 'login' %}active{% endif %}" aria-label="{{ t.sign_in }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Connexion</span>
       </a>
     {% endif %}
+
   </nav>
 
-  <!-- Footer (Clean, Professional Dark Footer Without Any Emojis) -->
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
   <footer class="site-footer" id="about">
     <div class="footer-grid">
+
+      <!-- Brand column -->
       <div>
-        <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem;">
-          <img src="{% static 'images/marioclothes-logo.png' %}" alt="Mario Clothes" style="width:38px; height:38px; object-fit:contain; border-radius:50%; background:#fff; padding:2px; border:1px solid #374151;">
-          <span style="font-family:'Outfit', sans-serif; font-size:1.35rem; font-weight:900; letter-spacing:0.12em; color:#FFFFFF;">MARIO CLOTHES</span>
+        <div class="footer-logo-row">
+          <img src="{% static 'images/marioclothes-logo.png' %}" alt="Mario Clothes" class="footer-logo-img">
+          <span class="footer-brand-name">MARIO CLOTHES</span>
         </div>
-        <p style="color:#9CA3AF; font-size:0.875rem; line-height:1.7; margin-bottom:1.25rem; max-width:360px;">{{ t.hero_desc }}</p>
-        <div style="font-size:0.85rem; color:#D1D5DB; line-height:2.1;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span><strong style="color:#FFFFFF;">Adresse :</strong> Casablanca centre-ville, Bab Marrakech</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <span><strong style="color:#FFFFFF;">Téléphone / WhatsApp :</strong> <a href="https://wa.me/212772379035" target="_blank" style="color:#25D366; font-weight:700; text-decoration:none;">0772379035</a></span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span><strong style="color:#FFFFFF;">Horaires :</strong> 10h – 21h30</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-            <span><strong style="color:#FFFFFF;">Livraison :</strong> Partout au Maroc (Paiement à la livraison)</span>
-          </div>
+        <p class="footer-desc">{{ t.hero_desc }}</p>
+
+        <!-- Contact info -->
+        <div class="footer-contact-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>Casablanca, Bab Marrakech — Centre-ville</span>
+        </div>
+        <div class="footer-contact-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>WhatsApp &amp; Tél : <a href="https://wa.me/212772379035" target="_blank" rel="noopener">0772379035</a></span>
+        </div>
+        <div class="footer-contact-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>Ouvert 10h – 21h30 · 7j/7</span>
+        </div>
+        <div class="footer-contact-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <span>Livraison partout au Maroc · Paiement à la livraison (COD)</span>
         </div>
       </div>
 
+      <!-- Shop column -->
       <div>
-        <h4 style="margin-bottom:1.2rem; font-size:0.85rem; letter-spacing:0.12em; text-transform:uppercase; color:#FFFFFF; font-weight:800;">Communauté Instagram</h4>
-        <p style="color:#9CA3AF; font-size:0.85rem; margin-bottom:1rem; line-height:1.6;">Suivez @_marioclothes_ pour découvrir nos nouveaux arrivages et looks sartoriaux exclusifs.</p>
-        <a href="https://instagram.com/_marioclothes_" target="_blank" rel="noopener" class="btn btn-dark btn-sm" style="display:inline-flex; align-items:center; gap:8px; border-color:#374151; color:#FFFFFF; background:rgba(255,255,255,0.06); border-radius:6px; padding:0.6rem 1.2rem;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        <span class="footer-col-title">Boutique</span>
+        <div class="footer-links">
+          <a href="{% url 'store:home' %}#catalog" class="footer-link">Toute la Collection</a>
+          {% for cat in nav_categories %}
+            <a href="{% url 'store:home' %}?category={{ cat.slug }}#catalog" class="footer-link">{{ cat.name }}</a>
+          {% endfor %}
+          {% if showcases %}
+            <a href="{% url 'store:home' %}#showcases" class="footer-link">Looks &amp; Outfits</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Services column -->
+      <div>
+        <span class="footer-col-title">{{ t.customer_services }}</span>
+        <div class="footer-links">
+          <a href="https://wa.me/212772379035" target="_blank" rel="noopener" class="footer-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Confirmation WhatsApp
+          </a>
+          <span class="footer-link" style="cursor:default;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Paiement à la livraison (COD)
+          </span>
+          <span class="footer-link" style="cursor:default;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Livraison rapide — tout le Maroc
+          </span>
+          <span class="footer-link" style="cursor:default;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Retours &amp; échanges faciles
+          </span>
+          <a href="{% url 'store:login' %}" class="footer-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            {{ t.sign_in }} / {{ t.create_account }}
+          </a>
+        </div>
+      </div>
+
+      <!-- Instagram + Newsletter column -->
+      <div>
+        <span class="footer-col-title">Communauté</span>
+        <p style="color:var(--warm-500); font-size:0.82rem; line-height:1.6; margin-bottom:14px;">
+          Suivez <a href="https://instagram.com/_marioclothes_" target="_blank" rel="noopener" style="color:var(--warm-300); font-weight:700;">@_marioclothes_</a> pour nos nouveaux arrivages et looks exclusifs.
+        </p>
+        <a href="https://instagram.com/_marioclothes_" target="_blank" rel="noopener noreferrer"
+           style="display:inline-flex; align-items:center; gap:8px; padding:9px 18px; border-radius:var(--r-sm); background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#FFFFFF; font-size:0.78rem; font-weight:700; letter-spacing:0.06em; margin-bottom:20px; text-decoration:none; transition:background 0.15s ease;"
+           onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           @_marioclothes_
         </a>
+
+        <!-- Newsletter signup -->
+        <div class="label-caps" style="color:rgba(255,255,255,0.4); margin-bottom:10px;">Newsletter</div>
+        <form class="footer-newsletter-form" onsubmit="return false;">
+          <input type="email" class="footer-newsletter-input" placeholder="Votre email" aria-label="Votre adresse e-mail">
+          <button type="submit" class="footer-newsletter-btn" aria-label="S'abonner">OK</button>
+        </form>
       </div>
 
-      <div>
-        <h4 style="margin-bottom:1.2rem; font-size:0.85rem; letter-spacing:0.12em; text-transform:uppercase; color:#FFFFFF; font-weight:800;">{{ t.customer_services }}</h4>
-        <ul style="list-style:none; font-size:0.85rem; color:#9CA3AF; display:flex; flex-direction:column; gap:0.75rem; line-height:1.5; padding:0;">
-          <li style="display:flex; align-items:center; gap:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Confirmation directe sur WhatsApp (0772379035)</span>
-          </li>
-          <li style="display:flex; align-items:center; gap:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Paiement à la livraison (Cash on Delivery)</span>
-          </li>
-          <li style="display:flex; align-items:center; gap:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Expédition rapide dans toutes les villes du Maroc</span>
-          </li>
-          <li style="display:flex; align-items:center; gap:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Prêt-à-porter homme haut de gamme garanti</span>
-          </li>
-        </ul>
-      </div>
-    </div>
+    </div><!-- /footer-grid -->
 
+    <!-- Footer Bottom Bar -->
     <div class="footer-bottom">
       <span>{{ t.rights_reserved }}</span>
-      <div style="display:flex; gap:0.75rem;">
-        <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}" style="color:#FFFFFF;">FR</a>
-        <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}" style="color:#FFFFFF; font-family:sans-serif;">العربية</a>
-        <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}" style="color:#FFFFFF;">EN</a>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <a href="{% url 'store:set_language' %}?lang=fr" class="top-lang-btn {% if current_lang == 'fr' %}active{% endif %}">FR</a>
+        <a href="{% url 'store:set_language' %}?lang=ar" class="top-lang-btn {% if current_lang == 'ar' %}active{% endif %}">العربية</a>
+        <a href="{% url 'store:set_language' %}?lang=en" class="top-lang-btn {% if current_lang == 'en' %}active{% endif %}">EN</a>
       </div>
     </div>
+
   </footer>
 
+  <!-- =========================================================
+       SCRIPTS
+       ========================================================= -->
   <script src="{% static 'js/cart.js' %}?v=3"></script>
+
   <script>
-    document.querySelectorAll('.product-shuffle-image').forEach((image) => {
-      let imageUrls;
-      try {
-        imageUrls = JSON.parse(image.dataset.shuffleImages || '[]');
-      } catch (error) {
-        imageUrls = [];
-      }
+  /* ============================================================
+     MARIO CLOTHES — Global UI Script v8.0
+     ============================================================ */
+  (function() {
+    'use strict';
 
-      if (imageUrls.length < 2) return;
-
-      imageUrls = imageUrls.sort(() => Math.random() - 0.5);
-      let imageIndex = 0;
-      image.src = imageUrls[imageIndex];
-
-      window.setInterval(() => {
-        imageIndex = (imageIndex + 1) % imageUrls.length;
-        image.style.opacity = '0.35';
-        window.setTimeout(() => {
-          image.src = imageUrls[imageIndex];
-          image.style.opacity = '1';
-        }, 180);
-      }, 2800 + Math.random() * 1200);
-    });
-  </script>
-  <script>
-    // Header Scroll & Drawer Behavior
-    const navWrapper = document.getElementById('masterNavWrapper');
-    const openDrawerBtn = document.getElementById('openMobileDrawer');
-    const closeDrawerBtn = document.getElementById('closeMobileDrawer');
-    const mobileDrawer = document.getElementById('mobileMenuDrawer');
-    const searchToggleBtn = document.getElementById('toggleSearchBtn');
-    const searchOverlay = document.getElementById('siteSearchOverlay');
-
-    // Sticky / Scrolled class on scroll
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 40) {
-        navWrapper.classList.add('nav-scrolled');
-      } else {
-        navWrapper.classList.remove('nav-scrolled');
-      }
-    });
-
-    // Mobile Drawer Open / Close
-    if (openDrawerBtn && mobileDrawer) {
-      openDrawerBtn.addEventListener('click', () => {
-        mobileDrawer.classList.add('is-active');
-        document.body.style.overflow = 'hidden';
-      });
-    }
-    if (closeDrawerBtn && mobileDrawer) {
-      closeDrawerBtn.addEventListener('click', () => {
-        mobileDrawer.classList.remove('is-active');
-        document.body.style.overflow = '';
-      });
-    }
-
-    // Search Toggle
-    if (searchToggleBtn && searchOverlay) {
-      searchToggleBtn.addEventListener('click', () => {
-        searchOverlay.classList.toggle('is-active');
-        if (searchOverlay.classList.contains('is-active')) {
-          const input = searchOverlay.querySelector('input');
-          if (input) input.focus();
+    /* ---- Global CSRF Helper ---- */
+    window.getCsrfToken = function() {
+      const name = 'csrftoken';
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            return decodeURIComponent(cookie.substring(name.length + 1));
+          }
         }
-      });
+      }
+      return '';
+    };
+
+    /* ---- Refs ---- */
+    const navWrapper    = document.getElementById('masterNavWrapper');
+    const openDrawerBtn = document.getElementById('openMobileDrawer');
+    const closeDrawerBtn= document.getElementById('closeMobileDrawer');
+    const mobileDrawer  = document.getElementById('mobileMenuDrawer');
+    const searchToggle  = document.getElementById('toggleSearchBtn');
+    const searchOverlay = document.getElementById('siteSearchOverlay');
+    const searchInput   = document.getElementById('searchInput');
+    const cartDrawer    = document.getElementById('cartDrawer');
+    const closeCartBtn  = document.getElementById('closeCartDrawerBtn');
+
+    /* ---- Scroll: sticky header glass effect ---- */
+    if (navWrapper && navWrapper.classList.contains('hero-mode')) {
+      function onScroll() {
+        if (window.scrollY > 60) {
+          navWrapper.classList.add('nav-scrolled');
+        } else {
+          navWrapper.classList.remove('nav-scrolled');
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll(); // run once
     }
 
-    // Cart Drawer Toggle
-    const cartDrawer = document.getElementById('cartDrawer');
-    const closeCartDrawerBtn = document.getElementById('closeCartDrawerBtn');
-    document.querySelectorAll('.trigger-cart').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    /* ---- Mobile Drawer ---- */
+    function openDrawer() {
+      mobileDrawer.classList.add('is-active');
+      document.body.style.overflow = 'hidden';
+      if (openDrawerBtn) openDrawerBtn.setAttribute('aria-expanded', 'true');
+      // Trap focus
+      const firstFocusable = mobileDrawer.querySelector('button, a, input, select');
+      if (firstFocusable) firstFocusable.focus();
+    }
+    function closeDrawer() {
+      mobileDrawer.classList.remove('is-active');
+      document.body.style.overflow = '';
+      if (openDrawerBtn) openDrawerBtn.setAttribute('aria-expanded', 'false');
+      if (openDrawerBtn) openDrawerBtn.focus();
+    }
+    if (openDrawerBtn) openDrawerBtn.addEventListener('click', openDrawer);
+    if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeDrawer);
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (mobileDrawer.classList.contains('is-active')) closeDrawer();
+        if (searchOverlay.classList.contains('is-active')) closeSearch();
+        if (cartDrawer && cartDrawer.style.display !== 'none') {
+          if (window.closeCartDrawer) window.closeCartDrawer();
+        }
+      }
+    });
+
+    /* ---- Search overlay ---- */
+    function openSearch() {
+      searchOverlay.classList.add('is-active');
+      searchToggle.setAttribute('aria-expanded', 'true');
+      if (searchInput) setTimeout(() => searchInput.focus(), 50);
+    }
+    function closeSearch() {
+      searchOverlay.classList.remove('is-active');
+      searchToggle.setAttribute('aria-expanded', 'false');
+      searchToggle.focus();
+    }
+    if (searchToggle && searchOverlay) {
+      searchToggle.addEventListener('click', function() {
+        if (searchOverlay.classList.contains('is-active')) closeSearch();
+        else openSearch();
+      });
+    }
+    // Close search on click outside
+    document.addEventListener('click', function(e) {
+      if (searchOverlay && searchOverlay.classList.contains('is-active')) {
+        if (!searchOverlay.contains(e.target) && e.target !== searchToggle) {
+          closeSearch();
+        }
+      }
+    });
+
+    /* ---- Cart Drawer ---- */
+    document.querySelectorAll('.trigger-cart').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
         e.preventDefault();
         if (window.openCartDrawer) {
           window.openCartDrawer();
@@ -1065,26 +559,117 @@
         }
       });
     });
-    if (closeCartDrawerBtn && cartDrawer) {
-      closeCartDrawerBtn.addEventListener('click', () => {
-        if (window.closeCartDrawer) {
-          window.closeCartDrawer();
-        } else {
-          cartDrawer.style.display = 'none';
-          document.body.style.overflow = '';
-        }
+    if (closeCartBtn) {
+      closeCartBtn.addEventListener('click', function() {
+        if (window.closeCartDrawer) window.closeCartDrawer();
+        else { cartDrawer.style.display = 'none'; document.body.style.overflow = ''; }
       });
-      cartDrawer.addEventListener('click', (e) => {
+    }
+    if (cartDrawer) {
+      cartDrawer.addEventListener('click', function(e) {
         if (e.target === cartDrawer) {
-          if (window.closeCartDrawer) {
-            window.closeCartDrawer();
-          } else {
-            cartDrawer.style.display = 'none';
-            document.body.style.overflow = '';
-          }
+          if (window.closeCartDrawer) window.closeCartDrawer();
+          else { cartDrawer.style.display = 'none'; document.body.style.overflow = ''; }
         }
       });
     }
+
+    /* ---- Cart badge bounce on update ---- */
+    window.bumpCartBadge = function() {
+      document.querySelectorAll('.nav-cart-badge').forEach(function(badge) {
+        badge.classList.remove('bump');
+        void badge.offsetWidth; // reflow to restart animation
+        badge.classList.add('bump');
+      });
+    };
+
+    /* ---- Scroll-reveal (IntersectionObserver) ---- */
+    if ('IntersectionObserver' in window) {
+      const srObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('sr-visible');
+            srObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.sr-hidden').forEach(function(el) {
+        srObserver.observe(el);
+      });
+
+      // Product card staggered entrance
+      const cardObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            cardObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
+      document.querySelectorAll('.mario-product-card').forEach(function(card, i) {
+        card.style.transitionDelay = Math.min(i % 4 * 70, 280) + 'ms';
+        cardObserver.observe(card);
+      });
+    } else {
+      // Fallback: show everything immediately
+      document.querySelectorAll('.sr-hidden, .mario-product-card').forEach(function(el) {
+        el.classList.add('sr-visible', 'is-visible');
+      });
+    }
+
+    /* ---- Filter bar sticky detection ---- */
+    const filterBar = document.querySelector('.filter-bar-wrap');
+    if (filterBar && 'IntersectionObserver' in window) {
+      const sentinel = document.createElement('div');
+      sentinel.style.height = '1px';
+      filterBar.parentNode.insertBefore(sentinel, filterBar);
+      const filterObserver = new IntersectionObserver(function(entries) {
+        filterBar.classList.toggle('is-stuck', !entries[0].isIntersecting);
+      }, { threshold: 1.0 });
+      filterObserver.observe(sentinel);
+    }
+
+    /* ---- Cart badge count update ---- */
+    window.updateCartBadge = function(count) {
+      document.querySelectorAll('.cart-badge-count').forEach(function(badge) {
+        badge.textContent = count;
+        if (count > 0) {
+          badge.style.display = '';
+          window.bumpCartBadge();
+        } else {
+          badge.style.display = 'none';
+        }
+      });
+      // Update bottom nav badge
+      document.querySelectorAll('.mobile-bottom-badge.cart-badge-count').forEach(function(b) {
+        b.textContent = count;
+        b.style.display = count > 0 ? '' : 'none';
+      });
+    };
+
+    /* ---- Image shuffle on product cards (crossfade hover) ---- */
+    document.querySelectorAll('.product-shuffle-image').forEach(function(img) {
+      let urls;
+      try { urls = JSON.parse(img.dataset.shuffleImages || '[]'); }
+      catch(e) { urls = []; }
+      if (urls.length < 2) return;
+
+      let idx = 0;
+      img.src = urls[0];
+
+      setInterval(function() {
+        idx = (idx + 1) % urls.length;
+        img.style.opacity = '0.3';
+        setTimeout(function() {
+          img.src = urls[idx];
+          img.style.opacity = '1';
+        }, 180);
+      }, 3000 + Math.random() * 1500);
+    });
+
+  })(); // end IIFE
   </script>
 
   {% block extra_js %}{% endblock %}

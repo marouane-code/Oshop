@@ -1,17 +1,29 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Profile & Order History — Mario Clothes{% endblock %}
+{% block title %}Mon Profil & Historique — Mario Clothes Casablanca{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:1100px; padding-top:2rem; padding-bottom:5rem;">
+<div class="container" style="max-width:1150px; padding-top:2rem; padding-bottom:6rem;">
 
-  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap; margin-bottom:2rem; border-bottom:1px solid var(--border-color); padding-bottom:1rem;">
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb" style="font-size:0.78rem; color:var(--warm-500); margin-bottom:1.5rem; letter-spacing:0.08em; text-transform:uppercase; display:flex; align-items:center; gap:0.5rem;">
+    <a href="{% url 'store:home' %}" style="color:var(--warm-700); text-decoration:none;">{{ t.home|default:"Accueil" }}</a>
+    <span style="opacity:0.4;">/</span>
+    <span style="font-weight:700; color:var(--ink);">Espace Client</span>
+  </nav>
+
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap; margin-bottom:2.5rem; border-bottom:1px solid var(--warm-100); padding-bottom:1.5rem;">
     <div>
-      <h1 style="font-size:clamp(1.5rem, 4vw, 2.2rem); font-weight:800; letter-spacing:-0.02em;">Client Account Dashboard</h1>
-      <p style="color:var(--text-muted); font-size:0.88rem;">Manage your shipping details and track your nationwide order history</p>
+      <span class="section-eyebrow">Tableau de bord</span>
+      <h1 style="font-family:var(--font-display); font-size:clamp(1.8rem, 4vw, 2.5rem); font-weight:900; letter-spacing:-0.02em; color:var(--ink); margin:0;">
+        Espace Client Mario
+      </h1>
+      <p style="color:var(--warm-600); font-size:0.88rem; margin-top:0.35rem; margin-bottom:0;">
+        Gérez vos coordonnées de livraison et suivez vos commandes au Maroc.
+      </p>
     </div>
-    <a href="{% url 'store:logout' %}" class="btn btn-dark" style="color:var(--brand-red); border-color:var(--brand-red); font-size:0.78rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;">
+    <a href="{% url 'store:logout' %}" class="btn btn-outline" style="font-size:0.75rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;">
       {{ t.logout }}
     </a>
   </div>
@@ -20,35 +32,37 @@
     
     <!-- Profile Edit Column -->
     <div>
-      <div class="profile-card profile-card-gold">
-        <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">
-          Personal Information
-        </h3>
+      <div class="profile-card">
+        <h2 style="font-family:var(--font-display); font-size:1.2rem; margin-bottom:1.25rem; border-bottom:1px solid var(--warm-100); padding-bottom:0.75rem; font-weight:900; color:var(--ink);">
+          Informations Personnelles
+        </h2>
 
         <form action="{% url 'store:profile' %}" method="POST">
           {% csrf_token %}
 
           <div class="form-group">
-            <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">Full Name</label>
+            <label class="form-label">Nom Complet</label>
             <input type="text" name="full_name" value="{{ profile.full_name }}" class="form-control" required>
           </div>
 
           <div class="form-group">
-            <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">Phone Number (WhatsApp)</label>
+            <label class="form-label">Téléphone (WhatsApp)</label>
             <input type="tel" name="phone" value="{{ profile.phone }}" class="form-control" placeholder="0600000000" required>
           </div>
 
           <div class="form-group">
-            <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">City</label>
+            <label class="form-label">Ville</label>
             <input type="text" name="city" value="{{ profile.city }}" class="form-control" required>
           </div>
 
           <div class="form-group">
-            <label class="form-label" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase;">Shipping Address</label>
+            <label class="form-label">Adresse de Livraison</label>
             <textarea name="address" class="form-control" rows="3" required>{{ profile.address }}</textarea>
           </div>
 
-          <button type="submit" class="btn btn-gold" style="width:100%; padding:0.85rem; font-weight:800; font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase;">Save Changes</button>
+          <button type="submit" class="btn btn-dark" style="width:100%; padding:0.9rem; font-weight:800; font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase;">
+            Enregistrer les modifications
+          </button>
         </form>
       </div>
     </div>
@@ -56,18 +70,18 @@
     <!-- Order History Column -->
     <div class="profile-history-col">
       <div class="profile-card">
-        <h3 class="gold-text" style="font-size:1.1rem; margin-bottom:1.25rem; border-bottom:1px solid var(--border-color); padding-bottom:0.75rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">
-          Order History ({{ orders.count }})
-        </h3>
+        <h2 style="font-family:var(--font-display); font-size:1.2rem; margin-bottom:1.25rem; border-bottom:1px solid var(--warm-100); padding-bottom:0.75rem; font-weight:900; color:var(--ink);">
+          Historique des Commandes ({{ orders.count }})
+        </h2>
 
         {% if orders %}
           <div style="display:flex; flex-direction:column; gap:1.25rem;">
             {% for ord in orders %}
-              <div style="background:var(--bg-elevated); padding:1.25rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <div style="background:var(--warm-50); padding:1.25rem; border-radius:var(--r-md); border:1px solid var(--warm-100);">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
                   <div>
-                    <span style="font-weight:800; font-size:1.05rem;" class="gold-text">#{{ ord.order_number }}</span>
-                    <span style="font-size:0.75rem; color:var(--text-muted); margin-left:0.5rem;">{{ ord.created_at|date:"M d, Y - H:i" }}</span>
+                    <span style="font-weight:900; font-size:1.05rem; color:var(--ink);">#{{ ord.order_number }}</span>
+                    <span style="font-size:0.75rem; color:var(--warm-500); margin-left:0.5rem;">{{ ord.created_at|date:"d M Y - H:i" }}</span>
                   </div>
                   <div>
                     <span class="status-badge status-{{ ord.status }}" style="font-size:0.7rem; font-weight:800; letter-spacing:0.05em; text-transform:uppercase;">{{ ord.get_status_display }}</span>
@@ -75,30 +89,33 @@
                 </div>
 
                 <!-- Items list -->
-                <div style="display:flex; flex-direction:column; gap:0.4rem; margin-bottom:0.75rem; padding:0.5rem 0; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); font-size:0.85rem;">
+                <div style="display:flex; flex-direction:column; gap:0.4rem; margin-bottom:0.75rem; padding:0.6rem 0; border-top:1px solid var(--warm-200); border-bottom:1px solid var(--warm-200); font-size:0.85rem;">
                   {% for item in ord.items.all %}
-                    <div style="display:flex; justify-content:space-between;">
-                      <span>{{ item.quantity }}x {{ item.article_title }} (Size {{ item.size }}{% if item.color %}, Color {{ item.color }}{% endif %})</span>
-                      <span style="color:var(--text-muted);">{{ item.subtotal }} MAD</span>
+                    <div style="display:flex; justify-content:space-between; gap:8px;">
+                      <span>{{ item.quantity }}x {{ item.article_title }} (Taille : {{ item.size }}{% if item.color %}, Couleur : {{ item.color }}{% endif %})</span>
+                      <span style="color:var(--warm-600); white-space:nowrap;">{{ item.subtotal }} MAD</span>
                     </div>
                   {% endfor %}
                 </div>
 
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <div style="font-size:0.8rem; color:var(--text-muted); letter-spacing:0.02em;">
-                    Source: <strong>{{ ord.get_source_display }}</strong>
+                  <div style="font-size:0.78rem; color:var(--warm-600);">
+                    Origine : <strong>{{ ord.get_source_display }}</strong>
                   </div>
-                  <div style="font-weight:900; color:var(--gold-bright); font-size:1.1rem;">
-                    Total: {{ ord.total_amount }} MAD
+                  <div style="font-weight:900; color:var(--red); font-size:1.15rem;">
+                    Total : {{ ord.total_amount }} MAD
                   </div>
                 </div>
               </div>
             {% endfor %}
           </div>
         {% else %}
-          <div style="text-align:center; padding:4rem 1rem; color:var(--text-muted);">
-            <p style="font-size:0.9rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:1.5rem;">You haven't placed any orders yet.</p>
-            <a href="{% url 'store:home' %}" class="btn btn-gold" style="font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase;">Start Shopping</a>
+          <div style="text-align:center; padding:4rem 1rem; color:var(--warm-500);">
+            <div style="width:52px; height:52px; border-radius:50%; background:var(--warm-50); display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; color:var(--warm-400);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            </div>
+            <p style="font-size:0.88rem; margin-bottom:1.5rem;">Vous n'avez pas encore passé de commande.</p>
+            <a href="{% url 'store:home' %}#catalog" class="btn btn-red" style="font-size:0.8rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:800;">Explorer la Boutique</a>
           </div>
         {% endif %}
 

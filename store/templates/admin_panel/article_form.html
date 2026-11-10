@@ -3,6 +3,40 @@
 
 {% block title %}{{ title }} — Mario Clothes Admin Portal{% endblock %}
 
+{% block extra_css %}
+<style>
+  .article-imagery-panel { background:var(--admin-bg-elevated); padding:1.25rem; border-radius:var(--radius-sm); border:1px solid var(--admin-border-subtle); margin-bottom:1.5rem; }
+  .article-imagery-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
+  .article-imagery-title { color:var(--gold-bright); margin:0; display:block; }
+  .article-imagery-help { color:var(--text-muted); font-size:.75rem; margin:.3rem 0 0; }
+  .article-image-count { color:var(--gold-bright); font-size:.75rem; font-weight:800; white-space:nowrap; }
+  .article-image-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(135px, 1fr)); gap:.75rem; margin-bottom:1rem; }
+  .article-image-card { position:relative; aspect-ratio:4/5; overflow:hidden; border:1px solid var(--admin-border-gold); border-radius:8px; background:var(--admin-bg-surface); cursor:grab; transition:opacity .2s, transform .2s, border-color .2s; }
+  .article-image-card:active { cursor:grabbing; }
+  .article-image-card.is-dragging { opacity:.45; transform:scale(.97); }
+  .article-image-card.is-removed { opacity:.38; border-color:var(--danger-accent); }
+  .article-image-card img { width:100%; height:100%; object-fit:cover; display:block; }
+  .article-primary-badge { position:absolute; left:6px; bottom:6px; padding:.2rem .4rem; border-radius:4px; background:var(--gold-gradient); color:#000; font-size:.62rem; font-weight:800; }
+  .article-image-card:not(:first-child) .article-primary-badge { display:none; }
+  .article-image-primary, .article-image-delete { position:absolute; top:6px; width:27px; height:27px; border:0; border-radius:50%; cursor:pointer; font-size:1rem; line-height:1; }
+  .article-image-primary { right:38px; background:rgba(0,0,0,.72); color:#fff; }
+  .article-image-primary:hover, .article-image-card:first-child .article-image-primary { color:var(--gold-bright); }
+  .article-image-delete { right:6px; background:rgba(120,20,20,.88); color:#fff; }
+  .article-image-delete:hover { background:var(--danger-accent); }
+  .article-image-drag { position:absolute; right:7px; bottom:7px; color:#fff; text-shadow:0 1px 3px #000; font-weight:900; }
+  .article-image-empty { grid-column:1/-1; color:var(--text-muted); font-size:.8rem; margin:.5rem 0; }
+  .article-upload-dropzone { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.3rem; min-height:125px; padding:1rem; border:1.5px dashed var(--admin-border-gold); border-radius:8px; color:var(--text-main); text-align:center; cursor:pointer; }
+  .article-upload-dropzone.is-dragover { background:rgba(212,175,55,.1); border-color:var(--gold-bright); }
+  .article-upload-dropzone input { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+  .article-upload-icon { color:var(--gold-bright); font-size:1.8rem; line-height:1; }
+  .article-upload-dropzone small { color:var(--text-muted); font-size:.72rem; }
+  .article-upload-errors { color:var(--danger-accent); font-size:.78rem; margin-top:.6rem; }
+  .article-upload-progress { height:4px; margin-top:.8rem; overflow:hidden; border-radius:4px; background:var(--admin-border-subtle); }
+  .article-upload-progress span { display:block; width:0; height:100%; background:var(--gold-gradient); transition:width .25s; }
+  @media (max-width:600px) { .article-imagery-heading { flex-direction:column; gap:.35rem; } }
+</style>
+{% endblock %}
+
 {% block workspace_header %}
   <span>Catalog</span>
   <span>/</span>
@@ -64,25 +98,40 @@
       <textarea name="description" class="form-control" rows="3" placeholder="Fabric composition, fit style, details...">{{ article.description|default:'' }}</textarea>
     </div>
 
-    <!-- Image Upload Section -->
-    <div style="background:var(--admin-bg-elevated); padding:1.25rem; border-radius:var(--radius-sm); border:1px solid var(--admin-border-subtle); margin-bottom:1.5rem;">
-      <label class="form-label" style="color:var(--gold-bright); margin-bottom:0.5rem; display:block;">Article Imagery (Multi-upload supported)</label>
-      
-      {% if article.images.all %}
-        <div style="display:flex; gap:0.75rem; margin-bottom:1rem; flex-wrap:wrap;">
-          {% for img in article.images.all %}
-            <div style="position:relative;">
-              <img src="{{ img.image.url }}" style="width:70px; height:85px; object-fit:cover; border-radius:6px; border:1px solid var(--admin-border-gold);">
-              {% if img.is_primary %}
-                <span style="position:absolute; bottom:4px; left:4px; font-size:0.6rem; background:var(--gold-gradient); color:#000; font-weight:800; padding:0.1rem 0.3rem; border-radius:3px;">Primary</span>
-              {% endif %}
-            </div>
-          {% endfor %}
+    <div class="article-imagery-panel">
+      <div class="article-imagery-heading">
+        <div>
+          <label class="form-label article-imagery-title">Article Imagery (Multi-upload supported)</label>
+          <p class="article-imagery-help">Drag cards to reorder. The first image is the primary product image.</p>
         </div>
-      {% endif %}
+        <span class="article-image-count" id="articleImageCount">0 / 8</span>
+      </div>
 
-      <input type="file" name="images" class="form-control" accept="image/*" multiple style="background:var(--admin-bg-surface);">
-      <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.35rem;">First uploaded image will serve as primary product thumbnail.</div>
+      <div class="article-image-grid" id="articleImageGrid">
+        {% for img in article_images %}
+          <div class="article-image-card" draggable="true" data-image-id="{{ img.id }}">
+            <img src="{{ img.image.url }}" alt="{{ article.title }} image {{ forloop.counter }}">
+            <span class="article-primary-badge">Primary</span>
+            <button type="button" class="article-image-primary" title="Set as primary" aria-label="Set image {{ forloop.counter }} as primary">★</button>
+            <button type="button" class="article-image-delete" title="Delete image" aria-label="Delete image {{ forloop.counter }}">×</button>
+            <span class="article-image-drag" aria-hidden="true">⋮⋮</span>
+          </div>
+        {% empty %}
+          <p class="article-image-empty" id="articleImageEmpty">No images uploaded yet.</p>
+        {% endfor %}
+      </div>
+
+      <div class="article-upload-dropzone" id="articleUploadDropzone" tabindex="0" role="button" aria-controls="articleImageInput">
+        <input type="file" name="images" id="articleImageInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple>
+        <span class="article-upload-icon" aria-hidden="true">＋</span>
+        <strong>Drop images here or click to browse</strong>
+        <small>JPG, PNG or WebP · 5 MB maximum each · 8 images maximum</small>
+      </div>
+      <div class="article-upload-errors" id="articleUploadErrors" role="alert" aria-live="polite"></div>
+      <div class="article-upload-progress" id="articleUploadProgress" hidden><span></span></div>
+      <input type="hidden" name="deleted_images" id="deletedImagesInput">
+      <input type="hidden" name="image_order" id="imageOrderInput">
+      <div id="newImageInputs"></div>
     </div>
 
     <!-- Standard Colors Datalist for 1-click dropdowns -->
@@ -148,10 +197,12 @@
                 type="button" 
                 class="btn color-chip-btn" 
                 data-color="{{ col.name }}"
+                data-color-hex="{{ col.hex }}"
+                data-color-border="{{ col.border }}"
                 onclick="toggleColorChip(this)"
                 style="display:inline-flex; align-items:center; gap:0.45rem; padding:0.32rem 0.7rem; font-size:0.78rem; font-weight:700; border-radius:20px; background:var(--admin-bg-elevated); border:1.5px solid var(--admin-border-subtle); color:var(--text-main); cursor:pointer;"
               >
-                <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:{{ col.hex }}; border:1px solid {{ col.border }}; flex-shrink:0;"></span>
+                <span class="color-chip-swatch" style="display:inline-block; width:12px; height:12px; border-radius:50%; flex-shrink:0;"></span>
                 <span>{{ col.name }}</span>
               </button>
             {% endfor %}
@@ -265,6 +316,164 @@
 
 {% block extra_js %}
 <script>
+  (function () {
+    const form = document.getElementById('articleForm');
+    const grid = document.getElementById('articleImageGrid');
+    const input = document.getElementById('articleImageInput');
+    const dropzone = document.getElementById('articleUploadDropzone');
+    const errors = document.getElementById('articleUploadErrors');
+    const deletedInput = document.getElementById('deletedImagesInput');
+    const orderInput = document.getElementById('imageOrderInput');
+    const count = document.getElementById('articleImageCount');
+    const progress = document.getElementById('articleUploadProgress');
+    if (!form || !grid || !input) return;
+
+    const maxImages = 8;
+    const maxBytes = 5 * 1024 * 1024;
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    let selectedFiles = [];
+    let draggedCard = null;
+
+    function activeCards() {
+      return Array.from(grid.querySelectorAll('.article-image-card:not(.is-removed)'));
+    }
+
+    function syncState() {
+      const active = activeCards();
+      grid.querySelectorAll('.article-image-card').forEach(function (card, index) {
+        card.querySelector('.article-primary-badge').hidden = card.classList.contains('is-removed') || card !== active[0];
+      });
+      count.textContent = `${active.length} / ${maxImages}`;
+      orderInput.value = active.map(function (card) { return card.dataset.imageId || ''; }).filter(Boolean).join(',');
+      const empty = document.getElementById('articleImageEmpty');
+      if (empty) empty.hidden = active.length > 0;
+    }
+
+    function showErrors(messages) {
+      errors.textContent = messages.join(' ');
+    }
+
+    function renderNewFile(file) {
+      const card = document.createElement('div');
+      card.className = 'article-image-card';
+      card.dataset.newFile = `${file.name}|${file.size}|${file.lastModified}`;
+      card.draggable = true;
+      const image = document.createElement('img');
+      image.alt = file.name;
+      image.onload = function () { URL.revokeObjectURL(image.src); };
+      image.src = URL.createObjectURL(file);
+      card.innerHTML = '<span class="article-primary-badge">Primary</span><button type="button" class="article-image-primary" title="Set as primary" aria-label="Set as primary">★</button><button type="button" class="article-image-delete" title="Remove image" aria-label="Remove image">×</button><span class="article-image-drag" aria-hidden="true">⋮⋮</span>';
+      card.prepend(image);
+      grid.appendChild(card);
+    }
+
+    function rebuildNewCards() {
+      grid.querySelectorAll('[data-new-file]').forEach(function (card) { card.remove(); });
+      selectedFiles.forEach(renderNewFile);
+    }
+
+    function syncFiles() {
+      const transfer = new DataTransfer();
+      selectedFiles.forEach(function (file) { transfer.items.add(file); });
+      input.files = transfer.files;
+    }
+
+    function addFiles(files) {
+      const messages = [];
+      Array.from(files).forEach(function (file) {
+        if (!allowedTypes.includes(file.type)) messages.push(`${file.name}: JPG, PNG ou WebP uniquement.`);
+        else if (file.size > maxBytes) messages.push(`${file.name}: 5 Mo maximum.`);
+        else if (selectedFiles.some(function (current) { return current.name === file.name && current.size === file.size; })) return;
+        else if (activeCards().length + selectedFiles.length >= maxImages) messages.push('8 images maximum par article.');
+        else { selectedFiles.push(file); renderNewFile(file); }
+      });
+      showErrors(messages);
+      syncFiles();
+      syncState();
+    }
+
+    dropzone.addEventListener('click', function () { input.click(); });
+    dropzone.addEventListener('keydown', function (event) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); input.click(); } });
+    input.addEventListener('change', function () { addFiles(input.files); });
+    ['dragenter', 'dragover'].forEach(function (eventName) {
+      dropzone.addEventListener(eventName, function (event) { event.preventDefault(); dropzone.classList.add('is-dragover'); });
+    });
+    ['dragleave', 'drop'].forEach(function (eventName) {
+      dropzone.addEventListener(eventName, function (event) { event.preventDefault(); dropzone.classList.remove('is-dragover'); });
+    });
+    dropzone.addEventListener('drop', function (event) { addFiles(event.dataTransfer.files); });
+
+    grid.addEventListener('click', function (event) {
+      const card = event.target.closest('.article-image-card');
+      if (!card) return;
+      if (event.target.closest('.article-image-primary')) {
+        grid.insertBefore(card, grid.firstElementChild);
+        syncState();
+      }
+      if (event.target.closest('.article-image-delete')) {
+        if (card.classList.contains('is-removed')) {
+          card.classList.remove('is-removed');
+          event.target.closest('.article-image-delete').textContent = '×';
+          event.target.closest('.article-image-delete').title = 'Delete image';
+          if (card.dataset.imageId) {
+            deletedInput.value = deletedInput.value.split(/\s+/).filter(function (id) {
+              return id && id !== card.dataset.imageId;
+            }).join(' ');
+          }
+        } else {
+          if (!window.confirm('Delete this image when you save the article?')) return;
+          card.classList.add('is-removed');
+          event.target.closest('.article-image-delete').textContent = '↶';
+          event.target.closest('.article-image-delete').title = 'Undo';
+          if (card.dataset.imageId) {
+            const deleted = deletedInput.value.split(/\s+/).filter(Boolean);
+            if (!deleted.includes(card.dataset.imageId)) deleted.push(card.dataset.imageId);
+            deletedInput.value = deleted.join(' ');
+          } else if (card.dataset.newFile) {
+            selectedFiles = selectedFiles.filter(function (file) {
+              return `${file.name}|${file.size}|${file.lastModified}` !== card.dataset.newFile;
+            });
+            card.remove();
+            syncFiles();
+          }
+        }
+        syncState();
+      }
+    });
+
+    grid.addEventListener('dragstart', function (event) {
+      draggedCard = event.target.closest('.article-image-card');
+      if (draggedCard) draggedCard.classList.add('is-dragging');
+    });
+    grid.addEventListener('dragend', function () {
+      if (draggedCard) draggedCard.classList.remove('is-dragging');
+      draggedCard = null;
+      syncState();
+    });
+    grid.addEventListener('dragover', function (event) {
+      event.preventDefault();
+      const target = event.target.closest('.article-image-card');
+      if (draggedCard && target && target !== draggedCard) {
+        const rect = target.getBoundingClientRect();
+        grid.insertBefore(draggedCard, event.clientY < rect.top + rect.height / 2 ? target : target.nextSibling);
+      }
+    });
+    form.addEventListener('submit', function () {
+      syncState();
+      progress.hidden = false;
+      progress.querySelector('span').style.width = '100%';
+    });
+    syncState();
+  }());
+
+  document.querySelectorAll('.color-chip-btn').forEach(btn => {
+    const swatch = btn.querySelector('.color-chip-swatch');
+    if (swatch) {
+      swatch.style.backgroundColor = btn.dataset.colorHex;
+      swatch.style.border = `1px solid ${btn.dataset.colorBorder}`;
+    }
+  });
+
   function addVariantRow(color = '', size = '', stock = 5) {
     const container = document.getElementById('sizesContainer');
     const row = document.createElement('div');

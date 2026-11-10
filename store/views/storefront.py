@@ -1,13 +1,66 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.db import transaction
+from django.db.models import Prefetch
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 import json
 
-from ..models import Category, Article, ArticleSize, Order, OrderItem, UserProfile, FeaturedShowcase, FeaturedShowcaseItem
+from ..models import (
+    Category,
+    Article,
+    ArticleImage,
+    ArticleSize,
+    Order,
+    OrderItem,
+    UserProfile,
+    FeaturedShowcase,
+    FeaturedShowcaseItem,
+)
+
+
+HERO_SLIDE_LIMIT = 6
+
+
+def get_hero_slides():
+    articles = (
+        Article.objects.filter(
+            is_active=True,
+            images__image__isnull=False,
+            images__image__gt='',
+        )
+        .select_related('category')
+        .prefetch_related(
+            Prefetch(
+                'images',
+                queryset=ArticleImage.objects.order_by('display_order', '-is_primary', 'created_at'),
+            )
+        )
+        .distinct()
+        .order_by('-created_at')[:HERO_SLIDE_LIMIT]
+    )
+
+    slides = []
+    for article in articles:
+        for image in article.images.all():
+            if not image.image:
+                continue
+            slides.append({
+                'id': image.id,
+                'article_id': article.id,
+                'image_url': image.image.url,
+                'title': article.title,
+                'category': article.category.name,
+                'price': str(article.price),
+                'url': reverse('store:product_detail', args=[article.slug]),
+                'updated_at': article.updated_at.isoformat(),
+            })
+            if len(slides) >= HERO_SLIDE_LIMIT:
+                return slides
+    return slides
 
 
 def home_view(request):
@@ -28,39 +81,7 @@ def home_view(request):
         'items__article__images', 'items__article__sizes', 'items__article__category'
     )[:4]
     
-    # Collect article images for the full-bleed hero carousel (featured first)
-    from ..models import ArticleImage
-    featured_img_objs = list(ArticleImage.objects.filter(
-        article__is_active=True, article__is_featured=True
-    ).select_related('article', 'article__category')[:12])
-    
-    other_img_objs = list(ArticleImage.objects.filter(
-        article__is_active=True, article__is_featured=False
-    ).select_related('article', 'article__category')[:8])
-    
-    hero_slides = []
-    seen_articles = set()
-    for img in (featured_img_objs + other_img_objs):
-        if img.article_id not in seen_articles and img.image:
-            seen_articles.add(img.article_id)
-            hero_slides.append({
-                'image_url': img.image.url if hasattr(img.image, 'url') else f"/media/{img.image}",
-                'title': img.article.title,
-                'price': img.article.price,
-                'slug': img.article.slug,
-                'category': img.article.category.name if img.article.category else 'Mario Collection'
-            })
-            
-    # Fallback if no specific images found
-    if not hero_slides:
-        for img in ArticleImage.objects.filter(article__is_active=True).select_related('article', 'article__category')[:10]:
-            hero_slides.append({
-                'image_url': img.image.url if hasattr(img.image, 'url') else f"/media/{img.image}",
-                'title': img.article.title,
-                'price': img.article.price,
-                'slug': img.article.slug,
-                'category': img.article.category.name if img.article.category else 'Mario Collection'
-            })
+    hero_slides = get_hero_slides()
     
     context = {
         'categories': categories,
@@ -76,9 +97,21 @@ def home_view(request):
     return render(request, 'store/home.html', context)
 
 
+def hero_slides_api(request):
+    response = JsonResponse({'slides': get_hero_slides()})
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+
+
 
 def article_detail_view(request, slug):
-    article = get_object_or_404(Article.objects.prefetch_related('images', 'sizes', 'category'), slug=slug)
+    article = get_object_or_404(
+        Article.objects.prefetch_related('images', 'sizes', 'category'),
+        slug=slug,
+        is_active=True,
+    )
     related_articles = Article.objects.filter(
         category=article.category,
         is_active=True,

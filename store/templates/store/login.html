@@ -1,28 +1,28 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Sign In / Register — Mario Clothes{% endblock %}
+{% block title %}Connexion & Inscription — Mario Clothes Casablanca{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 520px; padding-top: 2rem; padding-bottom: 5rem;">
-  <div class="card login-card">
+<div class="container" style="max-width: 500px; padding-top: 3rem; padding-bottom: 6rem;">
+  <div class="login-card">
     
     <!-- Header -->
-    <div style="text-align: center; margin-bottom: 1.75rem;">
-      <div style="display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; background: var(--bg-secondary); border: 1.5px solid var(--border-color); margin-bottom: 0.85rem; color: #0A0A0A;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; background: var(--warm-50); border: 1px solid var(--warm-200); margin-bottom: 1rem; color: var(--ink);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </div>
-      <h2 style="font-size: clamp(1.3rem, 3.5vw, 1.6rem); font-weight: 900; letter-spacing: -0.01em; color: #0A0A0A;">Account Access</h2>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Sign in to your client profile or manager dashboard</p>
+      <h1 style="font-family: var(--font-display); font-size: clamp(1.6rem, 3.5vw, 2rem); font-weight: 900; letter-spacing: -0.01em; color: var(--ink); margin: 0 0 0.35rem;">Espace Client</h1>
+      <p style="color: var(--warm-600); font-size: 0.86rem; margin: 0;">Connectez-vous à votre compte ou créez votre profil</p>
     </div>
 
     <!-- Auth Toggle Tabs -->
-    <div style="display: flex; background: var(--bg-secondary); padding: 4px; border-radius: var(--radius-md); margin-bottom: 1.8rem; border: 1px solid var(--border-color);">
-      <button type="button" id="tabLoginBtn" class="btn btn-gold" style="flex: 1; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;" onclick="switchAuthTab('login')">
-        Sign In
+    <div style="display: flex; background: var(--warm-50); padding: 4px; border-radius: var(--r-sm); margin-bottom: 2rem; border: 1px solid var(--warm-200);">
+      <button type="button" id="tabLoginBtn" class="btn btn-dark" style="flex: 1; border-radius: var(--r-sm); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.65rem;" onclick="switchAuthTab('login')">
+        Se Connecter
       </button>
-      <button type="button" id="tabRegisterBtn" class="btn btn-dark" style="flex: 1; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;" onclick="switchAuthTab('register')">
-        Create Account
+      <button type="button" id="tabRegisterBtn" class="btn btn-ghost" style="flex: 1; border-radius: var(--r-sm); font-size: 0.78rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.65rem;" onclick="switchAuthTab('register')">
+        Créer un Compte
       </button>
     </div>
 
@@ -34,18 +34,18 @@
         <input type="hidden" name="next" value="{{ next_url }}">
       {% endif %}
 
-      <div style="margin-bottom: 1.25rem;">
-        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Email or Username</label>
-        <input type="text" name="login_username" required class="form-control" placeholder="Enter your email or username" style="width: 100%; padding: 0.8rem 1rem;">
+      <div class="form-group">
+        <label class="form-label">Email ou Nom d'utilisateur</label>
+        <input type="text" name="login_username" required class="form-control" placeholder="votre@email.com">
       </div>
 
-      <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Password</label>
-        <input type="password" name="login_password" required class="form-control" placeholder="••••••••" style="width: 100%; padding: 0.8rem 1rem;">
+      <div class="form-group" style="margin-bottom: 1.75rem;">
+        <label class="form-label">Mot de Passe</label>
+        <input type="password" name="login_password" required class="form-control" placeholder="••••••••">
       </div>
 
-      <button type="submit" class="btn btn-gold" style="width: 100%; padding: 0.9rem; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;">
-        Sign In
+      <button type="submit" class="btn btn-red" style="width: 100%; padding: 0.95rem; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; box-shadow: var(--shadow-sm);">
+        Se Connecter
       </button>
     </form>
 
@@ -54,86 +54,63 @@
       {% csrf_token %}
       <input type="hidden" name="auth_action" value="register">
 
-      <div style="margin-bottom: 1.25rem;">
-        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Full Name</label>
-        <input type="text" name="reg_full_name" id="regFullName" class="form-control" placeholder="e.g. Hamza Mansouri" style="width: 100%; padding: 0.8rem 1rem;">
+      <div class="form-group">
+        <label class="form-label">Nom Complet</label>
+        <input type="text" name="reg_full_name" id="regFullName" class="form-control" placeholder="ex. Hamza Mansouri">
       </div>
 
-      <div style="margin-bottom: 1.25rem;">
-        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Email Address</label>
-        <input type="email" name="reg_email" id="regEmail" class="form-control" placeholder="name@example.com" style="width: 100%; padding: 0.8rem 1rem;">
+      <div class="form-group">
+        <label class="form-label">Adresse Email</label>
+        <input type="email" name="reg_email" id="regEmail" class="form-control" placeholder="nom@exemple.com">
       </div>
 
-      <div style="margin-bottom: 1.25rem;">
-        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Phone Number (WhatsApp)</label>
-        <input type="text" name="reg_phone" id="regPhone" class="form-control" placeholder="0661234567" style="width: 100%; padding: 0.8rem 1rem;">
+      <div class="form-group">
+        <label class="form-label">Téléphone (WhatsApp)</label>
+        <input type="tel" name="reg_phone" id="regPhone" class="form-control" placeholder="0661234567">
       </div>
 
-      <div class="form-row-2col" style="margin-bottom: 1.25rem;">
-        <div>
-          <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">City</label>
-          <input type="text" name="reg_city" id="regCity" class="form-control" placeholder="Casablanca" style="width: 100%; padding: 0.8rem 1rem;">
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label class="form-label">Ville</label>
+          <input type="text" name="reg_city" id="regCity" class="form-control" placeholder="Casablanca">
         </div>
-        <div>
-          <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Address</label>
-          <input type="text" name="reg_address" id="regAddress" class="form-control" placeholder="Street / House N°" style="width: 100%; padding: 0.8rem 1rem;">
+        <div class="form-group">
+          <label class="form-label">Adresse</label>
+          <input type="text" name="reg_address" id="regAddress" class="form-control" placeholder="Rue / N°">
         </div>
       </div>
 
-      <div style="margin-bottom: 1.5rem;">
-        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Create Password</label>
-        <input type="password" name="reg_password" id="regPassword" class="form-control" placeholder="••••••••" style="width: 100%; padding: 0.8rem 1rem;">
-      </div>
+      <div class="form-group" style="margin-bottom: 1.75rem;">
+        <label class="form-label">Créer un Mot de Passe</label>
+        <input type="password" name="reg_password" id="regPassword" class="form-control" placeholder="••••••••">
       </div>
 
-      <button type="submit" class="btn btn-gold" style="width: 100%; padding: 0.9rem; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;">
-        Create Account & Sign In
+      <button type="submit" class="btn btn-red" style="width: 100%; padding: 0.95rem; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; box-shadow: var(--shadow-sm);">
+        Créer mon Compte
       </button>
     </form>
-
-    <!-- Demo Credentials Helper Card -->
-    <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-primary); border-radius: var(--radius-md); border: 1px dashed var(--border-gold); font-size: 0.8rem; color: var(--text-muted);">
-      <div style="font-weight: 800; color: var(--gold-bright); margin-bottom: 0.4rem; letter-spacing: 0.05em; text-transform: uppercase;">Demo Accounts:</div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-        <span><strong>Manager:</strong> <code>admin</code></span>
-        <span>Pass: <code>adminpassword</code></span>
-      </div>
-      <div style="display: flex; justify-content: space-between;">
-        <span><strong>Client:</strong> <code>client@gmail.com</code></span>
-        <span>Pass: <code>clientpassword</code></span>
-      </div>
-    </div>
 
   </div>
 </div>
 
 <script>
-function switchAuthTab(tab) {
-  const loginForm = document.getElementById('loginForm');
-  const registerForm = document.getElementById('registerForm');
-  const loginBtn = document.getElementById('tabLoginBtn');
-  const regBtn = document.getElementById('tabRegisterBtn');
-  
-  const regInputs = [
-    document.getElementById('regFullName'),
-    document.getElementById('regEmail'),
-    document.getElementById('regPhone'),
-    document.getElementById('regPassword')
-  ];
+  function switchAuthTab(tab) {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const tabLoginBtn = document.getElementById('tabLoginBtn');
+    const tabRegisterBtn = document.getElementById('tabRegisterBtn');
 
-  if (tab === 'login') {
-    loginForm.style.display = 'block';
-    registerForm.style.display = 'none';
-    loginBtn.className = 'btn btn-gold';
-    regBtn.className = 'btn btn-dark';
-    regInputs.forEach(input => input.required = false);
-  } else {
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'block';
-    loginBtn.className = 'btn btn-dark';
-    regBtn.className = 'btn btn-gold';
-    regInputs.forEach(input => input.required = true);
+    if (tab === 'login') {
+      loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+      tabLoginBtn.className = 'btn btn-dark';
+      tabRegisterBtn.className = 'btn btn-ghost';
+    } else {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+      tabLoginBtn.className = 'btn btn-ghost';
+      tabRegisterBtn.className = 'btn btn-dark';
+    }
   }
-}
 </script>
 {% endblock %}

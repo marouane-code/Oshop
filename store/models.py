@@ -75,9 +75,12 @@ class Article(models.Model):
 
     @property
     def variants_json(self):
-        import json
         data = [
-            {'size': s.size, 'color': s.color or '', 'stock': s.stock_quantity}
+            {
+                'size': (s.size or '').strip(),
+                'color': (s.color or '').strip(),
+                'stock': s.stock_quantity,
+            }
             for s in self.sizes.all()
         ]
         return json.dumps(data)
@@ -103,7 +106,14 @@ class ArticleImage(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='articles/')
     is_primary = models.BooleanField(default=False)
+    display_order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            kwargs.pop('force_update', None)
+            kwargs.pop('update_fields', None)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Image for {self.article.title}"
@@ -273,4 +283,3 @@ class FeaturedShowcaseItem(models.Model):
 
     def __str__(self):
         return f"{self.showcase.title} - #{self.display_order} {self.article.title}"
-

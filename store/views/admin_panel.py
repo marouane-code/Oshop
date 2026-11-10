@@ -6,6 +6,8 @@ from django.db import transaction
 from django.db.models import Sum, Count, F
 from django.utils import timezone
 from datetime import timedelta
+from pathlib import Path
+from PIL import Image, UnidentifiedImageError
 import json
 
 from ..models import Category, Article, ArticleImage, ArticleSize, Order, OrderItem, FeaturedShowcase, FeaturedShowcaseItem
@@ -116,6 +118,37 @@ STANDARD_COLORS = [
     {'name': 'Violet', 'hex': '#7C3AED', 'border': '#8B5CF6', 'family': 'Pinks & Purples'},
     {'name': 'Mauve', 'hex': '#B784A7', 'border': '#C99EBC', 'family': 'Pinks & Purples'},
 ]
+
+MAX_ARTICLE_IMAGES = 8
+MAX_IMAGE_SIZE = 5 * 1024 * 1024
+ALLOWED_IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.webp'}
+ALLOWED_IMAGE_FORMATS = {'JPEG', 'PNG', 'WEBP'}
+
+
+def _validate_article_images(uploaded_images, existing_count=0):
+    if existing_count + len(uploaded_images) > MAX_ARTICLE_IMAGES:
+        raise ValueError(f'An article can have no more than {MAX_ARTICLE_IMAGES} images.')
+
+    for uploaded in uploaded_images:
+        extension = Path(uploaded.name).suffix.lower()
+        if extension not in ALLOWED_IMAGE_EXTENSIONS:
+            raise ValueError(f'{uploaded.name}: use JPG, PNG, or WebP images only.')
+        if uploaded.size > MAX_IMAGE_SIZE:
+            raise ValueError(f'{uploaded.name}: each image must be 5 MB or smaller.')
+        try:
+            uploaded.seek(0)
+            with Image.open(uploaded) as image:
+                if image.format not in ALLOWED_IMAGE_FORMATS:
+                    raise ValueError(f'{uploaded.name}: the image content is not a supported format.')
+                image.verify()
+        except (UnidentifiedImageError, OSError):
+            raise ValueError(f'{uploaded.name}: this file is not a valid image.')
+        finally:
+            uploaded.seek(0)
+
+
+def _ordered_article_images(article):
+    return article.images.all().order_by('display_order', '-is_primary', 'created_at', 'id')
 
 
 def _parse_variant_rows(request):
@@ -458,6 +491,17 @@ def article_create_view(request):
         is_featured = request.POST.get('is_featured') == 'on'
         
         category = get_object_or_404(Category, id=category_id)
+        images = request.FILES.getlist('images')
+        try:
+            _validate_article_images(images)
+        except ValueError as error:
+            messages.error(request, str(error))
+            return render(request, 'admin_panel/article_form.html', {
+                'categories': categories,
+                'standard_sizes': STANDARD_SIZES,
+                'standard_colors': STANDARD_COLORS,
+                'title': 'Add New Article',
+            })
         try:
             variants = _parse_variant_rows(request)
         except ValueError as error:
@@ -480,12 +524,12 @@ def article_create_view(request):
             )
             
             # Handle images
-            images = request.FILES.getlist('images')
             for index, img_file in enumerate(images):
                 ArticleImage.objects.create(
                     article=article,
                     image=img_file,
-                    is_primary=(index == 0)
+                    is_primary=(index == 0),
+                    display_order=index,
                 )
                 
             # Handle stock sizes & colors
@@ -513,54 +557,104 @@ def article_create_view(request):
 def article_edit_view(request, article_id):
     article = get_object_or_404(Article.objects.prefetch_related('sizes', 'images'), id=article_id)
     categories = Category.objects.all()
-    pass
     
     if request.method == 'POST':
+        uploaded_images = request.FILES.getlist('images')
+        deleted_ids = {
+            int(value)
+            for raw_value in request.POST.getlist('deleted_images')
+            for value in raw_value.split()
+            if value.isdigit()
+        }
+        existing_images = list(article.images.all())
+        existing_by_id = {image.id: image for image in existing_images}
+        deleted_images = [
+            image for image_id, image in existing_by_id.items()
+            if image_id in deleted_ids
+        ]
+        remaining_count = len(existing_images) - len(deleted_images)
+        try:
+            _validate_article_images(uploaded_images, remaining_count)
+        except ValueError as error:
+            messages.error(request, str(error))
+            return render(request, 'admin_panel/article_form.html', {
+                'article': article,
+                'article_images': _ordered_article_images(article),
+                'categories': categories,
+                'standard_sizes': STANDARD_SIZES,
+                'standard_colors': STANDARD_COLORS,
+                'title': f'Edit Article: {article.title}',
+            })
         try:
             variants = _parse_variant_rows(request)
         except ValueError as error:
             messages.error(request, str(error))
             return render(request, 'admin_panel/article_form.html', {
                 'article': article,
+                'article_images': _ordered_article_images(article),
                 'categories': categories,
                 'standard_sizes': STANDARD_SIZES,
                 'standard_colors': STANDARD_COLORS,
                 'title': f'Edit Article: {article.title}',
             })
 
-        article.title = request.POST.get('title')
-        article.category = get_object_or_404(Category, id=request.POST.get('category'))
-        article.price = request.POST.get('price')
-        article.description = request.POST.get('description', '')
-        article.is_active = request.POST.get('is_active') == 'on'
-        article.is_featured = request.POST.get('is_featured') == 'on'
-        article.save()
-        
-        # New images
-        images = request.FILES.getlist('images')
-        for index, img_file in enumerate(images):
-            has_primary = article.images.filter(is_primary=True).exists()
-            ArticleImage.objects.create(
-                article=article,
-                image=img_file,
-                is_primary=(not has_primary and index == 0)
-            )
-            
-        # Update sizes & colors
-        article.sizes.all().delete()
-        for size, color, stock_quantity in variants:
-            ArticleSize.objects.create(
-                article=article,
-                size=size,
-                color=color,
-                stock_quantity=stock_quantity
-            )
-                
+        with transaction.atomic():
+            article.title = request.POST.get('title')
+            article.category = get_object_or_404(Category, id=request.POST.get('category'))
+            article.price = request.POST.get('price')
+            article.description = request.POST.get('description', '')
+            article.is_active = request.POST.get('is_active') == 'on'
+            article.is_featured = request.POST.get('is_featured') == 'on'
+            article.save()
+
+            order_ids = [
+                int(value) for value in request.POST.get('image_order', '').split(',')
+                if value.isdigit() and int(value) in existing_by_id and int(value) not in deleted_ids
+            ]
+            remaining_images = [
+                existing_by_id[image_id] for image_id in order_ids
+            ]
+            remaining_images += [
+                image for image in existing_images
+                if image.id is not None
+                and image.id not in deleted_ids
+                and image.id not in order_ids
+            ]
+
+            for image in deleted_images:
+                if image.image:
+                    image.image.delete(save=False)
+                image.delete()
+
+            for index, image in enumerate(remaining_images):
+                image.display_order = index
+                image.is_primary = index == 0
+                image.save(update_fields=['display_order', 'is_primary'])
+
+            start_order = len(remaining_images)
+            for index, uploaded in enumerate(uploaded_images, start=start_order):
+                ArticleImage.objects.create(
+                    article=article,
+                    image=uploaded,
+                    is_primary=(index == 0 and not remaining_images),
+                    display_order=index,
+                )
+
+            article.sizes.all().delete()
+            for size, color, stock_quantity in variants:
+                ArticleSize.objects.create(
+                    article=article,
+                    size=size,
+                    color=color,
+                    stock_quantity=stock_quantity
+                )
+
         messages.success(request, f"Article '{article.title}' updated.")
         return redirect('store:admin_articles')
         
     context = {
         'article': article,
+        'article_images': _ordered_article_images(article),
         'categories': categories,
         'standard_sizes': STANDARD_SIZES,
         'standard_colors': STANDARD_COLORS,
@@ -733,4 +827,3 @@ def toggle_showcase_status_api(request, showcase_id):
         })
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=400)
-

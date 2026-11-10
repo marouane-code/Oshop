@@ -1,35 +1,65 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ article.title }} — Mario Clothes{% endblock %}
+{% block title %}{{ article.title }} — Mario Clothes Casablanca{% endblock %}
 
 {% block content %}
 <div class="container product-detail-container">
 
   <!-- Breadcrumb -->
-  <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1.5rem; letter-spacing:0.05em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-    <a href="{% url 'store:home' %}">Home</a> &nbsp;/&nbsp; 
-    <a href="{% url 'store:home' %}?category={{ article.category.slug }}">{{ article.category.name }}</a> &nbsp;/&nbsp; 
-    <span style="font-weight:700; color:#0A0A0A;">{{ article.title }}</span>
-  </div>
+  <nav aria-label="breadcrumb" style="font-size:0.78rem; color:var(--warm-500); margin-bottom:2rem; letter-spacing:0.08em; text-transform:uppercase; display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+    <a href="{% url 'store:home' %}" style="color:var(--warm-700); text-decoration:none; transition:color var(--dur-fast);">{{ t.home|default:"Accueil" }}</a>
+    <span style="opacity:0.4;">/</span>
+    <a href="{% url 'store:home' %}?category={{ article.category.slug }}" style="color:var(--warm-700); text-decoration:none; transition:color var(--dur-fast);">{{ article.category.name }}</a>
+    <span style="opacity:0.4;">/</span>
+    <span style="font-weight:700; color:var(--ink); max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ article.title }}</span>
+  </nav>
 
   <div class="product-detail-grid">
     
     <!-- Product Images Gallery -->
     <div class="product-detail-gallery">
-      <div class="product-detail-main-img-box">
+      <div class="product-detail-main-img-box" id="mainImgContainer" style="position:relative; cursor:zoom-in;" onclick="openImageLightbox()">
         {% if article.primary_image %}
-          <img id="mainProductImg" src="{{ article.primary_image }}" alt="{{ article.title }}" style="width:100%; height:100%; object-fit:cover;" loading="lazy" class="product-shuffle-image" data-shuffle-images="{{ article.image_urls|escapejs }}">
+          <img 
+            id="mainProductImg" 
+            src="{{ article.primary_image }}" 
+            alt="{{ article.title }}" 
+            loading="eager" 
+            style="width:100%; height:100%; object-fit:cover; display:block; transition:transform var(--dur-mid) var(--ease-expo);"
+          >
         {% else %}
-          <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase;">No Image Available</div>
+          <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--warm-400); font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase; gap:8px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            <span>Mario Clothes</span>
+          </div>
         {% endif %}
+
+        <!-- Zoom hint badge -->
+        <span style="position:absolute; bottom:14px; right:14px; background:rgba(255,255,255,0.85); backdrop-filter:blur(8px); padding:4px 8px; border-radius:var(--r-full); font-size:0.65rem; font-weight:700; color:var(--ink); letter-spacing:0.06em; text-transform:uppercase; display:flex; align-items:center; gap:4px; box-shadow:var(--shadow-sm); pointer-events:none;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          Zoom
+        </span>
       </div>
 
-      <!-- Thumbnail Selector & Mobile Horizontal Gallery -->
+      <!-- Thumbnail Selector Strip -->
       {% if article.images.all.count > 1 %}
-        <div style="display:flex; gap:0.75rem; overflow-x:auto; padding-bottom:0.5rem; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;">
+        <div style="display:flex; gap:0.75rem; overflow-x:auto; padding-top:1rem; padding-bottom:0.5rem; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;" id="thumbStrip">
           {% for img in article.images.all %}
-            <img src="{{ img.image.url }}" onclick="document.getElementById('mainProductImg').src='{{ img.image.url }}'" style="width:75px; height:90px; object-fit:cover; border-radius:var(--radius-sm); border:1.5px solid var(--border-color); cursor:pointer; flex-shrink:0; scroll-snap-align:start;" class="thumb-option" loading="lazy">
+            <button 
+              type="button"
+              data-image-url="{{ img.image.url }}"
+              onclick="switchMainImage(this.dataset.imageUrl, this)"
+              class="thumb-option {% if forloop.first %}is-active{% endif %}" 
+              {% if forloop.first %}
+                style="width:72px; height:90px; padding:0; border-radius:var(--r-sm); border:2px solid var(--ink); cursor:pointer; flex-shrink:0; scroll-snap-align:start; overflow:hidden; background:var(--warm-50); transition:all var(--dur-fast);"
+              {% else %}
+                style="width:72px; height:90px; padding:0; border-radius:var(--r-sm); border:2px solid var(--warm-200); cursor:pointer; flex-shrink:0; scroll-snap-align:start; overflow:hidden; background:var(--warm-50); transition:all var(--dur-fast);"
+              {% endif %}
+              aria-label="Image {{ forloop.counter }}"
+            >
+              <img src="{{ img.image.url }}" alt="{{ article.title }}" style="width:100%; height:100%; object-fit:cover; display:block;" loading="lazy">
+            </button>
           {% endfor %}
         </div>
       {% endif %}
@@ -37,37 +67,48 @@
 
     <!-- Article Info & Size Picker -->
     <div class="product-detail-info">
-      <span style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.12em; font-weight:800;">
-        {{ article.category.name }}
-      </span>
+      
+      <!-- Category & Stock Status -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; gap:12px;">
+        <span style="font-size:0.75rem; color:var(--warm-500); text-transform:uppercase; letter-spacing:0.14em; font-weight:800;">
+          {{ article.category.name }}
+        </span>
+        <span style="display:inline-flex; align-items:center; gap:6px; font-size:0.72rem; font-weight:700; color:#15803D; background:rgba(22,163,74,0.08); padding:3px 8px; border-radius:var(--r-full);">
+          <span style="width:6px; height:6px; border-radius:50%; background:#16A34A; display:inline-block;"></span>
+          En stock · Casablanca
+        </span>
+      </div>
 
       <h1 class="product-detail-title">
         {{ article.title }}
       </h1>
 
-      <div class="product-detail-price">
-        {{ article.price }} MAD
+      <div style="display:flex; align-items:baseline; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+        <div class="product-detail-price" style="margin-bottom:0;">
+          {{ article.price }} MAD
+        </div>
+        <span style="font-size:0.8rem; color:var(--warm-500);">TVA incluse · Paiement à la livraison</span>
       </div>
 
       <!-- Select Color (when article has colors) -->
       {% if article.has_colors %}
-        <div style="margin-bottom:1.5rem;">
-          <label class="form-label" style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase;">
-            <span>{{ t.select_color }}</span>
-            <span id="selectedColorLabel" style="font-weight:800; color:#0A0A0A;">{{ t.please_choose }}</span>
-          </label>
+        <div style="margin-bottom:1.75rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; font-size:0.82rem; letter-spacing:0.06em; text-transform:uppercase;">
+            <span style="font-weight:700; color:var(--ink);">{{ t.select_color }}</span>
+            <span id="selectedColorLabel" style="font-weight:800; color:var(--ink);">{{ t.please_choose }}</span>
+          </div>
           
           <div style="display:flex; flex-wrap:wrap; gap:0.6rem;" id="colorButtonsContainer">
             {% for col in article.available_colors %}
               <button 
                 type="button"
                 class="btn color-select-btn btn-dark"
-                style="padding:0.65rem 1.25rem; min-width:75px; border-radius:var(--radius-sm); font-weight:700;"
+                style="padding:0.6rem 1.15rem; min-width:75px; border-radius:var(--r-sm); font-weight:700; font-size:0.85rem;"
                 data-color="{{ col }}"
                 onclick="selectProductColor(this)"
               >
                 {{ col }}
-                <span class="color-stock-sublabel" style="font-size:0.65rem; color:var(--text-muted); display:block; margin-top:2px;"></span>
+                <span class="color-stock-sublabel" style="font-size:0.65rem; color:var(--warm-500); display:block; margin-top:2px;"></span>
               </button>
             {% endfor %}
           </div>
@@ -76,87 +117,200 @@
 
       <!-- Select Size -->
       <div style="margin-bottom:2rem;">
-        <label class="form-label" style="display:flex; justify-content:space-between; margin-bottom:0.75rem; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase;">
-          <span>{{ t.select_size }}</span>
-          <span id="selectedSizeLabel" style="font-weight:800; color:#0A0A0A;">{{ t.please_choose }}</span>
-        </label>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; font-size:0.82rem; letter-spacing:0.06em; text-transform:uppercase;">
+          <div>
+            <span style="font-weight:700; color:var(--ink);">{{ t.select_size }} :</span>
+            <span id="selectedSizeLabel" style="font-weight:800; color:var(--red); margin-left:4px;">{{ t.please_choose }}</span>
+          </div>
+          <button 
+            type="button" 
+            onclick="openSizeGuideModal()" 
+            style="background:none; border:none; padding:0; font-size:0.75rem; font-weight:700; color:var(--warm-700); text-decoration:underline; text-underline-offset:3px; cursor:pointer; text-transform:none; letter-spacing:0.02em;"
+          >
+            Guide des tailles
+          </button>
+        </div>
         
         <div style="display:flex; flex-wrap:wrap; gap:0.6rem;" id="sizeButtonsContainer">
           {% for sz in article.available_sizes %}
             <button 
               type="button"
               class="btn size-select-btn btn-dark"
-              style="padding:0.65rem 1.25rem; min-width:65px; border-radius:var(--radius-sm); font-weight:700;"
+              style="padding:0.65rem 1.25rem; min-width:65px; min-height:44px; border-radius:var(--r-sm); font-weight:700; font-size:0.88rem;"
               data-size="{{ sz }}"
               onclick="selectProductSize(this)"
             >
               {{ sz }}
-              <span class="size-stock-sublabel" style="font-size:0.65rem; color:var(--text-muted); display:block; margin-top:2px;"></span>
+              <span class="size-stock-sublabel" style="font-size:0.65rem; color:var(--warm-500); display:block; margin-top:2px;"></span>
             </button>
           {% empty %}
-            <button type="button" class="btn btn-gold size-select-btn" data-size="One Size" data-stock="10" onclick="selectProductSize(this)" style="font-size:0.85rem; letter-spacing:0.05em;">
-              ONE SIZE FITS ALL
-            </button>
+            <span style="color:var(--warm-500); font-size:0.82rem;">Article indisponible</span>
           {% endfor %}
         </div>
       </div>
 
       <!-- Quantity Picker -->
-      <div style="display:flex; align-items:center; gap:1.25rem; margin-bottom:2.25rem;">
-        <label class="form-label" style="margin:0; font-size:0.85rem; letter-spacing:0.05em; text-transform:uppercase;">{{ t.quantity }}</label>
-        <div style="display:flex; align-items:center; gap:0.5rem; background:var(--bg-secondary); border:1.5px solid var(--border-color); border-radius:var(--radius-sm); padding:0.25rem 0.6rem;">
-          <button class="btn btn-dark" style="padding:0.2rem 0.6rem; font-weight:700;" onclick="adjustQty(-1)">-</button>
-          <input type="number" id="itemQtyInput" value="1" min="1" max="10" style="width:45px; text-align:center; background:transparent; border:none; color:#0A0A0A; font-weight:800; font-size:1rem;">
-          <button class="btn btn-dark" style="padding:0.2rem 0.6rem; font-weight:700;" onclick="adjustQty(1)">+</button>
+      <div style="display:flex; align-items:center; gap:1.25rem; margin-bottom:2rem;">
+        <label style="margin:0; font-size:0.82rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:700; color:var(--ink);">{{ t.quantity }}</label>
+        <div style="display:inline-flex; align-items:center; background:var(--warm-50); border:1px solid var(--warm-200); border-radius:var(--r-sm); padding:3px;">
+          <button type="button" class="btn btn-ghost" style="padding:0.35rem 0.75rem; font-weight:700; font-size:1.1rem; min-width:36px; height:36px; border:none;" onclick="adjustQty(-1)" aria-label="Moins">-</button>
+          <input type="number" id="itemQtyInput" value="1" min="1" max="10" style="width:40px; text-align:center; background:transparent; border:none; color:var(--ink); font-weight:800; font-size:0.95rem; appearance:none; -moz-appearance:textfield;" aria-label="Quantité" readonly>
+          <button type="button" class="btn btn-ghost" style="padding:0.35rem 0.75rem; font-weight:700; font-size:1.1rem; min-width:36px; height:36px; border:none;" onclick="adjustQty(1)" aria-label="Plus">+</button>
         </div>
       </div>
 
       <!-- Action Buttons -->
-      <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-        <button id="addCartBtn" class="btn btn-gold" style="flex:1; padding:1rem 1.75rem; font-size:0.9rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;" onclick="triggerAddCart()">
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:2rem;">
+        <button 
+          type="button"
+          id="addCartBtn" 
+          class="btn btn-red" 
+          style="flex:1; min-width:200px; padding:1.1rem 2rem; font-size:0.88rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; box-shadow:var(--shadow-md);" 
+          onclick="triggerAddCart()"
+        >
           {% if article.has_colors %}{{ t.please_choose }}{% else %}{{ t.add_to_bag }}{% endif %}
         </button>
+
+        <a 
+          href="https://wa.me/212620000000?text=Bonjour%20Mario%20Clothes%2C%20je%20souhaite%20commander%20l%27article%20%3A%20{{ article.title|urlencode }}%20(Prix%20%3A%20{{ article.price }}%20MAD)"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-outline"
+          style="padding:1.1rem 1.4rem; font-size:0.82rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; display:inline-flex; align-items:center; gap:8px;"
+          title="Commander via WhatsApp"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <span class="desktop-only">WhatsApp</span>
+        </a>
       </div>
 
-      <!-- Description -->
-      {% if article.description %}
-        <div style="margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--border-color);">
-          <h3 style="font-size:0.85rem; margin-bottom:0.75rem; color:#0A0A0A; letter-spacing:0.1em; text-transform:uppercase; font-weight:800;">{{ t.product_spec }}</h3>
-          <p style="color:var(--text-secondary); white-space:pre-line; font-size:0.925rem; line-height:1.7;">{{ article.description }}</p>
+      <!-- Trust & Delivery Box -->
+      <div style="background:var(--warm-50); padding:1.25rem 1.4rem; border-radius:var(--r-md); border:1px solid var(--warm-100); display:flex; flex-direction:column; gap:0.85rem; margin-bottom:2rem;">
+        <div style="display:flex; align-items:flex-start; gap:0.9rem;">
+          <div style="width:34px; height:34px; border-radius:50%; background:var(--white); border:1px solid var(--warm-200); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--red);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div>
+            <strong style="color:var(--ink); font-size:0.85rem; letter-spacing:0.04em; text-transform:uppercase; display:block; margin-bottom:0.15rem;">{{ t.express_delivery }}</strong>
+            <p style="font-size:0.82rem; color:var(--warm-700); line-height:1.5; margin:0;">Livraison sous 24h à Casablanca, 48h dans tout le Maroc. Paiement en espèces à la réception.</p>
+          </div>
         </div>
-      {% endif %}
 
-      <!-- Store Delivery Guarantee Badge -->
-      <div style="margin-top:2rem; background:var(--bg-secondary); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-color); display:flex; gap:1.25rem; align-items:center;">
-        <div style="flex:1; font-size:0.85rem; color:var(--text-secondary); line-height:1.6;">
-          <strong style="color:#0A0A0A; font-size:0.85rem; letter-spacing:0.08em; text-transform:uppercase; display:block; margin-bottom:0.2rem;">{{ t.express_delivery }}</strong>
-          {{ t.express_desc }}
+        <div style="display:flex; align-items:flex-start; gap:0.9rem; padding-top:0.85rem; border-top:1px solid var(--warm-200);">
+          <div style="width:34px; height:34px; border-radius:50%; background:var(--white); border:1px solid var(--warm-200); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--ink);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+          </div>
+          <div>
+            <strong style="color:var(--ink); font-size:0.85rem; letter-spacing:0.04em; text-transform:uppercase; display:block; margin-bottom:0.15rem;">Retours & Échanges Faciles</strong>
+            <p style="font-size:0.82rem; color:var(--warm-700); line-height:1.5; margin:0;">Échange de taille ou remboursement possible sous 7 jours après réception.</p>
+          </div>
         </div>
+      </div>
+
+      <!-- Accordions: Description, Care, Details -->
+      <div class="detail-accordion">
+        
+        <!-- Accordion Item 1: Description -->
+        <div class="detail-accordion-item">
+          <button type="button" class="detail-accordion-btn" onclick="toggleDetailAccordion(this)" aria-expanded="true">
+            <span>{{ t.product_spec }}</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="detail-accordion-body is-open">
+            <p style="white-space:pre-line; margin:0;">
+              {% if article.description %}
+                {{ article.description }}
+              {% else %}
+                Pièce exclusive issue de la collection Mario Clothes Casablanca. Conçue avec des finitions sartoriales soignées pour allier confort premium et silhouette contemporaine.
+              {% endif %}
+            </p>
+          </div>
+        </div>
+
+        <!-- Accordion Item 2: Care Guide -->
+        <div class="detail-accordion-item">
+          <button type="button" class="detail-accordion-btn" onclick="toggleDetailAccordion(this)" aria-expanded="false">
+            <span>Conseils d'Entretien & Matière</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="detail-accordion-body">
+            <p style="margin:0;">
+              • Lavage en pressing ou délicat à froid (30°C max)<br>
+              • Repassage doux sur l'envers<br>
+              • Ne pas utiliser de javel ou de chlore<br>
+              • Séchage sur cintre recommandé pour préserver la coupe
+            </p>
+          </div>
+        </div>
+
+        <!-- Accordion Item 3: Boutique Details -->
+        <div class="detail-accordion-item">
+          <button type="button" class="detail-accordion-btn" onclick="toggleDetailAccordion(this)" aria-expanded="false">
+            <span>Disponibilité Boutique (Casablanca)</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="detail-accordion-body">
+            <p style="margin:0;">
+              Essayage et retrait immédiat disponibles à notre boutique historique :<br>
+              <strong>Mario Clothes — Bab Marrakech, Ancienne Médina, Casablanca</strong><br>
+              Ouvert 7j/7 de 10h00 à 21h00.
+            </p>
+          </div>
+        </div>
+
       </div>
 
     </div>
 
   </div>
 
-  <!-- Related Articles -->
+  <!-- Related / Complementary Articles -->
   {% if related_articles %}
-    <section style="margin-top:5rem; padding-top:2.5rem; border-top:1px solid var(--border-color);">
-      <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:1.75rem; letter-spacing:-0.01em;">{{ t.complementary }}</h2>
-      <div class="grid-products">
+    <section style="margin-top:5rem; padding-top:3rem; border-top:1px solid var(--warm-100);">
+      <div class="section-header">
+        <div>
+          <span class="section-eyebrow">Suggestions Sartoriales</span>
+          <h2 class="section-title">{{ t.complementary }}</h2>
+        </div>
+        <a href="{% url 'store:home' %}?category={{ article.category.slug }}" class="btn btn-outline" style="font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase;">
+          Voir tout {{ article.category.name }} &rarr;
+        </a>
+      </div>
+
+      <div class="mario-catalog-grid">
         {% for rel in related_articles %}
-          <div class="product-card">
-            <a href="{% url 'store:product_detail' rel.slug %}" class="product-thumb">
+          <article class="mario-product-card" id="card-rel-{{ rel.id }}">
+            <a href="{% url 'store:product_detail' rel.slug %}" class="mario-card-media" aria-label="{{ rel.title }}">
               {% if rel.primary_image %}
-                <img src="{{ rel.primary_image }}" alt="{{ rel.title }}" class="product-shuffle-image" data-shuffle-images="{{ rel.image_urls|escapejs }}">
+                <img 
+                  src="{{ rel.primary_image }}" 
+                  alt="{{ rel.title }}" 
+                  class="mario-primary-img" 
+                  loading="lazy"
+                >
+                {% if rel.images.all.count > 1 %}
+                  <img 
+                    src="{{ rel.images.all.1.image.url }}" 
+                    alt="{{ rel.title }}" 
+                    class="mario-secondary-img" 
+                    loading="lazy"
+                  >
+                {% endif %}
               {% else %}
-                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:0.75rem;">No Image Available</div>
+                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--warm-400); font-size:0.75rem;">Mario Clothes</div>
               {% endif %}
             </a>
-            <div class="product-info">
-              <a href="{% url 'store:product_detail' rel.slug %}" class="product-title">{{ rel.title }}</a>
-              <div class="product-price">{{ rel.price }} MAD</div>
+
+            <div class="mario-card-body">
+              <span class="mario-card-cat">{{ rel.category.name }}</span>
+              <h3 class="mario-card-title">
+                <a href="{% url 'store:product_detail' rel.slug %}">{{ rel.title }}</a>
+              </h3>
+              <div class="mario-card-footer">
+                <div class="mario-card-price">{{ rel.price }} MAD</div>
+              </div>
             </div>
-          </div>
+          </article>
         {% endfor %}
       </div>
     </section>
@@ -167,21 +321,127 @@
 <!-- Sticky Floating Add to Bag CTA on Mobile View -->
 <div class="mobile-product-cta">
   <div class="mobile-product-cta-inner">
-    <div style="min-width:0;">
-      <div style="font-size:0.75rem; color:var(--text-muted); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ article.title }}</div>
-      <div style="font-size:1.1rem; font-weight:900; color:#0A0A0A;">{{ article.price }} MAD</div>
+    <div style="min-width:0; flex:1;">
+      <div style="font-size:0.72rem; color:var(--warm-500); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ article.title }}</div>
+      <div style="font-size:1.05rem; font-weight:900; color:var(--ink);">{{ article.price }} MAD</div>
     </div>
-    <button type="button" id="mobileAddCartBtn" class="btn btn-gold" style="padding:0.65rem 1rem; font-size:0.8rem; font-weight:800; flex-shrink:0; max-width:55%; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;" onclick="triggerAddCart()">
+    <button 
+      type="button" 
+      id="mobileAddCartBtn" 
+      class="btn btn-red" 
+      style="padding:0.65rem 1.15rem; font-size:0.78rem; font-weight:800; flex-shrink:0; max-width:55%; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;" 
+      onclick="triggerAddCart()"
+    >
       {% if article.has_colors %}{{ t.please_choose }}{% else %}{{ t.add_to_bag }}{% endif %}
     </button>
   </div>
 </div>
 
+<!-- Size Guide Modal -->
+<div id="sizeGuideModal" style="display:none; position:fixed; inset:0; z-index:900; background:rgba(11,11,12,0.6); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:16px;">
+  <div style="background:var(--white); border-radius:var(--r-lg); max-width:500px; width:100%; padding:28px; box-shadow:var(--shadow-xl); position:relative; max-height:90vh; overflow-y:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+      <h3 style="font-family:var(--font-display); font-size:1.35rem; margin:0; color:var(--ink);">Guide des Tailles</h3>
+      <button type="button" onclick="closeSizeGuideModal()" style="background:none; border:none; cursor:pointer; padding:6px; color:var(--warm-500);" aria-label="Fermer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p style="font-size:0.82rem; color:var(--warm-600); margin-bottom:1.5rem; line-height:1.5;">Nos pièces Mario Clothes adoptent une coupe moderne et ajustée. En cas de doute entre deux tailles, nous vous conseillons de choisir la taille supérieure.</p>
+    
+    <table style="width:100%; border-collapse:collapse; font-size:0.82rem; text-align:left;">
+      <thead>
+        <tr style="border-bottom:2px solid var(--warm-200); text-transform:uppercase; letter-spacing:0.06em; color:var(--warm-500); font-size:0.72rem;">
+          <th style="padding:8px 6px;">Taille</th>
+          <th style="padding:8px 6px;">Poitrine</th>
+          <th style="padding:8px 6px;">Épaule</th>
+          <th style="padding:8px 6px;">Longueur</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--warm-100);">
+          <td style="padding:10px 6px; font-weight:800; color:var(--ink);">S (38)</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">92-96 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">43 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">68 cm</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--warm-100);">
+          <td style="padding:10px 6px; font-weight:800; color:var(--ink);">M (40)</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">96-100 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">45 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">70 cm</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--warm-100);">
+          <td style="padding:10px 6px; font-weight:800; color:var(--ink);">L (42)</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">100-106 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">47 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">72 cm</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--warm-100);">
+          <td style="padding:10px 6px; font-weight:800; color:var(--ink);">XL (44)</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">106-112 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">49 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">74 cm</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 6px; font-weight:800; color:var(--ink);">XXL (46)</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">112-118 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">51 cm</td>
+          <td style="padding:10px 6px; color:var(--warm-700);">76 cm</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--warm-100); text-align:center;">
+      <button type="button" class="btn btn-dark" style="width:100%; padding:0.75rem;" onclick="closeSizeGuideModal()">
+        Compris
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- High-Resolution Image Lightbox Modal -->
+<div id="imageLightboxModal" style="display:none; position:fixed; inset:0; z-index:999; background:rgba(11,11,12,0.92); backdrop-filter:blur(10px); align-items:center; justify-content:center; padding:20px; cursor:zoom-out;" onclick="closeImageLightbox()">
+  <img id="lightboxImg" src="" alt="{{ article.title }}" style="max-width:90vw; max-height:90vh; object-fit:contain; border-radius:var(--r-md); box-shadow:var(--shadow-xl);">
+  <button type="button" onclick="closeImageLightbox()" style="position:absolute; top:24px; right:24px; background:rgba(255,255,255,0.15); border:none; border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer;" aria-label="Fermer">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+</div>
+
+<div
+  id="productData"
+  data-has-colors="{% if article.has_colors %}true{% else %}false{% endif %}"
+  data-please-choose="{{ t.please_choose }}"
+  data-add-to-bag="{{ t.add_to_bag }}"
+  data-article-id="{{ article.id }}"
+></div>
+{{ article.variants_json|json_script:"productVariantsData" }}
+
 <script>
-  const variants = JSON.parse('{{ article.variants_json|escapejs }}');
-  const hasColors = {{ article.has_colors|yesno:"true,false" }};
-  const pleaseChooseText = "{{ t.please_choose }}";
-  const addToBagText = "{{ t.add_to_bag }}";
+  function openImageLightbox() {
+    const mainImg = document.getElementById('mainProductImg');
+    const modal = document.getElementById('imageLightboxModal');
+    const lbImg = document.getElementById('lightboxImg');
+    if (mainImg && modal && lbImg) {
+      lbImg.src = mainImg.src;
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeImageLightbox() {
+    const modal = document.getElementById('imageLightboxModal');
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+  const productData = document.getElementById('productData');
+  const variantsData = document.getElementById('productVariantsData');
+  const parsedVariants = variantsData ? JSON.parse(variantsData.textContent) : [];
+  const variants = typeof parsedVariants === 'string' ? JSON.parse(parsedVariants) : parsedVariants;
+  const hasColors = productData?.dataset.hasColors === 'true';
+  const pleaseChooseText = productData?.dataset.pleaseChoose || 'PLEASE CHOOSE';
+  const addToBagText = productData?.dataset.addToBag || 'ADD TO BAG';
 
   let selectedColor = null;
   let selectedSize = null;
@@ -190,6 +450,46 @@
     updateColorSublabels();
     updateSizeSublabels();
     updateAddCartState();
+  }
+
+  function switchMainImage(url, thumbBtn) {
+    const mainImg = document.getElementById('mainProductImg');
+    if (mainImg) {
+      mainImg.src = url;
+    }
+    if (thumbBtn) {
+      document.querySelectorAll('#thumbStrip .thumb-option').forEach(b => {
+        b.style.borderColor = 'var(--warm-200)';
+        b.classList.remove('is-active');
+      });
+      thumbBtn.style.borderColor = 'var(--ink)';
+      thumbBtn.classList.add('is-active');
+    }
+  }
+
+  function toggleDetailAccordion(btn) {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !expanded);
+    const body = btn.nextElementSibling;
+    if (body) {
+      body.classList.toggle('is-open', !expanded);
+    }
+  }
+
+  function openSizeGuideModal() {
+    const modal = document.getElementById('sizeGuideModal');
+    if (modal) {
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeSizeGuideModal() {
+    const modal = document.getElementById('sizeGuideModal');
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
   }
 
   function updateColorSublabels() {
@@ -204,24 +504,21 @@
         const match = variants.find(v => v.color === col && v.size === selectedSize);
         stockForCol = match ? match.stock : 0;
       } else {
-        // Sum stock for this color across all sizes
         stockForCol = variants.filter(v => v.color === col).reduce((acc, v) => acc + v.stock, 0);
       }
 
       if (stockForCol > 0) {
-        sublabel.textContent = `${stockForCol} LEFT`;
-        sublabel.style.color = "var(--text-muted)";
+        sublabel.textContent = `${stockForCol} DISPO`;
+        sublabel.style.color = "var(--warm-500)";
         btn.disabled = false;
         btn.style.opacity = "1";
         btn.style.cursor = "pointer";
       } else {
-        sublabel.textContent = "SOLD OUT";
-        sublabel.style.color = "var(--danger, #DC2626)";
-        if (selectedSize) {
-          btn.disabled = true;
-          btn.style.opacity = "0.35";
-          btn.style.cursor = "not-allowed";
-        }
+        sublabel.textContent = "ÉPUISÉ";
+        sublabel.style.color = "var(--red)";
+        btn.disabled = true;
+        btn.style.opacity = "0.35";
+        btn.style.cursor = "not-allowed";
       }
     });
   }
@@ -237,19 +534,18 @@
         const match = variants.find(v => v.size === sz && v.color === selectedColor);
         stockForSz = match ? match.stock : 0;
       } else {
-        // Sum stock for this size
         stockForSz = variants.filter(v => v.size === sz).reduce((acc, v) => acc + v.stock, 0);
       }
 
       if (stockForSz > 0) {
-        sublabel.textContent = `${stockForSz} LEFT`;
-        sublabel.style.color = "var(--text-muted)";
+        sublabel.textContent = `${stockForSz} DISPO`;
+        sublabel.style.color = "var(--warm-500)";
         btn.disabled = false;
         btn.style.opacity = "1";
         btn.style.cursor = "pointer";
       } else {
-        sublabel.textContent = "SOLD OUT";
-        sublabel.style.color = "var(--danger, #DC2626)";
+        sublabel.textContent = "ÉPUISÉ";
+        sublabel.style.color = "var(--red)";
         btn.disabled = true;
         btn.style.opacity = "0.35";
         btn.style.cursor = "not-allowed";
@@ -262,25 +558,27 @@
     if (selectedColor === col) return;
 
     document.querySelectorAll('.color-select-btn').forEach(b => {
-      b.classList.remove('btn-gold');
+      b.classList.remove('btn-red', 'active-color');
       b.classList.add('btn-dark');
+      b.style.borderColor = 'transparent';
     });
     btn.classList.remove('btn-dark');
-    btn.classList.add('btn-gold');
+    btn.classList.add('btn-red', 'active-color');
+    btn.style.borderColor = 'var(--red)';
 
     selectedColor = col;
     const colorLabelElem = document.getElementById('selectedColorLabel');
     if (colorLabelElem) colorLabelElem.textContent = selectedColor;
 
-    // Check if currently selected size is available in new color
     if (selectedSize) {
       const match = variants.find(v => v.size === selectedSize && v.color === selectedColor);
       if (!match || match.stock <= 0) {
         selectedSize = null;
         document.getElementById('selectedSizeLabel').textContent = pleaseChooseText;
         document.querySelectorAll('.size-select-btn').forEach(b => {
-          b.classList.remove('btn-gold');
+          b.classList.remove('btn-red', 'active-size');
           b.classList.add('btn-dark');
+          b.style.borderColor = 'transparent';
         });
       }
     }
@@ -293,16 +591,17 @@
     const sz = btn.getAttribute('data-size');
     
     document.querySelectorAll('.size-select-btn').forEach(b => {
-      b.classList.remove('btn-gold');
+      b.classList.remove('btn-red', 'active-size');
       b.classList.add('btn-dark');
+      b.style.borderColor = 'transparent';
     });
     btn.classList.remove('btn-dark');
-    btn.classList.add('btn-gold');
+    btn.classList.add('btn-red', 'active-size');
+    btn.style.borderColor = 'var(--red)';
 
     selectedSize = sz;
     document.getElementById('selectedSizeLabel').textContent = selectedSize;
 
-    // If has colors and no color chosen yet, update color badges availability
     if (hasColors) {
       if (selectedColor) {
         const match = variants.find(v => v.size === selectedSize && v.color === selectedColor);
@@ -311,8 +610,9 @@
           const colorLabelElem = document.getElementById('selectedColorLabel');
           if (colorLabelElem) colorLabelElem.textContent = pleaseChooseText;
           document.querySelectorAll('.color-select-btn').forEach(b => {
-            b.classList.remove('btn-gold');
+            b.classList.remove('btn-red', 'active-color');
             b.classList.add('btn-dark');
+            b.style.borderColor = 'transparent';
           });
         }
       }
@@ -325,7 +625,9 @@
   function updateAddCartState() {
     const addBtn = document.getElementById('addCartBtn');
     const mobBtn = document.getElementById('mobileAddCartBtn');
-    const isReady = hasColors ? (selectedColor && selectedSize) : !!selectedSize;
+    const isReady = hasColors
+      ? Boolean(selectedColor && selectedSize)
+      : Boolean(selectedSize);
 
     let availableStock = 0;
     if (isReady) {
@@ -344,7 +646,7 @@
     if (!isReady) {
       label = pleaseChooseText;
     } else if (availableStock <= 0) {
-      label = "SOLD OUT";
+      label = "ÉPUISÉ / SOLD OUT";
     }
 
     [addBtn, mobBtn].forEach(b => {
@@ -366,22 +668,23 @@
     const input = document.getElementById('itemQtyInput');
     let val = parseInt(input.value) + amount;
     if (val < 1) val = 1;
+    if (val > 10) val = 10;
     input.value = val;
   }
 
   function triggerAddCart() {
     if (hasColors && !selectedColor) {
-      alert("Please select a color first.");
+      alert("Veuillez choisir une couleur.");
       return;
     }
     if (!selectedSize) {
-      alert("Please select your size first.");
+      alert("Veuillez choisir votre taille.");
       return;
     }
 
     const qty = parseInt(document.getElementById('itemQtyInput').value) || 1;
     window.addToCart({
-      articleId: {{ article.id }},
+      articleId: Number(productData?.dataset.articleId),
       size: selectedSize,
       color: selectedColor || '',
       quantity: qty
